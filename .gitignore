@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.example
+.codex/tmp/
+**/target/
+**/node_modules/
+**/dist/
+**/.vite/
+.DS_Store
+Thumbs.db

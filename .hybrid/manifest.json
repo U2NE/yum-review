@@ -1,0 +1,19 @@
+{
+  "name": "codex-hybrid-agent-framework",
+  "version": "0.1.0",
+  "installedAt": "2026-09-24T16:10:57.396Z",
+  "codexSurface": {
+    "roles": ".codex/config.toml + .codex/agents/*.toml",
+    "skills": ".agents/skills/*/SKILL.md"
+  },
+  "modelRouting": {
+    "policy": ".hybrid/core/routing/model-routing.json",
+    "defaultTier": "luna",
+    "heavyTier": "sol",
+    "fallback": "session-inheritance"
+  },
+  "sourceUpstreams": {
+    "gsdCore": "9db80da9a047ddaa9cc8812a5d6adab446fe8433",
+    "ohMyClaudecode": "9fd35ece5d6de65b511bf43b55e42c499e4fc194"
+  }
+}

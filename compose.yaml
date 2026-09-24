@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-yum_review}
+      POSTGRES_USER: ${POSTGRES_USER:-yum_review}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-yum_review_local}
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - yum-review-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-yum_review} -d ${POSTGRES_DB:-yum_review}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  yum-review-postgres:

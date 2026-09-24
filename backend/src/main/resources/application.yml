@@ -1,0 +1,24 @@
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    session:
+      cookie:
+        http-only: true
+        same-site: lax
+
+spring:
+  application:
+    name: yum-review-api
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/yum_review}
+    username: ${DB_USERNAME:yum_review}
+    password: ${DB_PASSWORD:yum_review_local}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true

@@ -1,0 +1,51 @@
+[agents]
+enabled = true
+max_depth = 1
+max_concurrent_threads_per_session = 8
+
+# hybrid-agent-framework:agents:start
+[agents."hybrid-scout"]
+description = "Repository scout"
+config_file = "agents/scout.toml"
+
+[agents."hybrid-researcher"]
+description = "Technical researcher and requirements analyst"
+config_file = "agents/researcher.toml"
+
+[agents."hybrid-planner"]
+description = "Execution planner"
+config_file = "agents/planner.toml"
+
+[agents."hybrid-architect"]
+description = "Architecture reviewer"
+config_file = "agents/architect.toml"
+
+[agents."hybrid-plan-auditor"]
+description = "Plan auditor"
+config_file = "agents/plan-auditor.toml"
+
+[agents."hybrid-implementer"]
+description = "Implementation worker"
+config_file = "agents/implementer.toml"
+
+[agents."hybrid-tester"]
+description = "Independent tester"
+config_file = "agents/tester.toml"
+
+[agents."hybrid-code-reviewer"]
+description = "Independent code reviewer"
+config_file = "agents/code-reviewer.toml"
+
+[agents."hybrid-security-reviewer"]
+description = "Conditional security reviewer"
+config_file = "agents/security-reviewer.toml"
+
+[agents."hybrid-verifier"]
+description = "Final verifier"
+config_file = "agents/verifier.toml"
+
+[agents."hybrid-knowledge-synthesizer"]
+description = "Knowledge synthesizer"
+config_file = "agents/knowledge-synthesizer.toml"
+
+# hybrid-agent-framework:agents:end
