@@ -7,6 +7,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "restaurant")
 public class Restaurant {
@@ -23,10 +25,22 @@ public class Restaurant {
     @Column(length = 300)
     private String address;
 
-    protected Restaurant() {}
+    @Column(length = 120)
+    private String region;
+
+    @Column(precision = 9, scale = 6)
+    private BigDecimal latitude;
+
+    @Column(precision = 9, scale = 6)
+    private BigDecimal longitude;
+
+    protected Restaurant() { }
 
     public Long getId() { return id; }
     public String getName() { return name; }
     public String getDescription() { return description; }
     public String getAddress() { return address; }
+    public String getRegion() { return region; }
+    public BigDecimal getLatitude() { return latitude; }
+    public BigDecimal getLongitude() { return longitude; }
 }

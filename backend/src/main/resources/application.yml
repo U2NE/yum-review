@@ -7,6 +7,13 @@ server:
         same-site: lax
 
 spring:
+  servlet:
+    multipart:
+      enabled: true
+      location: ${YUM_REVIEW_MEDIA_DIR:./var/media}/tmp
+      max-file-size: 101MB
+      max-request-size: 102MB
+      file-size-threshold: 0B
   application:
     name: yum-review-api
   datasource:
@@ -22,3 +29,15 @@ spring:
         format_sql: true
   flyway:
     enabled: true
+
+yum-review:
+  media:
+    directory: ${YUM_REVIEW_MEDIA_DIR:./var/media}
+    max-upload-bytes: 99999999
+    optimize-target-bytes: 10000000
+    max-decoded-pixels: 16000000
+    max-concurrent-uploads: 2
+    cleanup-interval: 15m
+    pending-delete-grace: 1m
+    unattached-image-grace: 24h
+    staging-file-grace: 1h

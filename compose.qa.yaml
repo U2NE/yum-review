@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: yum_review_qa
+      POSTGRES_USER: yum_review_qa
+      POSTGRES_PASSWORD: ${YUM_REVIEW_QA_DB_PASSWORD:?YUM_REVIEW_QA_DB_PASSWORD is required}
+    ports:
+      - "127.0.0.1:55432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U yum_review_qa -d yum_review_qa"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+      start_period: 5s

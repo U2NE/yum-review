@@ -2,4 +2,9 @@ package com.yumreview.catalog;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MenuRepository extends JpaRepository<Menu, Long> {}
+import java.util.List;
+
+public interface MenuRepository extends JpaRepository<Menu, Long> {
+    List<Menu> findAllByRestaurant_IdOrderByIdAsc(Long restaurantId);
+    boolean existsByIdAndActiveTrue(Long id);
+}

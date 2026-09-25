@@ -15,10 +15,12 @@ import java.util.Locale;
 @Service
 public class AuthService implements UserDetailsService {
     private final AppUserRepository users;
+    private final RestaurantOwnerRepository owners;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthService(AppUserRepository users, PasswordEncoder passwordEncoder) {
+    public AuthService(AppUserRepository users, RestaurantOwnerRepository owners, PasswordEncoder passwordEncoder) {
         this.users = users;
+        this.owners = owners;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -32,12 +34,31 @@ public class AuthService implements UserDetailsService {
 
         try {
             AppUser user = users.saveAndFlush(new AppUser(email, normalized, passwordEncoder.encode(request.password())));
-            return AuthDtos.CurrentUser.from(user);
+            return currentUser(user);
         } catch (DataIntegrityViolationException exception) {
             // The database unique constraint also handles concurrent signups.
             if (isDuplicateEmailViolation(exception)) throw duplicateEmail();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "계정을 만들지 못했습니다.");
         }
+    }
+
+    @Transactional(readOnly = true)
+    public AuthDtos.CurrentUser currentUser(AppUser user) {
+        return AuthDtos.CurrentUser.from(user, owners.findByIdUserId(user.getId()).stream()
+                .map(RestaurantOwner::getRestaurantId).sorted().toList());
+    }
+
+    @Transactional
+    public AuthDtos.PasswordChanged changePassword(AppUser user, AuthDtos.PasswordChangeRequest request) {
+        if (!passwordEncoder.matches(request.currentPassword(), user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "현재 비밀번호가 일치하지 않습니다.");
+        }
+        if (passwordEncoder.matches(request.newPassword(), user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "새 비밀번호는 현재 비밀번호와 달라야 합니다.");
+        }
+        user.changePassword(passwordEncoder.encode(request.newPassword()));
+        users.save(user);
+        return new AuthDtos.PasswordChanged(false);
     }
 
     @Override

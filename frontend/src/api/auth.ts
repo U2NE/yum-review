@@ -1,24 +1,24 @@
-import { ApiError } from '../types'
+import { ApiError, type MenuCard } from '../types'
 import { apiRequest, refreshCsrfToken } from './client'
 
 export type CurrentUser = {
   id: number
   email: string
+  systemRole: 'MEMBER' | 'SERVER_ADMIN'
+  ownerRestaurantIds: number[]
+  mustChangePassword: boolean
 }
 
 type LoginResult = { authenticated: true }
 type LogoutResult = { authenticated: false }
 
-export async function getCurrentUser(): Promise<CurrentUser> {
+export function getCurrentUser() {
   return apiRequest<CurrentUser>('/api/auth/me')
 }
 
 export async function signUp(email: string, password: string): Promise<CurrentUser> {
   try {
-    const user = await apiRequest<CurrentUser>('/api/auth/signup', {
-      method: 'POST',
-      json: { email: email.trim(), password },
-    })
+    const user = await apiRequest<CurrentUser>('/api/auth/signup', { method: 'POST', json: { email: email.trim(), password } })
     await refreshAfterTransition()
     return user
   } catch (error) {
@@ -28,10 +28,7 @@ export async function signUp(email: string, password: string): Promise<CurrentUs
 }
 
 export async function logIn(email: string, password: string): Promise<void> {
-  const form = new URLSearchParams()
-  form.set('email', email.trim())
-  form.set('password', password)
-
+  const form = new URLSearchParams({ email: email.trim(), password })
   try {
     await apiRequest<LoginResult>('/api/auth/login', {
       method: 'POST',
@@ -55,9 +52,22 @@ export async function logOut(): Promise<void> {
   }
 }
 
-async function refreshAfterTransition(): Promise<void> {
-  // The account transition has already completed. A failed refresh should not
-  // hide that result; apiRequest will fetch a fresh token on the next write.
+export async function changePassword(currentPassword: string, newPassword: string) {
+  const result = await apiRequest<{ mustChangePassword: boolean }>('/api/auth/password', {
+    method: 'PUT', json: { currentPassword, newPassword },
+  })
+  await refreshAfterTransition()
+  return result
+}
+
+export async function discoverRestaurants() {
+  const response = await apiRequest<{ menus: MenuCard[] }>('/api/menus?sort=overall')
+  const seen = new Map<number, { id: number; name: string }>()
+  for (const menu of response.menus) seen.set(menu.restaurantId, { id: menu.restaurantId, name: menu.restaurantName })
+  return Array.from(seen.values()).sort((a, b) => a.name.localeCompare(b.name, 'ko'))
+}
+
+async function refreshAfterTransition() {
   await refreshCsrfToken().catch(() => undefined)
 }
 
@@ -68,6 +78,5 @@ function safeAuthError(error: unknown, action: 'signup' | 'login' | 'logout'): E
   if (action === 'login' && error.status === 401) return new Error('이메일 또는 비밀번호를 확인해 주세요.')
   if (error.status === 400) return new Error('입력한 내용을 확인해 주세요.')
   if (error.status === 403) return new Error('보안 확인이 만료됐어요. 다시 시도해 주세요.')
-  if (error.status === 401) return new Error('로그인 상태가 만료됐어요. 다시 로그인해 주세요.')
   return new Error('요청을 처리하지 못했어요. 잠시 후 다시 시도해 주세요.')
 }

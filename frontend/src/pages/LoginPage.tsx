@@ -31,9 +31,9 @@ export default function LoginPage() {
     }
     setSubmitting(true)
     try {
-      await logIn(email, password)
+      const current = await logIn(email, password)
       const stateNext = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname
-      navigate(stateNext?.startsWith('/') && !stateNext.startsWith('//') ? stateNext : next, { replace: true })
+      navigate(current?.mustChangePassword ? '/password-change' : stateNext?.startsWith('/') && !stateNext.startsWith('//') ? stateNext : next, { replace: true })
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : '로그인하지 못했어요. 다시 시도해 주세요.')
     } finally {

@@ -2,7 +2,8 @@ import { useCallback, useEffect, useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import { getMenu, getMenuReviews } from '../api/catalog'
-import { deleteReview, getMyReviews, reviewErrorMessage, updateReview, type MyReview, type ReviewInput } from '../api/reviews'
+import { deleteReview, getMyReviews, reviewErrorMessage, updateReview, attachReviewPhoto, detachReviewPhoto, type MyReview, type ReviewInput } from '../api/reviews'
+import { imageSrc, uploadImage, imageUploadMessage } from '../api/media'
 import ReviewForm from '../components/ReviewForm'
 import { ApiError } from '../types'
 import { PageState } from './RestaurantPage'
@@ -48,11 +49,23 @@ export default function MyReviewsPage() {
     return () => { current = false }
   }, [authLoading, refreshUser, user])
 
-  async function saveReview(reviewId: number, input: ReviewInput) {
+  async function saveReview(reviewId: number, input: ReviewInput, newPhotos: File[] = [], removePhotoIds: string[] = []) {
     setNotice('')
-    const updated = await updateReview(reviewId, input)
+    let updated = await updateReview(reviewId, input)
     setEditingId(null)
+    let photoIssue = ''
+    for (const mediaId of removePhotoIds) {
+      try { updated = await detachReviewPhoto(reviewId, mediaId) }
+      catch { photoIssue = '일부 사진을 정리하지 못했어요.' }
+    }
+    for (const file of newPhotos) {
+      try {
+        const uploaded = await uploadImage(file, 'REVIEW', 'USER_UPLOAD', '리뷰 작성자가 촬영했거나 게시 권한을 확인한 사진')
+        updated = await attachReviewPhoto(reviewId, uploaded.mediaId)
+      } catch (reason) { photoIssue = reason instanceof Error ? imageUploadMessage(reason) : '일부 사진을 올리지 못했어요.' }
+    }
     setReviews((current) => current.map((review) => review.id === reviewId ? { ...review, ...updated } : review))
+    if (photoIssue) setNotice(photoIssue)
     await refreshAfterMutation(updated.menuId, '수정')
   }
 
@@ -100,10 +113,11 @@ export default function MyReviewsPage() {
       {reviews.length ? <div className="my-review-list">{reviews.map((review) => (
         <article className="my-review-card" key={review.id}>
           <div className="my-review-topline"><span className="eyebrow">{review.restaurantName}</span><time dateTime={review.updatedAt}>{formatReviewDate(review.updatedAt)}</time></div>
-          <div className="my-review-title-row"><div><h2>{review.menuName}</h2><span className="my-review-scores">전체 <b>{review.overallScore}</b><i>·</i> 맛 <b>{review.tasteScore}</b><i>·</i> 가성비 <b>{review.valueScore}</b><i>·</i> 양 <b>{review.portionScore}</b></span></div><Link className="text-button my-review-menu-link" to={`/menus/${review.menuId}`}>메뉴 보기 <span aria-hidden="true">↗</span></Link></div>
+          <div className="my-review-title-row"><div><h2>{review.menuName}</h2><span className="my-review-scores">전체 <b>{Number(review.overallScore).toFixed(1)}</b><i>·</i> 맛 <b>{Number(review.tasteScore).toFixed(1)}</b><i>·</i> 가성비 <b>{Number(review.valueScore).toFixed(1)}</b><i>·</i> 양 <b>{Number(review.portionScore).toFixed(1)}</b></span></div><Link className="text-button my-review-menu-link" to={`/menus/${review.menuId}`}>메뉴 보기 <span aria-hidden="true">↗</span></Link></div>
           {review.comment ? <p className="my-review-comment">{review.comment}</p> : <p className="my-review-no-comment">아직 코멘트를 남기지 않았어요.</p>}
-          <div className="my-review-actions"><button className="text-button" type="button" onClick={() => { setError(''); setEditingId(editingId === review.id ? null : review.id) }}>{editingId === review.id ? '수정 닫기' : '수정하기'}</button><button className="text-button review-delete-link" type="button" onClick={() => setDeletePrompt(deletePrompt === review.id ? null : review.id)}>삭제하기</button></div>
-          {editingId === review.id && <ReviewForm initialValue={review} onSubmit={(input) => saveReview(review.id, input)} onCancel={() => setEditingId(null)} />}
+          {review.photoMediaIds?.length > 0 && <div className="review-photo-strip">{review.photoMediaIds.map((mediaId) => <img key={mediaId} src={imageSrc(mediaId)} alt="리뷰에 첨부된 음식 사진" loading="lazy" />)}</div>}
+          <div className="my-review-actions"><button className="text-button" type="button" onClick={() => { setError(''); setEditingId(editingId === review.id ? null : review.id) }}>{editingId === review.id ? '수정 닫기' : '수정하기'}</button>{user.ownerRestaurantIds.length === 0 && <button className="text-button review-delete-link" type="button" onClick={() => setDeletePrompt(deletePrompt === review.id ? null : review.id)}>삭제하기</button>}</div>
+          {editingId === review.id && <ReviewForm initialValue={review} onSubmit={(input, files, removals) => saveReview(review.id, input, files, removals)} onCancel={() => setEditingId(null)} />}
           {deletePrompt === review.id && <div className="delete-review-confirm" role="group" aria-label={`${review.menuName} 리뷰 삭제 확인`}><span>이 리뷰를 삭제할까요? 메뉴 상세의 평균과 리뷰 수가 다시 계산돼요.</span><button type="button" className="button button-outline" onClick={() => setDeletePrompt(null)} disabled={deletingId === review.id}>취소</button><button type="button" className="button button-dark" onClick={() => void removeReview(review.id)} disabled={deletingId === review.id}>{deletingId === review.id ? '삭제 중…' : '삭제하기'}</button></div>}
         </article>
       ))}</div> : <div className="state-panel my-review-empty"><span className="empty-plate">✳</span><h3>아직 남긴 리뷰가 없어요.</h3><p>먹어본 메뉴를 하나 골라 첫 기록을 시작해 보세요.</p><Link className="button button-dark" to="/">메뉴 둘러보기 <span aria-hidden="true">↗</span></Link></div>}

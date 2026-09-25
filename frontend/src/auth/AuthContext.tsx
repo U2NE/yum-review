@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { ApiError } from '../types'
 import { getCurrentUser, logIn, logOut, signUp, type CurrentUser } from '../api/auth'
 
@@ -9,7 +9,7 @@ type AuthContextValue = {
   loading: boolean
   refreshUser: () => Promise<CurrentUser | null>
   signUp: (email: string, password: string) => Promise<CurrentUser>
-  logIn: (email: string, password: string) => Promise<void>
+  logIn: (email: string, password: string) => Promise<CurrentUser | null>
   logOut: () => Promise<void>
 }
 
@@ -17,6 +17,7 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate()
+  const location = useLocation()
   const [user, setUser] = useState<CurrentUser | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -42,42 +43,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   useEffect(() => {
-    function onSessionExpired() {
-      setUser(null)
-      setLoading(false)
-      const { pathname, search, hash } = window.location
-      if (pathname !== '/login' && pathname !== '/signup') {
-        const returnPath = `${pathname}${search}${hash}`
-        navigate(`/login?next=${encodeURIComponent(returnPath)}`, { replace: true })
-      }
-    }
-
+    function onSessionExpired() { setUser(null) }
     window.addEventListener('yum-review:session-expired', onSessionExpired)
     return () => window.removeEventListener('yum-review:session-expired', onSessionExpired)
-  }, [navigate])
+  }, [])
+
+  useEffect(() => {
+    if (loading || !user?.mustChangePassword || location.pathname === '/password-change') return
+    navigate('/password-change', { replace: true, state: { from: location.pathname } })
+  }, [loading, location.pathname, navigate, user])
 
   const value = useMemo<AuthContextValue>(() => ({
-    user,
-    loading,
-    refreshUser,
-    signUp,
-    logIn: async (email, password) => {
-      await logIn(email, password)
-      await refreshUser()
-    },
-    logOut: async () => {
-      // Keep the authenticated UI until the server confirms session invalidation.
-      // If the request fails, the server may still consider this session valid.
-      await logOut()
-      setUser(null)
-    },
-  }), [user, loading, refreshUser])
+    user, loading, refreshUser,
+    signUp: async (email, password) => signUp(email, password),
+    logIn: async (email, password) => { await logIn(email, password); return refreshUser() },
+    logOut: async () => { await logOut(); setUser(null) },
+  }), [loading, refreshUser, user])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
-export function useAuth(): AuthContextValue {
-  const context = useContext(AuthContext)
-  if (!context) throw new Error('useAuth must be used within AuthProvider')
-  return context
+export function useAuth() {
+  const value = useContext(AuthContext)
+  if (!value) throw new Error('useAuth는 AuthProvider 안에서 사용해야 해요.')
+  return value
 }

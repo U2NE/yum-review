@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.yumreview.review.ReviewDtos.ReviewPhotoRequest;
 import static com.yumreview.review.ReviewDtos.ReviewRequest;
 import static com.yumreview.review.ReviewDtos.ReviewResponse;
 
@@ -22,9 +23,7 @@ import static com.yumreview.review.ReviewDtos.ReviewResponse;
 public class ReviewController {
     private final ReviewService reviews;
 
-    public ReviewController(ReviewService reviews) {
-        this.reviews = reviews;
-    }
+    public ReviewController(ReviewService reviews) { this.reviews = reviews; }
 
     @PostMapping("/api/menus/{menuId}/reviews")
     @ResponseStatus(HttpStatus.CREATED)
@@ -39,6 +38,20 @@ public class ReviewController {
                                  @AuthenticationPrincipal AppUser principal,
                                  @Valid @RequestBody ReviewRequest request) {
         return reviews.update(reviewId, principal, request);
+    }
+
+    @PostMapping("/api/reviews/{reviewId}/photos")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ReviewResponse attachPhoto(@PathVariable Long reviewId,
+                                      @AuthenticationPrincipal AppUser principal,
+                                      @Valid @RequestBody ReviewPhotoRequest request) {
+        return reviews.attachPhoto(reviewId, principal, request.mediaId());
+    }
+
+    @DeleteMapping("/api/reviews/{reviewId}/photos/{mediaId}")
+    public ReviewResponse detachPhoto(@PathVariable Long reviewId, @PathVariable String mediaId,
+                                      @AuthenticationPrincipal AppUser principal) {
+        return reviews.detachPhoto(reviewId, principal, mediaId);
     }
 
     @DeleteMapping("/api/reviews/{reviewId}")

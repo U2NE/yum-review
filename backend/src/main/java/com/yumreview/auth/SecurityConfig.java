@@ -10,8 +10,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
+import org.springframework.web.filter.OncePerRequestFilter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -55,8 +60,8 @@ public class SecurityConfig {
                         // that same representation from the client's header.
                         .csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/api/auth/csrf", "/api/menus/*/reviews", "/api/menus/**", "/api/restaurants/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/auth/csrf", "/api/menus/*/reviews", "/api/menus/**", "/api/restaurants/**", "/api/images/**", "/api/location/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/login", "/api/menus/search").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginProcessingUrl("/api/auth/login")
@@ -80,7 +85,31 @@ public class SecurityConfig {
                                 writeJson(response, HttpServletResponse.SC_FORBIDDEN,
                                         "{\"message\":\"요청 권한 또는 CSRF 토큰을 확인해 주세요.\"}")))
                 .userDetailsService(userDetailsService);
+        http.addFilterBefore(new ForcedPasswordChangeFilter(), AuthorizationFilter.class);
         return http.build();
+    }
+
+    private static final class ForcedPasswordChangeFilter extends OncePerRequestFilter {
+        @Override
+        protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                        FilterChain chain) throws ServletException, IOException {
+            var authentication = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            Object principal = authentication == null ? null : authentication.getPrincipal();
+            if (principal instanceof AppUser user && user.isMustChangePassword() && !isAllowed(request)) {
+                writeJson(response, HttpServletResponse.SC_FORBIDDEN,
+                        "{\"message\":\"계속하려면 먼저 비밀번호를 변경해 주세요.\",\"code\":\"PASSWORD_CHANGE_REQUIRED\"}");
+                return;
+            }
+            chain.doFilter(request, response);
+        }
+
+        private static boolean isAllowed(HttpServletRequest request) {
+            String path = request.getServletPath();
+            String method = request.getMethod();
+            return ("GET".equals(method) && ("/api/auth/csrf".equals(path) || "/api/auth/me".equals(path)))
+                    || ("POST".equals(method) && "/api/auth/logout".equals(path))
+                    || ("PUT".equals(method) && "/api/auth/password".equals(path));
+        }
     }
 
     private static void writeJson(HttpServletResponse response, int status, String body) throws IOException {

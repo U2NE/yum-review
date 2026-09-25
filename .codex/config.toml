@@ -1,51 +1,50 @@
 [agents]
 enabled = true
-max_depth = 1
 max_concurrent_threads_per_session = 8
 
 # hybrid-agent-framework:agents:start
 [agents."hybrid-scout"]
 description = "Repository scout"
-config_file = "agents/scout.toml"
+config_file = "agents/hybrid-scout.toml"
 
 [agents."hybrid-researcher"]
 description = "Technical researcher and requirements analyst"
-config_file = "agents/researcher.toml"
+config_file = "agents/hybrid-researcher.toml"
 
 [agents."hybrid-planner"]
 description = "Execution planner"
-config_file = "agents/planner.toml"
+config_file = "agents/hybrid-planner.toml"
 
 [agents."hybrid-architect"]
 description = "Architecture reviewer"
-config_file = "agents/architect.toml"
+config_file = "agents/hybrid-architect.toml"
 
 [agents."hybrid-plan-auditor"]
 description = "Plan auditor"
-config_file = "agents/plan-auditor.toml"
+config_file = "agents/hybrid-plan-auditor.toml"
 
 [agents."hybrid-implementer"]
 description = "Implementation worker"
-config_file = "agents/implementer.toml"
+config_file = "agents/hybrid-implementer.toml"
 
 [agents."hybrid-tester"]
 description = "Independent tester"
-config_file = "agents/tester.toml"
+config_file = "agents/hybrid-tester.toml"
 
 [agents."hybrid-code-reviewer"]
 description = "Independent code reviewer"
-config_file = "agents/code-reviewer.toml"
+config_file = "agents/hybrid-code-reviewer.toml"
 
 [agents."hybrid-security-reviewer"]
 description = "Conditional security reviewer"
-config_file = "agents/security-reviewer.toml"
+config_file = "agents/hybrid-security-reviewer.toml"
 
 [agents."hybrid-verifier"]
 description = "Final verifier"
-config_file = "agents/verifier.toml"
+config_file = "agents/hybrid-verifier.toml"
 
 [agents."hybrid-knowledge-synthesizer"]
 description = "Knowledge synthesizer"
-config_file = "agents/knowledge-synthesizer.toml"
+config_file = "agents/hybrid-knowledge-synthesizer.toml"
 
 # hybrid-agent-framework:agents:end

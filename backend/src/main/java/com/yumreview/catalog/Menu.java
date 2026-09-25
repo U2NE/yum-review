@@ -2,6 +2,8 @@ package com.yumreview.catalog;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,11 +32,46 @@ public class Menu {
     @Column(name = "price_krw")
     private Integer priceKrw;
 
-    protected Menu() {}
+    @Enumerated(EnumType.STRING)
+    @Column(name = "cuisine_category", nullable = false, length = 24)
+    private CuisineCategory cuisineCategory = CuisineCategory.OTHER;
+
+    @Column(nullable = false)
+    private boolean active = true;
+
+    @Column(name = "photo_media_id", length = 64)
+    private String photoMediaId;
+
+    protected Menu() { }
+
+    Menu(Restaurant restaurant, String name, String description, Integer priceKrw,
+         CuisineCategory cuisineCategory) {
+        this.restaurant = restaurant;
+        apply(name, description, priceKrw, cuisineCategory, null);
+        this.active = true;
+    }
+
+    void apply(String name, String description, Integer priceKrw,
+               CuisineCategory cuisineCategory, Boolean active) {
+        this.name = name;
+        this.description = description;
+        this.priceKrw = priceKrw;
+        this.cuisineCategory = cuisineCategory;
+        if (active != null) this.active = active;
+    }
+
+    void setPhotoMediaId(String photoMediaId) { this.photoMediaId = photoMediaId; }
 
     public Long getId() { return id; }
     public Restaurant getRestaurant() { return restaurant; }
     public String getName() { return name; }
     public String getDescription() { return description; }
     public Integer getPriceKrw() { return priceKrw; }
+    public CuisineCategory getCuisineCategory() { return cuisineCategory; }
+    public boolean isActive() { return active; }
+    public String getPhotoMediaId() { return photoMediaId; }
+
+    public enum CuisineCategory {
+        KOREAN, WESTERN, CHINESE, JAPANESE, SNACK, PUB, CAFE, OTHER
+    }
 }

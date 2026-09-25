@@ -7,6 +7,8 @@ import RestaurantPage from './pages/RestaurantPage'
 import MenuPage from './pages/MenuPage'
 import MyReviewsPage from './pages/MyReviewsPage'
 import SignupPage from './pages/SignupPage'
+import AdminPage from './pages/AdminPage'
+import PasswordChangePage from './pages/PasswordChangePage'
 
 function BrandMark() {
   return <span className="brand-mark" aria-hidden="true"><span /><span /><span /></span>
@@ -35,7 +37,6 @@ function AppContent() {
 
   return (
     <div className="site-shell">
-      <div className="demo-ribbon"><span className="demo-dot" /> 지금은 예시 데이터로 둘러보는 중이에요</div>
       <header className="site-header">
         <div className="header-inner">
           <Link className="brand" to="/" aria-label="한입 홈" onClick={() => setMobileMenuOpen(false)}>
@@ -46,14 +47,17 @@ function AppContent() {
           </button>
           <nav className={`main-nav ${mobileMenuOpen ? 'is-open' : ''}`} aria-label="주 메뉴">
             <Link className={location.pathname === '/' ? 'active' : ''} to="/" onClick={() => setMobileMenuOpen(false)}>메뉴 둘러보기</Link>
-            <a href="/" onClick={(event) => { event.preventDefault(); setMobileMenuOpen(false); document.getElementById('about-yum-review')?.scrollIntoView({ behavior: 'smooth' }) }}>한입 이야기</a>
+            <a href="/" onClick={(event) => { event.preventDefault(); setMobileMenuOpen(false); document.getElementById('about-yum-review')?.scrollIntoView({ behavior: 'smooth' }) }}>기록 기준</a>
             <Link className="mobile-account-nav" to={user ? '/my-reviews' : '/login?next=review'} onClick={() => setMobileMenuOpen(false)}>{user ? '내 리뷰' : '로그인하고 리뷰 쓰기'}</Link>
+            {user?.systemRole === 'SERVER_ADMIN' && <Link className="mobile-account-nav" to="/admin" onClick={() => setMobileMenuOpen(false)}>서버 관리</Link>}
+            {user?.ownerRestaurantIds.map((restaurantId) => <Link className="mobile-account-nav" key={`mobile-${restaurantId}`} to={`/restaurants/${restaurantId}`} onClick={() => setMobileMenuOpen(false)}>내 가게 관리</Link>)}
           </nav>
           <div className="header-actions">
-            <span className="demo-badge"><span className="demo-dot" /> 데모 버전</span>
             {user ? (
               <>
                 <Link className="account-nav-link" to="/my-reviews" onClick={() => setMobileMenuOpen(false)}>내 리뷰</Link>
+                {user.systemRole === 'SERVER_ADMIN' && <Link className="account-nav-link" to="/admin" onClick={() => setMobileMenuOpen(false)}>관리</Link>}
+                {user.ownerRestaurantIds.slice(0, 1).map((restaurantId) => <Link className="account-nav-link" key={restaurantId} to={`/restaurants/${restaurantId}`}>내 가게</Link>)}
                 <span className="account-email" title={user.email}>{user.email}</span>
                 <button className="account-action" type="button" onClick={signOut}>로그아웃</button>
               </>
@@ -76,6 +80,8 @@ function AppContent() {
           <Route path="/my-reviews" element={<MyReviewsPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/password-change" element={<PasswordChangePage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
@@ -84,7 +90,7 @@ function AppContent() {
         <div className="footer-inner">
           <Link className="brand footer-brand" to="/"><BrandMark /><span>한입</span></Link>
           <p>식당이 아니라, 먹어본 메뉴를 기록해요.</p>
-          <span className="footer-note">화면 속 식당과 메뉴는 모두 가상의 예시예요.</span>
+          <span className="footer-note">확인된 정보만 싣고, 모르는 가격과 사진은 비워둡니다.</span>
         </div>
       </footer>
     </div>

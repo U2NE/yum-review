@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getMenu, getMenuReviews } from '../api/catalog'
-import { createReview, deleteReview, getMyReviews, reviewErrorMessage, updateReview, type MyReview, type ReviewInput } from '../api/reviews'
+import { createReview, deleteReview, getMyReviews, reviewErrorMessage, updateReview, attachReviewPhoto, detachReviewPhoto, type MyReview, type ReviewInput } from '../api/reviews'
+import { imageSrc, uploadImage, imageUploadMessage } from '../api/media'
 import ReviewForm from '../components/ReviewForm'
 import { useAuth } from '../auth/AuthContext'
 import { ApiError, type MenuDetail, type PublicReview } from '../types'
+import { cuisineLabels } from '../utils/format'
 import { formatPrice } from '../utils/format'
-import { DishIllustration, Rating } from './HomePage'
+import { Rating } from './HomePage'
 import { PageState } from './RestaurantPage'
 
 const scoreLabels = [
@@ -86,14 +88,25 @@ export default function MenuPage() {
     return () => { current = false }
   }, [id, refreshUser, user])
 
-  async function saveReview(input: ReviewInput) {
+  async function saveReview(input: ReviewInput, newPhotos: File[] = [], removePhotoIds: string[] = []) {
     setReviewError('')
-    if (editor === 'new') await createReview(id, input)
-    else if (typeof editor === 'number') await updateReview(editor, input)
+    let saved: MyReview
+    if (editor === 'new') saved = await createReview(id, input)
+    else if (typeof editor === 'number') saved = await updateReview(editor, input)
     else return
-
     setEditor(null)
-    setNotice('리뷰를 저장했어요. 메뉴의 평균과 리뷰 수도 최신 상태예요.')
+    let photoIssue = ''
+    for (const mediaId of removePhotoIds) {
+      try { saved = await detachReviewPhoto(saved.id, mediaId) }
+      catch { photoIssue = '일부 사진을 정리하지 못했어요.' }
+    }
+    for (const file of newPhotos) {
+      try {
+        const uploaded = await uploadImage(file, 'REVIEW', 'USER_UPLOAD', '리뷰 작성자가 촬영했거나 게시 권한을 확인한 사진')
+        saved = await attachReviewPhoto(saved.id, uploaded.mediaId)
+      } catch (reason) { photoIssue = reason instanceof Error ? imageUploadMessage(reason) : '일부 사진을 올리지 못했어요.' }
+    }
+    setNotice(`리뷰를 저장했어요.${photoIssue ? ` ${photoIssue}` : ' 메뉴의 평균과 리뷰 수도 최신 상태예요.'}`)
     try {
       await refreshMenuData()
     } catch {
@@ -132,10 +145,10 @@ export default function MenuPage() {
     <>
       <div className="breadcrumb"><Link to="/">메뉴 둘러보기</Link><span>／</span><Link to={`/restaurants/${menu.restaurantId}`}>{menu.restaurantName}</Link><span>／</span><span>{menu.name}</span></div>
       <section className="menu-detail-hero">
-        <div className="detail-art-wrap"><DishIllustration variant={menu.id % 4} /><span className="artwork-label">한입 메뉴 카드 <span>✳</span></span></div>
+        <div className="detail-art-wrap">{menu.imageUrl ? <img src={menu.imageUrl} alt={`${menu.name} 메뉴 사진`} /> : <div className="dish-photo-empty"><span>한입 / 메뉴 사진</span><b>{menu.name.slice(0, 1)}</b></div>}</div>
         <div className="menu-detail-copy">
           <Link className="restaurant-link" to={`/restaurants/${menu.restaurantId}`}>{menu.restaurantName}<span aria-hidden="true">↗</span></Link>
-          <span className="eyebrow">ONE DISH, MANY STORIES</span>
+          <span className="eyebrow">{cuisineLabels[menu.cuisineCategory] || '메뉴'} · 메뉴 리뷰</span>
           <h1>{menu.name}</h1>
           <p className="menu-detail-description">{menu.description}</p>
           <div className="detail-price-row"><span className="menu-price">{formatPrice(menu.priceKrw)}</span><span className="price-separator">·</span><span className="restaurant-address compact-address">{menu.restaurantAddress}</span></div>
@@ -147,7 +160,7 @@ export default function MenuPage() {
           ) : (
             <Link to={loginPath} className="button button-dark review-cta">이 메뉴 리뷰 남기기 <span aria-hidden="true">↗</span></Link>
           )}
-          <small className="demo-note">별점과 리뷰는 메뉴 단위로만 모아요.</small>
+          <small className="demo-note">2.5점을 보통으로 보고 평가해 주세요. 각 리뷰의 산술 평균을 표시합니다.</small>
         </div>
       </section>
 
@@ -167,9 +180,9 @@ export default function MenuPage() {
         {reviews.length ? <div className="review-list">{reviews.map((review) => (
           <div className="review-entry" key={review.id}>
             <ReviewCard review={review} />
-            {review.id === ownReviewId && <div className="review-owner-actions">
-              <button type="button" className="text-button" onClick={() => { setReviewError(''); setEditor(review.id) }}>내 리뷰 수정</button>
-              <button type="button" className="text-button review-delete-link" onClick={() => setDeletePrompt(deletePrompt === review.id ? null : review.id)}>삭제</button>
+            {(user?.systemRole === 'SERVER_ADMIN' || (review.id === ownReviewId && user?.ownerRestaurantIds.length === 0)) && <div className="review-owner-actions">
+              {review.id === ownReviewId && <button type="button" className="text-button" onClick={() => { setReviewError(''); setEditor(review.id) }}>내 리뷰 수정</button>}
+              <button type="button" className="text-button review-delete-link" onClick={() => setDeletePrompt(deletePrompt === review.id ? null : review.id)}>{user?.systemRole === 'SERVER_ADMIN' && review.id !== ownReviewId ? '관리자 삭제' : '삭제'}</button>
             </div>}
             {editor === review.id && <ReviewForm initialValue={myReview ?? undefined} onSubmit={saveReview} onCancel={() => setEditor(null)} />}
             {deletePrompt === review.id && <div className="delete-review-confirm" role="group" aria-label="리뷰 삭제 확인"><span>이 리뷰를 삭제할까요? 별점 평균과 리뷰 수가 다시 계산돼요.</span><button type="button" className="button button-outline" onClick={() => setDeletePrompt(null)} disabled={deleting}>취소</button><button type="button" className="button button-dark" onClick={() => void removeReview(review.id)} disabled={deleting}>{deleting ? '삭제 중…' : '삭제하기'}</button></div>}
@@ -187,5 +200,5 @@ function ScoreTile({ label, value, description, featured = false }: { label: str
 
 function ReviewCard({ review }: { review: PublicReview }) {
   const date = new Intl.DateTimeFormat('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }).format(new Date(review.createdAt))
-  return <article className="review-card"><div className="review-card-head"><span className="review-avatar" aria-hidden="true">{review.authorLabel.slice(0, 1) || '한'}</span><div className="review-author"><strong>{review.authorLabel}</strong><span>{date}</span></div><Rating value={review.overallScore} /></div><div className="review-scores">{scoreLabels.map(({ key, label }) => <span key={key}>{label}<b>{review[key]}</b></span>)}</div>{review.comment && <p className="review-comment">{review.comment}</p>}</article>
+  return <article className="review-card"><div className="review-card-head"><span className="review-avatar" aria-hidden="true">{review.authorLabel.slice(0, 1) || '한'}</span><div className="review-author"><strong>{review.authorLabel}</strong><span>{date}</span></div><Rating value={review.overallScore} /></div><div className="review-scores">{scoreLabels.map(({ key, label }) => <span key={key}>{label}<b>{Number(review[key]).toFixed(1)}</b></span>)}</div>{review.comment && <p className="review-comment">{review.comment}</p>}{review.photoMediaIds?.length > 0 && <div className="review-photo-strip">{review.photoMediaIds.map((mediaId) => <img key={mediaId} src={imageSrc(mediaId)} alt="리뷰에 첨부된 음식 사진" loading="lazy" />)}</div>}</article>
 }

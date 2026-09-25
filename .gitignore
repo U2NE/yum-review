@@ -6,5 +6,9 @@
 **/node_modules/
 **/dist/
 **/.vite/
+/backend/var/
+/backend/var/yum-review-qa-*/
+/frontend/test-results/
+/frontend/playwright-report/
 .DS_Store
 Thumbs.db
