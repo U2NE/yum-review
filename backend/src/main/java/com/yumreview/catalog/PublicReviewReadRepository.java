@@ -22,6 +22,7 @@ public interface PublicReviewReadRepository extends Repository<Menu, Long> {
         Integer getPriceKrw();
         String getCuisineCategory();
         String getPhotoMediaId();
+        String getPhotoUrl();
         Boolean getActive();
         Double getDistanceMeters();
         Double getOverallAverage();
@@ -56,6 +57,7 @@ public interface PublicReviewReadRepository extends Repository<Menu, Long> {
                    r.address AS "restaurantAddress", r.region AS "region",
                    m.name AS "name", m.description AS "description", m.price_krw AS "priceKrw",
                    m.cuisine_category AS "cuisineCategory", menu_photo.media_id AS "photoMediaId",
+                   m.photo_url AS "photoUrl",
                    m.active AS "active",
                    CASE WHEN :lat IS NULL OR r.latitude IS NULL THEN NULL
                         ELSE """ + DISTANCE_METERS + """
@@ -83,7 +85,7 @@ public interface PublicReviewReadRepository extends Repository<Menu, Long> {
 
     @Query(value = AGGREGATE_SELECT + """
             WHERE m.active = TRUE AND """ + FILTERS + """
-            GROUP BY m.id, r.id, r.name, r.address, r.region, menu_photo.media_id
+            GROUP BY m.id, r.id, r.name, r.address, r.region, menu_photo.media_id, m.photo_url
             ORDER BY
                 CASE WHEN :sort = 'overall' THEN AVG(rv.overall_score) END DESC NULLS LAST,
                 CASE WHEN :sort = 'taste' THEN AVG(rv.taste_score) END DESC NULLS LAST,
@@ -114,7 +116,7 @@ public interface PublicReviewReadRepository extends Repository<Menu, Long> {
 
     @Query(value = AGGREGATE_SELECT + """
             WHERE m.id = :menuId AND m.active = TRUE
-            GROUP BY m.id, r.id, r.name, r.address, r.region, menu_photo.media_id
+            GROUP BY m.id, r.id, r.name, r.address, r.region, menu_photo.media_id, m.photo_url
             """, nativeQuery = true)
     Optional<MenuAggregate> findMenuAggregate(@Param("menuId") Long menuId,
                                               @Param("lat") Double latitude,
@@ -122,7 +124,7 @@ public interface PublicReviewReadRepository extends Repository<Menu, Long> {
 
     @Query(value = AGGREGATE_SELECT + """
             WHERE r.id = :restaurantId AND m.active = TRUE
-            GROUP BY m.id, r.id, r.name, r.address, r.region, menu_photo.media_id
+            GROUP BY m.id, r.id, r.name, r.address, r.region, menu_photo.media_id, m.photo_url
             ORDER BY m.id ASC
             """, nativeQuery = true)
     List<MenuAggregate> findRestaurantMenus(@Param("restaurantId") Long restaurantId,
@@ -131,7 +133,7 @@ public interface PublicReviewReadRepository extends Repository<Menu, Long> {
 
     @Query(value = AGGREGATE_SELECT + """
             WHERE r.id = :restaurantId
-            GROUP BY m.id, r.id, r.name, r.address, r.region, menu_photo.media_id
+            GROUP BY m.id, r.id, r.name, r.address, r.region, menu_photo.media_id, m.photo_url
             ORDER BY m.id ASC
             """, nativeQuery = true)
     List<MenuAggregate> findManageRestaurantMenus(@Param("restaurantId") Long restaurantId,

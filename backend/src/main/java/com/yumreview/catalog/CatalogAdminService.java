@@ -115,7 +115,7 @@ public class CatalogAdminService {
 
     private static MenuManagementItem toManagementItem(PublicReviewReadRepository.MenuAggregate row) {
         return new MenuManagementItem(row.getId(), row.getRestaurantId(), row.getName(), row.getDescription(),
-                row.getPriceKrw(), row.getCuisineCategory(), CatalogService.imageUrl(row.getPhotoMediaId()),
+                row.getPriceKrw(), row.getCuisineCategory(), CatalogService.imageUrl(row.getPhotoMediaId(), row.getPhotoUrl()),
                 Boolean.TRUE.equals(row.getActive()), row.getOverallAverage(), row.getTasteAverage(),
                 row.getValueAverage(), row.getPortionAverage(), row.getReviewCount());
     }

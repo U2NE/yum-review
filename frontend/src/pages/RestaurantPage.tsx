@@ -87,7 +87,10 @@ function MenuEditor({ item, busy, serverAdmin, onCancel, onSave }: { item: MenuM
   const [description, setDescription] = useState(item.description ?? '')
   const [price, setPrice] = useState(item.priceKrw == null ? '' : String(item.priceKrw))
   const [category, setCategory] = useState<CuisineCategory>(item.cuisineCategory)
-  const [photoMediaId, setPhotoMediaId] = useState(item.imageUrl?.split('/').pop() ?? '')
+  const [photoMediaId, setPhotoMediaId] = useState(() => {
+    const match = item.imageUrl?.match(/^\/api\/images\/([0-9a-f-]{36})$/i)
+    return match?.[1] ?? ''
+  })
   const [photoFile, setPhotoFile] = useState<File | null>(null)
   const [rights, setRights] = useState(false)
   const [localError, setLocalError] = useState('')
@@ -112,7 +115,7 @@ function MenuEditor({ item, busy, serverAdmin, onCancel, onSave }: { item: MenuM
   return <form className="menu-editor" onSubmit={(event) => void submit(event)}>
     <div className="menu-editor-heading"><h3>{item.id ? '메뉴 수정' : '새 메뉴 등록'}</h3><span>식당 정보는 메뉴 카드에 함께 표시됩니다.</span></div>
     <div className="menu-editor-grid"><label>메뉴 이름<input value={name} onChange={(event) => setName(event.target.value)} required maxLength={160} /></label><label>음식 종류<select value={category} onChange={(event) => setCategory(event.target.value as CuisineCategory)}>{cuisineOptions.map((option) => <option value={option} key={option}>{cuisineLabels[option]}</option>)}</select></label><label>가격 (원)<input inputMode="numeric" value={price} onChange={(event) => setPrice(event.target.value)} placeholder="모르면 비워두기" /></label><label className="editor-wide">메뉴 설명<textarea value={description} onChange={(event) => setDescription(event.target.value)} maxLength={1000} rows={3} /></label></div>
-    <div className="menu-photo-upload"><div>{photoMediaId && !photoFile ? <img src={imageSrc(photoMediaId)} alt="현재 메뉴 사진" /> : <span>메뉴 사진</span>}{photoFile && <span>{photoFile.name}</span>}</div><label className="button button-outline">{photoFile || photoMediaId ? '사진 바꾸기' : '사진 추가'}<input hidden type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => { const file = event.target.files?.[0] ?? null; event.target.value = ''; if (file && file.size >= 100_000_000) { setLocalError('100MB 이상인 사진은 올릴 수 없어요.'); return } setPhotoFile(file); setLocalError('') }} /></label>{(photoFile || photoMediaId) && <button className="text-button" type="button" onClick={() => { setPhotoFile(null); setPhotoMediaId('') }}>사진 제거</button>}</div>
+    <div className="menu-photo-upload"><div>{photoFile ? <span>{photoFile.name}</span> : item.imageUrl ? <img src={photoMediaId ? imageSrc(photoMediaId) : item.imageUrl} alt="현재 메뉴 사진" /> : <span>메뉴 사진</span>}</div><label className="button button-outline">{photoFile || item.imageUrl ? '사진 바꾸기' : '사진 추가'}<input hidden type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => { const file = event.target.files?.[0] ?? null; event.target.value = ''; if (file && file.size >= 100_000_000) { setLocalError('100MB 이상인 사진은 올릴 수 없어요.'); return } setPhotoFile(file); setLocalError('') }} /></label>{(photoFile || photoMediaId) && <button className="text-button" type="button" onClick={() => { setPhotoFile(null); setPhotoMediaId('') }}>사진 제거</button>}</div>
     {photoFile && <label className="photo-rights-check"><input type="checkbox" checked={rights} onChange={(event) => setRights(event.target.checked)} /><span>이 사진은 제가 촬영했거나 게시 권한을 확인한 사진입니다.</span></label>}
     {localError && <p className="auth-error" role="alert">{localError}</p>}
     <div className="menu-editor-actions"><button className="button button-outline" type="button" onClick={onCancel} disabled={busy || saving}>취소</button><button className="button button-dark" type="submit" disabled={busy || saving || !name.trim()}>{busy || saving ? '저장 중…' : '메뉴 저장'}</button></div>

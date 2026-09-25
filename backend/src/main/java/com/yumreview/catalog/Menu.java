@@ -42,6 +42,9 @@ public class Menu {
     @Column(name = "photo_media_id", length = 64)
     private String photoMediaId;
 
+    @Column(name = "photo_url", length = 500)
+    private String photoUrl;
+
     protected Menu() { }
 
     Menu(Restaurant restaurant, String name, String description, Integer priceKrw,
@@ -70,6 +73,7 @@ public class Menu {
     public CuisineCategory getCuisineCategory() { return cuisineCategory; }
     public boolean isActive() { return active; }
     public String getPhotoMediaId() { return photoMediaId; }
+    public String getPhotoUrl() { return photoUrl; }
 
     public enum CuisineCategory {
         KOREAN, WESTERN, CHINESE, JAPANESE, SNACK, PUB, CAFE, OTHER

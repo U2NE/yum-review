@@ -64,7 +64,7 @@ public class CatalogService {
                 .orElseThrow(() -> new CatalogNotFoundException("메뉴를 찾을 수 없습니다."));
         return new MenuDetail(row.getId(), row.getName(), row.getDescription(), row.getPriceKrw(),
                 row.getRestaurantId(), row.getRestaurantName(), row.getRestaurantAddress(), row.getRegion(),
-                row.getCuisineCategory(), imageUrl(row.getPhotoMediaId()), row.getOverallAverage(),
+                row.getCuisineCategory(), imageUrl(row.getPhotoMediaId(), row.getPhotoUrl()), row.getOverallAverage(),
                 row.getTasteAverage(), row.getValueAverage(), row.getPortionAverage(), row.getReviewCount());
     }
 
@@ -80,13 +80,18 @@ public class CatalogService {
     static MenuCard toCard(PublicReviewReadRepository.MenuAggregate row) {
         return new MenuCard(row.getId(), row.getName(), row.getDescription(), row.getPriceKrw(),
                 row.getRestaurantId(), row.getRestaurantName(), row.getRestaurantAddress(), row.getRegion(),
-                row.getCuisineCategory(), imageUrl(row.getPhotoMediaId()), row.getDistanceMeters(),
+                row.getCuisineCategory(), imageUrl(row.getPhotoMediaId(), row.getPhotoUrl()), row.getDistanceMeters(),
                 row.getOverallAverage(), row.getTasteAverage(), row.getValueAverage(),
                 row.getPortionAverage(), row.getReviewCount());
     }
 
     static String imageUrl(String mediaId) {
         return mediaId == null || mediaId.isBlank() ? null : "/api/images/" + mediaId;
+    }
+
+    static String imageUrl(String mediaId, String photoUrl) {
+        if (mediaId != null && !mediaId.isBlank()) return imageUrl(mediaId);
+        return photoUrl != null && photoUrl.startsWith("/menu-images/") ? photoUrl : null;
     }
 
     private static List<String> photoIds(String csv) {
