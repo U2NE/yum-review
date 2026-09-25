@@ -1,7 +1,7 @@
 {
   "name": "codex-hybrid-agent-framework",
   "version": "0.1.0",
-  "installedAt": "2026-09-24T19:59:48.327Z",
+  "installedAt": "2026-09-25T06:12:45.199Z",
   "codexSurface": {
     "roles": ".codex/config.toml + .codex/agents/hybrid-*.toml",
     "skills": ".agents/skills/*/SKILL.md"
