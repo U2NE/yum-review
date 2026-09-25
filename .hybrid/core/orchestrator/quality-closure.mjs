@@ -1,5 +1,6 @@
+import { buildDecision, createDecisionWriter } from '../provenance/index.mjs';
 import { buildWorkerContextWithCache } from '../context/index.mjs';
-import { appendRuntimeEvent } from '../observability/index.mjs';
+import { createOrchestrationEventWriter } from '../observability/index.mjs';
 import { acquireProofGaps, mergeAcquiredEvidence } from '../qe/index.mjs';
 import { runRepairConvergence, shouldTriggerRepair } from '../repair/index.mjs';
 import {
@@ -17,8 +18,24 @@ export async function runQualityClosure(options = {}) {
   const repoRoot = options.repoRoot || options.context?.repoRoot || '.';
   const runId = options.runId || 'quality-closure';
   const taskId = options.taskId || task.id || null;
-  const logger = options.appendRuntimeEvent || appendRuntimeEvent;
+  const runtimeRoot = options.runtimeRoot || options.context?.runtimeRoot;
+  const decisionWriter = options.decisionWriter || options.provenanceLogger || createDecisionWriter({
+    role: 'lead',
+    runId,
+    repoRoot,
+    runtimeRoot,
+    strict: options.strict === true,
+  });
+  const logger = options.appendRuntimeEvent || createOrchestrationEventWriter({
+    role: 'lead',
+    runId,
+    repoRoot,
+    runtimeRoot,
+    strict: options.strict === true,
+  });
   const events = [];
+  const decisionTrace = [];
+  const actionDecisions = new Map();
   let runtimeEvidence = normalizeEvidenceList(options.evidence || []);
   let currentSnapshot = options.snapshot ?? null;
   let lastQa = null;
@@ -80,6 +97,7 @@ export async function runQualityClosure(options = {}) {
         outcome: qa?.ok === false ? 'fail' : 'pass',
         failureReason: summarizeFindings(qa?.findings),
       });
+      if (!hasRepairableFindings(qa)) await recordChoice('repair', { attempt, snapshot, decision: 'repair_skip', facts: { source: 'qa' } });
       return qa;
     },
     verifySnapshot: async ({ attempt, snapshot, qa }) => {
@@ -90,6 +108,7 @@ export async function runQualityClosure(options = {}) {
         qa,
       });
 
+      if (!hasRepairableFindings(raw)) await recordChoice('repair', { attempt, snapshot, decision: 'repair_skip', facts: { source: 'verifier' } });
       if (hasProofGapSignal(raw) && !hasRepairableFindings(raw)) {
         return {
           ...raw,
@@ -142,6 +161,7 @@ export async function runQualityClosure(options = {}) {
       evidence: runtimeEvidence,
       cache: summarizeCache(contextBundle),
       events,
+      decisionTrace,
       completion: null,
       gates,
     };
@@ -203,6 +223,7 @@ export async function runQualityClosure(options = {}) {
     return result;
   }
 
+  await recordChoice('proof', { snapshot: currentSnapshot, decision: 'acquire_proof', intendedAction: { type: 'proof-acquisition', role: 'lead' }, facts: { reason: 'PROOF_GAP', kinds: acquisitionGaps.map(g => g.requiredKind) }, reasonCodes: [...new Set(acquisitionGaps.map(g => 'PROOF_GAP_' + String(g.requiredKind).toUpperCase()))] });
   const proofStartedAt = Date.now();
   await emit('proof-acquisition', {
     lifecycle: 'start',
@@ -364,16 +385,31 @@ export async function runQualityClosure(options = {}) {
       gates,
       cache: summarizeCache(contextBundle),
       events,
+      decisionTrace,
     };
   }
 
+  async function recordChoice(stage, data) {
+    const rule = { repair: 'repair.material-finding-only', proof: 'proof.cheapest-adequate-proof', completion: 'completion.evidence-gate' }[stage];
+    const reasonCodes = data.decision === 'repair_trigger' ? ['ACCEPTANCE_FAILURE'] : data.decision === 'repair_skip' ? ['NO_MATERIAL_FINDING'] : data.decision === 'complete' ? ['ALL_AC_VERIFIED'] : data.decision === 'block' ? [({ PROOF_GAP: 'PROOF_GAP', FAILURE: 'ACCEPTANCE_FAILURE', REPAIR_BLOCKED: 'REPAIR_BLOCKED', 'fix loop exhausted': 'REPAIR_EXHAUSTED', 'verification failed without a repairable finding': 'VERIFICATION_FAILED' })[data.facts?.reason] || 'COMPLETION_BLOCKED'] : [];
+    const record = buildDecision({ runId, taskId, stage, policy: { rule }, reasonCodes, discriminator: String(decisionTrace.length), ...data });
+    decisionTrace.push(record);
+    if (record.intendedAction) actionDecisions.set(record.intendedAction.type, record);
+    try { await decisionWriter(record); } catch (error) { if (options.strict === true) throw error; }
+    return record;
+  }
+
   async function emit(stage, event = {}) {
+    if (stage === 'completion' || stage === 'repair' && event.lifecycle === 'start') {
+      await recordChoice(stage, { snapshot: event.snapshot, attempt: event.attempt, decision: stage === 'completion' ? (event.outcome === 'pass' ? 'complete' : 'block') : 'repair_trigger', intendedAction: { type: stage, role: 'lead' }, facts: { outcome: event.outcome, reason: event.failureReason } });
+    }
     const item = {
       runId,
       taskId,
       stage,
       ...event,
       primitive: 'runQualityClosure',
+      ...(actionDecisions.has(stage) ? { decisionId: actionDecisions.get(stage).decisionId, action: actionDecisions.get(stage).intendedAction.type, actorRole: 'lead', role: 'lead', ...(stage === 'repair' ? { targetRole: 'implementer' } : {}), attribution: 'observed' } : {}),
     };
     events.push(item);
     try {
@@ -384,7 +420,8 @@ export async function runQualityClosure(options = {}) {
       }, {
         runtimeRoot: options.runtimeRoot || options.context?.runtimeRoot,
       });
-    } catch {
+    } catch (error) {
+      if (options.strict === true) throw error;
       // Passive observability must never alter execution semantics.
     }
   }
