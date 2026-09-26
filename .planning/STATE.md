@@ -6,14 +6,13 @@
   "schemaVersion": 1,
   "phase": "03-nextjs-supabase",
   "status": "active",
-  "nextAction": "Restore hosted Supabase schema/API access using the actual IPv4 Session pooler connection or authenticated SQL dashboard, then apply pending migrations and verify anonymous catalog/menu detail. Preserve all Gompocha menus and photo links with before/after fingerprints. Task 09 remains PARTIAL.",
+  "nextAction": "Complete the remaining Task 09 role/viewport and interactive media-key QA gates. The hosted public catalog is restored to 72 menus across 3 restaurants; Gompocha has 40 corrected menu rows and 40 byte-verified photos, with every original hosted menu ID retained. Keep Task 09 PARTIAL until remaining Auth/role/SMTP/media and full legacy-account/review import gates pass.",
   "blockers": [
     "Task 09 remains PARTIAL: the 57-case role/viewport matrix is incomplete. A member pointer pass at 1265×720 covers selected home filters, menu detail, my-review search, favorite/like toggles, review edit cancel, and half-star selection/deselection. Cookie-free HTTP checks confirm selected public routes return 200 and selected protected routes redirect to /login, but do not exercise browser UI or prove rendered guest behavior. The available CUA browser inventory exposed only the authenticated in-app browser; a second tab inherited the member session, so a separate guest browser context is unavailable. Guest/owner/server-admin full UI flows, remaining viewport/path combinations, back/forward for the newest pointer pass, and saved screenshots remain unverified.",
     "The user authorized database additions/deletions for pre-service repair on 2026-09-27; preserve all Gompocha menus/photo associations. Both QA reviews remain unchanged during the hosted diagnostic pass.",
     "Positive local Vault/HMAC key parity and live image-verification with an active verified upload remain untested. The PENDING intent failure/release path when its Storage object is absent is also untested.",
     "The server verifies stored-object bytes but cannot independently prove the original file size asserted before direct optimized upload; a modified client could falsify original_bytes.",
-    "Local migration/runtime and browser evidence do not establish source/target data import completeness or checksums. Data import/checksum reconciliation remains open.",
-    "Hosted anonymous GET /rest/v1/menus and /rest/v1/restaurants each return HTTP 404 PGRST205: the tables are absent from the exposed Data API schema cache. Direct SQL access is required to distinguish unapplied migrations from schema exposure/cache configuration. The direct DB endpoint is IPv6-only and exact AAAA connection fails ENETUNREACH; bounded aws-0 Seoul/Tokyo/Singapore Session pooler preflights each return XX000 tenant/user not found. No hosted database or Storage writes occurred. Actual project IPv4 Session pooler host or authenticated Supabase SQL dashboard access is required. Vercel deployment success does not establish backend readiness. Task 09 remains PARTIAL."
+    "Hosted Gompocha subset reconciliation now passes: 40 ZIP-backed names/prices and 40 independently downloaded Storage SHA256 matches, preserving all hosted menu IDs and existing photo assets. The deterministic café/pub subset is restored (6+26 menus). Full legacy account/review/media import and identity/checksum reconciliation outside this approved catalog subset remain open."
   ],
   "activeSpec": ".planning/phases/03-nextjs-supabase/SPEC.md",
   "activePlan": ".planning/phases/03-nextjs-supabase/PLAN.md",
@@ -431,8 +430,8 @@
       }
     ]
   },
-  "revision": 66,
-  "updatedAt": "2026-09-26T18:03:56.265Z"
+  "revision": 67,
+  "updatedAt": "2026-09-26T21:21:52.814Z"
 }
 -->
 
@@ -441,8 +440,8 @@
 - Schema: hybrid-state/v1
 - Phase: 03-nextjs-supabase
 - Status: active
-- Next action: Restore hosted Supabase schema/API access using the actual IPv4 Session pooler connection or authenticated SQL dashboard, then apply pending migrations and verify anonymous catalog/menu detail. Preserve all Gompocha menus and photo links with before/after fingerprints. Task 09 remains PARTIAL.
-- Revision: 66
-- Updated: 2026-09-26T18:03:56.265Z
+- Next action: Complete the remaining Task 09 role/viewport and interactive media-key QA gates. The hosted public catalog is restored to 72 menus across 3 restaurants; Gompocha has 40 corrected menu rows and 40 byte-verified photos, with every original hosted menu ID retained. Keep Task 09 PARTIAL until remaining Auth/role/SMTP/media and full legacy-account/review import gates pass.
+- Revision: 67
+- Updated: 2026-09-26T21:21:52.814Z
 
 This file is canonical project state. Do not silently reconstruct or reset it if the machine-readable block is corrupt or uses an unsupported schema.

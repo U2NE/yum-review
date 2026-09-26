@@ -131,11 +131,18 @@ function safeArchiveName(name: string): string {
   return parts.join("/");
 }
 
-function menuFromFilename(entryName: string): { menuName: string | null; priceKrw: number | null } {
+export function menuFromFilename(entryName: string): { menuName: string | null; priceKrw: number | null } {
   const base = path.posix.basename(entryName).replace(/\.(?:jpe?g|png|webp)$/i, "");
-  const match = base.match(/^(.+),\s*([0-9][0-9,]*)\s*원$/u);
-  if (!match) return { menuName: null, priceKrw: null };
-  const priceKrw = Number(match[2].replaceAll(",", ""));
+  // Choose the earliest comma whose complete suffix is a valid price. A greedy
+  // menu-name capture mistakes the comma in "6,900원" for the name delimiter.
+  const match = base.match(/^(.+?),\s*([0-9][0-9,\s]*)\s*원$/u);
+  const priceText = match?.[2].trim();
+  // Validate the whole numeric suffix separately so an invalid grouping such as
+  // "6,90" cannot fall through to a later comma and become a 90-won menu.
+  if (!match || !priceText || !/^(?:[1-9]\d{0,2}(?:,\d{3})+|0|[1-9]\d*)$/.test(priceText)) {
+    return { menuName: null, priceKrw: null };
+  }
+  const priceKrw = Number(priceText.replaceAll(",", ""));
   const menuName = match[1].trim();
   if (!menuName || !Number.isSafeInteger(priceKrw) || priceKrw < 0) return { menuName: null, priceKrw: null };
   return { menuName, priceKrw };
