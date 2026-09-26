@@ -6,7 +6,7 @@
   "schemaVersion": 1,
   "phase": "03-nextjs-supabase",
   "status": "active",
-  "nextAction": "Restore local Docker Desktop engine readiness without resetting its data, then rerun authenticated local Supabase and full browser QA; complete the pending migration, privilege, and Task04/Task07 checks before publishing.",
+  "nextAction": "Restore local Docker engine readiness, finish authenticated local Supabase/browser checks, and verify the automatic Vercel build from the pushed main branch when its project endpoint is available.",
   "blockers": [
     "The direct authenticated claim/release RPC path is removed in source; service_role-only replacements and route ownership checks are in place. The independent security review approves the targeted source fix, but the migration and privilege behavior have not yet been applied or verified in a disposable local database.",
     "Independent security review identified a medium availability concern: expired quota cleanup scans rows while holding the global claim lock, and an authenticated PENDING intent without a Storage object can briefly reserve a slot through the route before failure cleanup. Review mitigation and validate under local runtime before deployment.",
@@ -431,8 +431,8 @@
       }
     ]
   },
-  "revision": 59,
-  "updatedAt": "2026-09-26T02:02:23.810Z"
+  "revision": 60,
+  "updatedAt": "2026-09-26T02:08:53.861Z"
 }
 -->
 
@@ -441,8 +441,8 @@
 - Schema: hybrid-state/v1
 - Phase: 03-nextjs-supabase
 - Status: active
-- Next action: Restore local Docker Desktop engine readiness without resetting its data, then rerun authenticated local Supabase and full browser QA; complete the pending migration, privilege, and Task04/Task07 checks before publishing.
-- Revision: 59
-- Updated: 2026-09-26T02:02:23.810Z
+- Next action: Restore local Docker engine readiness, finish authenticated local Supabase/browser checks, and verify the automatic Vercel build from the pushed main branch when its project endpoint is available.
+- Revision: 60
+- Updated: 2026-09-26T02:08:53.861Z
 
 This file is canonical project state. Do not silently reconstruct or reset it if the machine-readable block is corrupt or uses an unsupported schema.
