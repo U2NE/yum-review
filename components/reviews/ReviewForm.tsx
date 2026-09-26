@@ -86,7 +86,13 @@ function RatingControl({
               <svg
                 viewBox="0 0 24 24"
                 aria-hidden="true"
-                style={{ position: "absolute", inset: "0.1rem", width: "1.95rem", height: "1.95rem" }}
+                style={{
+                  position: "absolute",
+                  inset: "0.1rem",
+                  width: "1.95rem",
+                  height: "1.95rem",
+                  pointerEvents: "none",
+                }}
               >
                 <path d={starPath} fill="#e4ddd2" stroke="#a99f91" strokeWidth="0.5" />
               </svg>
@@ -123,6 +129,7 @@ function RatingControl({
                     onClick={() => onChange(value === score ? null : score)}
                     style={{
                       position: "absolute",
+                      zIndex: 1,
                       top: 0,
                       bottom: 0,
                       left: half === 0 ? 0 : "50%",

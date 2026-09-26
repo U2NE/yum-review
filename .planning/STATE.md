@@ -6,14 +6,14 @@
   "schemaVersion": 1,
   "phase": "03-nextjs-supabase",
   "status": "active",
-  "nextAction": "Restore local Docker engine readiness, finish authenticated local Supabase/browser checks, and verify the automatic Vercel build from the pushed main branch when its project endpoint is available.",
+  "nextAction": "Proceed with the explicitly user-directed GitHub push and verify the actual Vercel deployment after local review/build checks. Keep Task 09 PARTIAL; hosted Supabase/Auth/Storage and import/checksum gates remain separate and unverified. Preserve the QA-created review on menu 12 pending immediate action-time confirmation.",
   "blockers": [
-    "The direct authenticated claim/release RPC path is removed in source; service_role-only replacements and route ownership checks are in place. The independent security review approves the targeted source fix, but the migration and privilege behavior have not yet been applied or verified in a disposable local database.",
-    "Independent security review identified a medium availability concern: expired quota cleanup scans rows while holding the global claim lock, and an authenticated PENDING intent without a Storage object can briefly reserve a slot through the route before failure cleanup. Review mitigation and validate under local runtime before deployment.",
-    "Direct optimized upload does not let the server independently measure pre-optimization original file size. The browser rejects files at or above 100 MB and the server verifies stored-object size, but a modified client can falsify original_bytes.",
-    "Hybrid implementation-run audit reports one historical dispatch decision without a linked action; its evidence is preserved. The independent review run audit is clean.",
-    "Local HMAC/Vault key parity and all hosted settings remain unverified; hosted Supabase and Vercel were not accessed.",
-    "Local Docker Desktop engine is currently unavailable: startup fails while initializing the sailor-ingest.sock endpoint. The sanitized Next.js build and guest browser smoke pass, but authenticated menu/review/photo flows are blocked until the local Supabase stack is available."
+    "Task 09 remains PARTIAL: the 57-case role/viewport matrix is incomplete. A member pointer pass at 1265×720 covers selected home filters, menu detail, my-review search, favorite/like toggles, review edit cancel, and half-star selection/deselection. Cookie-free HTTP checks confirm selected public routes return 200 and selected protected routes redirect to /login, but do not exercise browser UI or prove rendered guest behavior. The available CUA browser inventory exposed only the authenticated in-app browser; a second tab inherited the member session, so a separate guest browser context is unavailable. Guest/owner/server-admin full UI flows, remaining viewport/path combinations, back/forward for the newest pointer pass, and saved screenshots remain unverified.",
+    "The QA-created local review by QA 사진 확인자 remains (menu 12 has 2 reviews, average 4.5). No state-changing action occurred in the latest residual QA and the review was not deleted; any permanent deletion requires immediate action-time confirmation. Preserve the pre-existing QA 사진 작성자 review.",
+    "Positive local Vault/HMAC key parity and live image-verification with an active verified upload remain untested. The PENDING intent failure/release path when its Storage object is absent is also untested.",
+    "The server verifies stored-object bytes but cannot independently prove the original file size asserted before direct optimized upload; a modified client could falsify original_bytes.",
+    "Local migration/runtime and browser evidence do not establish source/target data import completeness or checksums. Data import/checksum reconciliation remains open.",
+    "Hosted Supabase/Auth/SMTP/Storage settings, live data counts, import/checksum reconciliation, and production import remain unverified. The user explicitly directed a GitHub push and actual Vercel deployment verification on 2026-09-27; that release work is proceeding after local review/build checks. Vercel automatic deploy is separate from these hosted Supabase and import gates, and Task 09 remains PARTIAL."
   ],
   "activeSpec": ".planning/phases/03-nextjs-supabase/SPEC.md",
   "activePlan": ".planning/phases/03-nextjs-supabase/PLAN.md",
@@ -431,8 +431,8 @@
       }
     ]
   },
-  "revision": 60,
-  "updatedAt": "2026-09-26T02:08:53.861Z"
+  "revision": 63,
+  "updatedAt": "2026-09-26T16:36:08.242Z"
 }
 -->
 
@@ -441,8 +441,8 @@
 - Schema: hybrid-state/v1
 - Phase: 03-nextjs-supabase
 - Status: active
-- Next action: Restore local Docker engine readiness, finish authenticated local Supabase/browser checks, and verify the automatic Vercel build from the pushed main branch when its project endpoint is available.
-- Revision: 60
-- Updated: 2026-09-26T02:08:53.861Z
+- Next action: Proceed with the explicitly user-directed GitHub push and verify the actual Vercel deployment after local review/build checks. Keep Task 09 PARTIAL; hosted Supabase/Auth/Storage and import/checksum gates remain separate and unverified. Preserve the QA-created review on menu 12 pending immediate action-time confirmation.
+- Revision: 63
+- Updated: 2026-09-26T16:36:08.242Z
 
 This file is canonical project state. Do not silently reconstruct or reset it if the machine-readable block is corrupt or uses an unsupported schema.

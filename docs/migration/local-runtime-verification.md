@@ -43,3 +43,13 @@ This pass used the existing disposable local database only. No reset, reinitiali
 | Positive Vault/HMAC and HTTP image-verification flow | NOT RUN | No synthetic Vault validation key or local Next.js verification environment was configured. The fail-closed key-preflight result from the earlier pass remains the only observation. |
 
 The local Supabase database remains running and healthy for browser QA.
+
+## Authenticated browser continuation (2026-09-26)
+
+This continuation reused the current local database; it did not reset or reinitialize Supabase. A sanitized `GET http://127.0.0.1:3001/` returned HTTP 200, `npx tsc --noEmit` completed with exit code 0, and Docker reported the local database, Auth, REST, Storage, Realtime, Kong, and Inbucket containers running/healthy. Optional Studio, Analytics/Logflare, Vector, Edge Runtime, and Pooler were stopped. This documents the current local runtime, not a hosted environment.
+
+The browser QA record is in [ui-qa-matrix.md](ui-qa-matrix.md#2026-09-26-인증-사용자-브라우저-연속-qa). Its member-session aggregate check found two rows for menu ID 12: the pre-existing synthetic review at 4.0 and the newly created synthetic review by `QA 사진 확인자` at 5.0; current total is two and average is 4.5. The new row has an empty comment and no optional scores. A user action-time confirmation to delete only this new local synthetic row is pending; until answered, it is preserved. The earlier `QA 사진 작성자` review is not targeted.
+
+The source check confirms the form's browser `maxLength` remains 2,000 UTF-16 code units while the controlled input and submit validation cap Unicode code points at 1,000. The final TypeScript check passed after adding a comment that explains this distinction. The browser check exercised a 1,100-character ASCII value, not a 1,000-character supplementary-Unicode value.
+
+This continuation is partial UI evidence only. The 57 role/viewport matrix remains incomplete; owner/admin success flows, successful geolocation, pointer-driven click QA, positive current-fixture Vault/HMAC image verification, and hosted configuration were not tested. No hosted endpoint, credential, production data, or production media was used.
