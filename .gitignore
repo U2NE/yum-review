@@ -1,11 +1,15 @@
 .env
 .env.*
 !.env.example
+supabase/.branches/
+supabase/.temp/
 .codex/tmp/
 **/target/
 **/node_modules/
 **/dist/
 **/.vite/
+/.next/
+*.tsbuildinfo
 /backend/var/
 /backend/var/yum-review-qa-*/
 /frontend/test-results/

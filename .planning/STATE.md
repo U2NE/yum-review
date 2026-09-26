@@ -4,12 +4,19 @@
 {
   "schema": "hybrid-state/v1",
   "schemaVersion": 1,
-  "phase": "execution",
+  "phase": "03-nextjs-supabase",
   "status": "active",
-  "nextAction": "Await user decision on the real review linked to a fictional V2 menu before migrating the existing public schema; keep the local MVP on yum_review_mvp.",
-  "blockers": [],
-  "activeSpec": ".planning/phases/02-product-expansion/SPEC.md",
-  "activePlan": ".planning/phases/02-product-expansion/PLAN.md",
+  "nextAction": "Restore local Docker Desktop engine readiness without resetting its data, then rerun authenticated local Supabase and full browser QA; complete the pending migration, privilege, and Task04/Task07 checks before publishing.",
+  "blockers": [
+    "The direct authenticated claim/release RPC path is removed in source; service_role-only replacements and route ownership checks are in place. The independent security review approves the targeted source fix, but the migration and privilege behavior have not yet been applied or verified in a disposable local database.",
+    "Independent security review identified a medium availability concern: expired quota cleanup scans rows while holding the global claim lock, and an authenticated PENDING intent without a Storage object can briefly reserve a slot through the route before failure cleanup. Review mitigation and validate under local runtime before deployment.",
+    "Direct optimized upload does not let the server independently measure pre-optimization original file size. The browser rejects files at or above 100 MB and the server verifies stored-object size, but a modified client can falsify original_bytes.",
+    "Hybrid implementation-run audit reports one historical dispatch decision without a linked action; its evidence is preserved. The independent review run audit is clean.",
+    "Local HMAC/Vault key parity and all hosted settings remain unverified; hosted Supabase and Vercel were not accessed.",
+    "Local Docker Desktop engine is currently unavailable: startup fails while initializing the sailor-ingest.sock endpoint. The sanitized Next.js build and guest browser smoke pass, but authenticated menu/review/photo flows are blocked until the local Supabase stack is available."
+  ],
+  "activeSpec": ".planning/phases/03-nextjs-supabase/SPEC.md",
+  "activePlan": ".planning/phases/03-nextjs-supabase/PLAN.md",
   "clarification": {
     "active": false,
     "status": "approved-for-planning",
@@ -424,18 +431,18 @@
       }
     ]
   },
-  "revision": 32,
-  "updatedAt": "2026-09-25T00:37:23.512Z"
+  "revision": 59,
+  "updatedAt": "2026-09-26T02:02:23.810Z"
 }
 -->
 
 ## Current
 
 - Schema: hybrid-state/v1
-- Phase: execution
+- Phase: 03-nextjs-supabase
 - Status: active
-- Next action: Await user decision on the real review linked to a fictional V2 menu before migrating the existing public schema; keep the local MVP on yum_review_mvp.
-- Revision: 32
-- Updated: 2026-09-25T00:37:23.512Z
+- Next action: Restore local Docker Desktop engine readiness without resetting its data, then rerun authenticated local Supabase and full browser QA; complete the pending migration, privilege, and Task04/Task07 checks before publishing.
+- Revision: 59
+- Updated: 2026-09-26T02:02:23.810Z
 
 This file is canonical project state. Do not silently reconstruct or reset it if the machine-readable block is corrupt or uses an unsupported schema.

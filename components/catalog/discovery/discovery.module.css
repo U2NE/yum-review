@@ -1,0 +1,549 @@
+.filters {
+  display: grid;
+  gap: 1.15rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  background: var(--surface);
+  box-shadow: 0 0.8rem 2rem rgb(41 39 34 / 4%);
+}
+
+.filterHeading,
+.locationRow,
+.placeForm {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.filterHeading {
+  align-items: center;
+}
+
+.filterHeading h2,
+.placeSearch h3 {
+  margin: 0;
+  letter-spacing: -0.035em;
+}
+
+.filterHeading h2 {
+  font-size: clamp(1.2rem, 3vw, 1.55rem);
+}
+
+.eyebrow {
+  margin: 0 0 0.2rem;
+  color: var(--accent);
+  font-size: 0.77rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.textButton {
+  border: 0;
+  padding: 0.4rem 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.88rem;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.filterGrid {
+  display: grid;
+  grid-template-columns: minmax(14rem, 1.5fr) repeat(3, minmax(9rem, 1fr));
+  align-items: end;
+  gap: 0.75rem;
+}
+
+.field {
+  display: grid;
+  min-width: 0;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.input,
+.select {
+  width: 100%;
+  min-height: 2.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  padding: 0.55rem 0.7rem;
+  background: #fff;
+  color: var(--ink);
+}
+
+.locationRow {
+  display: grid;
+  grid-template-columns: minmax(8rem, 0.8fr) minmax(10rem, 1.4fr) auto auto;
+  align-items: end;
+  margin-top: 0.75rem;
+}
+
+.centerLabel {
+  display: grid;
+  min-width: 0;
+  gap: 0.2rem;
+  margin: 0;
+  padding: 0 0.4rem 0.45rem;
+  color: var(--muted);
+  font-size: 0.77rem;
+}
+
+.centerLabel strong {
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 0.95rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.primaryButton,
+.secondaryButton {
+  min-height: 2.75rem;
+  border: 1px solid var(--accent);
+  border-radius: 0.55rem;
+  padding: 0.5rem 0.85rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.primaryButton {
+  background: var(--accent);
+  color: #fff;
+}
+
+.secondaryButton {
+  border-color: var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.primaryButton:disabled,
+.secondaryButton:disabled {
+  cursor: wait;
+  opacity: 0.62;
+}
+
+.statusMessage,
+.placeMessage {
+  margin: -0.45rem 0 0;
+  color: var(--focus);
+  font-size: 0.87rem;
+}
+
+.placeSearch {
+  display: grid;
+  gap: 0.65rem;
+  border-top: 1px solid var(--line);
+  padding-top: 1rem;
+}
+
+.placeSearch h3 {
+  font-size: 0.98rem;
+}
+
+.placeForm {
+  justify-content: flex-start;
+}
+
+.placeForm .input {
+  max-width: 30rem;
+}
+
+.placeResults {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.placeResult {
+  display: grid;
+  width: 100%;
+  gap: 0.12rem;
+  border: 1px solid var(--line);
+  border-radius: 0.55rem;
+  padding: 0.65rem 0.75rem;
+  background: #fff;
+  color: var(--muted);
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.82rem;
+}
+
+.placeResult:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.placeResult:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.placeResultName {
+  color: var(--ink);
+  font-size: 0.92rem;
+  font-weight: 750;
+}
+
+.placeResult small {
+  font-size: 0.74rem;
+}
+
+.personalFilterWrap {
+  border-top: 1px solid var(--line);
+  padding-top: 0.9rem;
+}
+
+.filterNote {
+  margin: -0.7rem 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+.homePage,
+.detailPage {
+  min-height: 100vh;
+  padding: 0 1.25rem 4rem;
+}
+
+.homeContent,
+.detailContent {
+  width: min(100%, var(--content-width));
+  margin: 2.2rem auto 0;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 2rem;
+  padding: 1rem 0 2.2rem;
+}
+
+.hero h1 {
+  max-width: 18ch;
+  margin: 0;
+  font-size: clamp(2rem, 5.3vw, 3.5rem);
+  line-height: 1.13;
+  letter-spacing: -0.055em;
+}
+
+.heroDescription {
+  max-width: 37rem;
+  margin: 0.85rem 0 0;
+  color: var(--muted);
+  font-size: clamp(0.95rem, 2vw, 1.08rem);
+}
+
+.heroAside {
+  display: grid;
+  justify-items: end;
+  gap: 0.18rem;
+  padding-bottom: 0.35rem;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.heroAside a {
+  margin-top: 0.3rem;
+  color: var(--accent);
+  font-weight: 750;
+}
+
+.heroNumber {
+  color: var(--ink);
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.06em;
+}
+
+.results {
+  display: grid;
+  gap: 1.1rem;
+  margin-top: 2.2rem;
+}
+
+.resultsHeading,
+.detailSectionHeading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.resultsHeading h2,
+.detailSectionHeading h2 {
+  margin: 0;
+  font-size: clamp(1.35rem, 3vw, 1.8rem);
+  letter-spacing: -0.04em;
+}
+
+.resultsHeading > p {
+  margin: 0 0 0.2rem;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.menuGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.stateCard {
+  border: 1px solid var(--line);
+  border-radius: 0.85rem;
+  padding: 1.1rem 1.2rem;
+  background: var(--surface);
+  color: var(--muted);
+}
+
+.stateCard h2,
+.stateCard h3 {
+  margin: 0 0 0.3rem;
+  color: var(--ink);
+  font-size: 1.1rem;
+}
+
+.stateCard p {
+  margin: 0 0 0.45rem;
+}
+
+.stateCard a {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.locationHint {
+  margin: 0;
+  border-radius: 0.6rem;
+  padding: 0.65rem 0.8rem;
+  background: var(--accent-soft);
+  color: #78351f;
+  font-size: 0.86rem;
+}
+
+.backLink {
+  display: inline-flex;
+  margin-bottom: 1rem;
+  color: var(--muted);
+  font-size: 0.88rem;
+  text-decoration: none;
+}
+
+.restaurantHero,
+.menuDetailCard {
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  padding: clamp(1.15rem, 4vw, 2rem);
+  background: var(--surface);
+  box-shadow: 0 0.8rem 2rem rgb(41 39 34 / 4%);
+}
+
+.restaurantHero h1,
+.menuDetailCard h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 5vw, 2.65rem);
+  letter-spacing: -0.05em;
+  line-height: 1.18;
+}
+
+.detailDescription {
+  max-width: 54rem;
+  margin: 0.7rem 0 0;
+  color: var(--muted);
+}
+
+.detailMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.8rem;
+  margin: 1rem 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.detailMeta span + span::before {
+  content: "·";
+  margin-right: 0.8rem;
+  color: var(--line);
+}
+
+.detailSection {
+  margin-top: 2.3rem;
+}
+
+.detailSectionHeading {
+  margin-bottom: 0.9rem;
+}
+
+.detailSectionHeading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.restaurantManageLink {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.48rem 0.8rem;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.menuDetailCard {
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.8fr) minmax(0, 1.2fr);
+  gap: clamp(1rem, 4vw, 2rem);
+}
+
+.menuPhoto {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 0.7rem;
+  background: var(--accent-soft);
+  object-fit: cover;
+}
+
+.menuPhotoPlaceholder {
+  display: grid;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  place-items: center;
+  border-radius: 0.7rem;
+  background: var(--accent-soft);
+  color: var(--muted);
+}
+
+.menuDetailInfo {
+  display: grid;
+  align-content: start;
+  gap: 0.5rem;
+}
+
+.menuRestaurantLink {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.menuDetailPrice {
+  margin: 0.45rem 0;
+  font-size: 1.15rem;
+  font-weight: 750;
+}
+
+.ratingSummary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+.ratingSummary div {
+  display: grid;
+  gap: 0.08rem;
+  border: 1px solid var(--line);
+  border-radius: 0.55rem;
+  padding: 0.55rem;
+}
+
+.ratingSummary span {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.ratingSummary strong {
+  font-size: 0.98rem;
+}
+
+.editorIntro {
+  margin: 0.25rem 0 1rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 850px) {
+  .filterGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .queryField {
+    grid-column: 1 / -1;
+  }
+
+  .menuGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .filterHeading,
+  .placeForm {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .filterGrid,
+  .locationRow {
+    grid-template-columns: 1fr;
+  }
+
+  .queryField {
+    grid-column: auto;
+  }
+
+  .centerLabel {
+    padding: 0.2rem 0;
+  }
+
+  .placeForm .input {
+    max-width: none;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .heroAside {
+    justify-items: start;
+  }
+
+  .menuGrid,
+  .menuDetailCard {
+    grid-template-columns: 1fr;
+  }
+
+  .resultsHeading,
+  .detailSectionHeading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .ratingSummary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

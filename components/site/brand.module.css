@@ -1,0 +1,35 @@
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.62rem;
+  min-width: max-content;
+  color: var(--ink, #292722);
+  line-height: 1;
+}
+
+.symbol {
+  display: block;
+  flex: 0 0 auto;
+  width: clamp(2rem, 2.65vw, 2.5rem);
+  height: auto;
+}
+
+.wordmark {
+  font-size: clamp(1.16rem, 1.7vw, 1.42rem);
+  font-weight: 750;
+  letter-spacing: -0.075em;
+}
+
+@media (max-width: 24rem) {
+  .brand {
+    gap: 0.45rem;
+  }
+
+  .symbol {
+    width: 1.9rem;
+  }
+
+  .wordmark {
+    font-size: 1.08rem;
+  }
+}
