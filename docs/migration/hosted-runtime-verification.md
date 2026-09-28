@@ -24,3 +24,19 @@ Method: direct browser interaction through CUA in the Codex In-app Browser. The 
 This pass was strictly read-only. No sign-in, account creation, review, like, favorite, upload, mutating request, hosted setting change, or hosted database write was performed. Hosted data was not edited.
 
 The following remain unverified: authenticated member, owner and server-admin flows; review and favorite mutations; successful media upload; successful Naver place lookup; ranking across non-empty multi-menu results; exact viewport/responsive coverage; and any write-path server errors. The full UI QA matrix and Task 09 therefore remain PARTIAL. Detailed per-control evidence is in [ui-qa-matrix.md](ui-qa-matrix.md).
+
+## 2026-09-28 production deployment and guest filter pass
+
+Target: [https://yum-review.vercel.app/](https://yum-review.vercel.app/), production deployment for commit `879d1968933e15e754d6c70e90e0363fa865506`. GitHub reported the Vercel check successful at 2026-09-28 02:48 UTC. The guest home and menu detail were also observed read-only by the Lead. This pass used a separate background CUA tab and did not disturb other tabs.
+
+### Observed results
+
+- Search for `곰라면` followed by `필터 적용` updated the URL to `?q=곰라면` and returned exactly one result: 곰포차 죽전점 곰라면, 3,900원.
+- The cuisine and sort controls accepted 카페·디저트 and 리뷰 많은 순. Applying them updated the URL to `?category=CAFE&sort=reviewCount` and showed six 카페 menus. All six currently show zero reviews, so this did not establish ranking behavior for tied or non-empty review counts.
+- Applying 주점 + 죽전 + 1km + 맛 평점순 updated the URL with `category=PUB`, `region=죽전`, `radius=1000`, and `sort=taste`. The UI showed zero matching menus and noted that 40 menus without location data were excluded from radius calculation. This combined result does not isolate which filter caused the empty result; distance and ranking semantics remain unverified.
+- `필터 초기화` returned to `/` and restored the full 72-menu catalog.
+- Opening 아메리카노 navigated to `/menus/41`, where the menu detail, restaurant link, unreviewed rating summary, and guest review-login link rendered. Browser back returned to the filtered six-menu catalog.
+
+### Scope and limits
+
+This was a guest-only, read-only production pass. No sign-in, review, like, favorite, upload, form submission, hosted setting change, or database write occurred. Search, cuisine, region, sorting, radius, apply/reset, menu detail, and back navigation were exercised. Authenticated member/owner/server-admin paths, write flows, media upload/removal behavior, ranking with non-empty data, successful place lookup, full viewport coverage, and the remaining Task 09 acceptance gates were not verified. Task 09 remains PARTIAL.
