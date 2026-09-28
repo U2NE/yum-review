@@ -110,3 +110,51 @@ Scope: read-only review of `components/reviews/ReviewCard.tsx` for the requested
 ### Validation limits
 
 These findings are static only. Account-switch render timing, late request completion, and failed-slot behavior still need the separate local browser QA evidence; this source review does not claim runtime confirmation.
+
+## Follow-up review — Task 09 media verification and temporary guest QA (2026-09-27)
+
+Scope: read-only inspection of the current media verification route and key-preflight, browser upload/validation code, relevant Supabase policies and migrations, and the latest local QA/runtime notes. No implementation files were changed. No test commands or browser actions were run during this review.
+
+### Confirmed by source inspection
+
+- The key-preflight route rejects cross-origin requests and requires a verified signed-in user/session. It obtains only that user's pending upload intent, charges an authorized attempt, checks object existence using the caller's Storage JWT, then claims a service-only decoder slot before the Vault parity check and file download ([`route.ts:54-86,117-149,163-183`](../../app/api/media/verify/route.ts)). The key-preflight RPC requires the authenticated caller to own the still-pending authorized target; it reads the named Vault secret internally and returns only a boolean ([`20260926173000_media_verification_budget_and_key_preflight.sql:22-82`](../../supabase/migrations/20260926173000_media_verification_budget_and_key_preflight.sql)). Static inspection found no key bytes or Vault contents returned to the caller.
+- The decoder slot claim/release functions are service-role-only, re-check current target ownership, and use a short lease; the route releases its lease in `finally` ([`20260926180000_media_verification_slot_server_boundary.sql:13-37,39-73,127-157`](../../supabase/migrations/20260926180000_media_verification_slot_server_boundary.sql); [`route.ts:145-161,228-237`](../../app/api/media/verify/route.ts)).
+- Browser-side validation rejects empty or 100 MB-and-larger files, checks image signature/type and dimensions, and attempts optimization for files over 10 MB while retaining an accepted original if the encoder cannot reduce it ([`validate-image.ts:156-167,176-188,198-245`](../../lib/media/validate-image.ts)). The upload UI describes the 100 MB limit and has no photo-rights consent checkbox ([`ImageUpload.tsx:149-155,183-195`](../../components/media/ImageUpload.tsx)). These are source-level checks only; no successful upload or boundary-size browser case was observed in the latest pass.
+
+### Static-only follow-up risk
+
+#### [P3] Overlapping upload-preview refreshes can commit out of order
+
+`ImageUpload` starts a preview load on mount and every 45 seconds, and also reloads after upload, image failure, or prop changes ([`ImageUpload.tsx:44-60,99,166`](../../components/media/ImageUpload.tsx)). The requests are neither serialized nor tagged with a request generation before updating `media`, so a slower earlier read can finish after a newer upload/removal refresh and replace the newer preview state. The interval also remains active while the page is backgrounded. This is a plausible transient stale-display and avoidable-read issue from source inspection; it was not observed at runtime and does not establish an authorization bypass. Consider ignoring stale refresh results and refreshing on demand or while visible.
+
+### QA evidence cross-check
+
+The latest temporary-browser record is correctly limited to one guest session at 1280×720. The 57-row matrix remains 14 `PARTIAL`, 2 `BLOCKED`, 41 `NOT RUN`, with 0 `FAIL` and 0 complete `PASS`; it records no screenshot, browser back/forward, authenticated role flow, or successful photo upload ([`ui-qa-matrix.md:231-250`](../../docs/migration/ui-qa-matrix.md)). The recorded browser crash and later refused/timed-out local requests are an environment interruption, not evidence of a product defect ([`local-runtime-verification.md:59`](../../docs/migration/local-runtime-verification.md)). Earlier SQL/RLS passes are separate evidence and do not establish the positive Vault/HMAC HTTP route or browser upload path. Task 09 therefore remains partial.
+
+## Follow-up review — upload-preview refresh generation guard (2026-09-28)
+
+Scope: static, read-only review of the current diff in [`ImageUpload.tsx`](../../components/media/ImageUpload.tsx) and its menu-editor/review-card call sites. No application source was changed; no tests or browser actions were run.
+
+### Prior finding: partially closed by source inspection
+
+- `reloadMedia` now increments a monotonic generation for each read and commits results only if that request is still current. The effect cleanup increments the generation, invalidating work from the prior effect/prop identity. This closes the previously identified out-of-order commit path among competing refresh calls and on cleanup.
+- The 45-second timer and visibility listener both call a visibility-gated refresh, so recurring reads are skipped while the document is hidden; a visible transition requests a fresh preview. The 45-second refresh remains active while visible, so recurring reads were reduced in scope rather than removed.
+- A residual removal race remains: `removePhoto` detaches the photo and updates local state without advancing `refreshGeneration`. A `reloadMedia` request already in flight can therefore still pass its generation check and restore the detached preview after the removal state update. The prior finding is not fully closed until removal invalidates pending reads (or an equivalent latest-state guard is added).
+
+### Validation limits
+
+These are static conclusions only. The latest local owner-browser evidence confirms that the `ImageUpload` panel mounted, but the menu had no existing photo; file selection/upload was blocked by the CUA file-picker limitation, and refresh-race/hidden-tab behavior was not exercised ([`ui-qa-matrix.md`](ui-qa-matrix.md), “2026-09-27 synthetic owner ImageUpload continuation”). No runtime stale-result, removal, or background-tab behavior is claimed.
+
+## Follow-up review — detach invalidates preview reads (2026-09-28)
+
+Scope: static review of the `ImageUpload` refresh-generation and photo-removal paths plus both component call sites. No source changes, tests, browser actions, or network/database access were performed.
+
+### Prior finding: detach race closed by source inspection
+
+- On successful `detachMenuPhoto`/`detachReviewPhoto`, `removePhoto` increments `refreshGeneration` before it removes the item from local state or calls `props.onChange`. This invalidates every preview read already in flight, including reads started while the detach request was pending: reads resolving afterward fail their generation check and cannot restore the detached photo. A read that resolves before detach success can only update state before the handler's subsequent local removal, which filters the item from the latest state.
+- If detach rejects, execution skips both the generation increment and local removal; the visible photo is preserved by this handler, and the error is surfaced. The cleanup-queue failure occurs after a successful detach and local removal, as intended.
+- Competing refreshes still use a monotonically increasing request generation, and effect cleanup advances it after removing the timer/listener, so pending reads from a prior component/effect identity cannot commit. `MenuEditor` conditionally mounts the uploader for the selected menu ID; `ReviewCard` mounts it only for the current user's review. Both pass the corresponding stable numeric ID, and a changed prop callback/config recreates `reloadMedia`, triggering cleanup and a new initial load.
+
+### Validation limits
+
+The removal and overlapping-read behavior is confirmed by static control-flow inspection only. No runtime confirmation of successful/failed detach, component unmount, or menu/review call-site behavior is claimed.

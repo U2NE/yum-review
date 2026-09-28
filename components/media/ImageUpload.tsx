@@ -36,27 +36,39 @@ export function ImageUpload(props: ImageUploadProps) {
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const refreshGeneration = useRef(0);
 
   const mediaIds = media.map((item) => item.id);
   const maxFiles = props.kind === "MENU" ? 1 : MAX_REVIEW_PHOTOS;
   const canAdd = !props.disabled && !busy && (media.length < maxFiles || props.kind === "MENU");
 
   const reloadMedia = useCallback(async () => {
+    const requestGeneration = ++refreshGeneration.current;
+    const isCurrentRequest = () => requestGeneration === refreshGeneration.current;
+
     if (props.kind === "MENU") {
       const photo = await getMenuPhotoPreview(supabase, props.menuId);
       const fallback = props.initialMediaIds?.length ? await getMediaPreviews(supabase, props.initialMediaIds) : [];
-      setMedia(photo ? [photo] : fallback);
+      if (isCurrentRequest()) setMedia(photo ? [photo] : fallback);
     } else {
       const photos = await getReviewPhotoPreviews(supabase, props.reviewId);
       const fallback = props.initialMediaIds?.length ? await getMediaPreviews(supabase, props.initialMediaIds) : [];
-      setMedia(photos.length ? photos : fallback);
+      if (isCurrentRequest()) setMedia(photos.length ? photos : fallback);
     }
   }, [props.kind, props.menuId, props.reviewId, props.initialMediaIds, supabase]);
 
   useEffect(() => {
     void reloadMedia();
-    const refreshTimer = window.setInterval(() => void reloadMedia(), 45_000);
-    return () => window.clearInterval(refreshTimer);
+    const refreshIfVisible = () => {
+      if (!document.hidden) void reloadMedia();
+    };
+    const refreshTimer = window.setInterval(refreshIfVisible, 45_000);
+    document.addEventListener("visibilitychange", refreshIfVisible);
+    return () => {
+      window.clearInterval(refreshTimer);
+      document.removeEventListener("visibilitychange", refreshIfVisible);
+      refreshGeneration.current += 1;
+    };
   }, [reloadMedia]);
 
   async function addFile(file: File) {
@@ -122,6 +134,9 @@ export function ImageUpload(props: ImageUploadProps) {
     try {
       if (props.kind === "MENU") await detachMenuPhoto(supabase, props.menuId);
       else await detachReviewPhoto(supabase, props.reviewId, item.id);
+      // A preview query that started before the detach may still resolve afterward.
+      // Invalidate it before committing the local removal so it cannot restore this photo.
+      refreshGeneration.current += 1;
       const nextIds = mediaIds.filter((id) => id !== item.id);
       setMedia((current) => current.filter((entry) => entry.id !== item.id));
       props.onChange?.(nextIds);

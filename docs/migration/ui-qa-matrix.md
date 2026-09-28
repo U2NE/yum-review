@@ -1,6 +1,6 @@
 # UI control QA matrix
 
-실행 대상: 로컬 Next.js 앱 `http://localhost:3001/` 및 disposable local Supabase. 외부/hosted 서비스, `localhost:3000`, 운영 데이터는 대상에서 제외한다.
+실행 대상: 로컬 Next.js 앱 및 disposable local Supabase. 이 문서에는 `http://localhost:3001/`과 temporary QA app `http://localhost:3002/`에서 각각 수행한 pass가 구분되어 기록된다. 외부/hosted 서비스, `localhost:3000`, 운영 데이터는 대상에서 제외한다.
 
 상태는 각 실제 조작 후 `PASS`, `FAIL`, `PARTIAL`, `BLOCKED`, `NOT RUN`으로 갱신한다. 아래 57개 행은 역할·화면 크기별 전체 회귀 검사이며, 각 행을 끝까지 확인하지 않은 부분 검사는 `NOT RUN`으로 유지한다. 부분 브라우저 확인은 문서 아래 별도 기록한다. QA 중 만든 합성 계정·행·Storage 객체는 정확한 식별자를 기록하고 이 actor가 생성한 항목만 종료 전에 제거한다.
 
@@ -10,35 +10,35 @@
 | 2 | 데스크톱 주요 내비게이션 링크 | Guest/member/owner/admin | 1440 | 각 노출 링크를 차례로 클릭 | 계정/운영자/업주 관리 또는 로그인/가입의 올바른 경로로 이동 | 실행 전 | NOT RUN |
 | 3 | 모바일 내비게이션/헤더 | Guest/member/owner/admin | 360, 390 | 헤더의 메뉴 컨트롤, 링크 각각 조작 | 보이는 링크만 접근 가능, 화면 넘침 없이 목적 경로 이동 | 실행 전 | NOT RUN |
 | 4 | 검색어 입력·적용 | Guest/member/owner/admin | 360, 390, 768, 1440 | 메뉴 검색 입력 후 적용 | 검색어 결과 반영, 주소/상태 및 카드 갱신 | 실행 전 | PARTIAL: member pointer search only at 1265×720; browser/filter roles and viewports remain open. | PARTIAL |
-| 5 | 검색 초기화/전체 필터 초기화 | Guest/member/owner/admin | 360, 1440 | 검색 및 다른 필터 설정 후 지우기/초기화 | 검색어·관련 필터가 초기 상태로 복원되고 결과 갱신 | 실행 전 | NOT RUN |
-| 6 | 음식 종류 선택 | Guest/member/owner/admin | 360, 1440 | 한식/양식/중식/일식/분식/카페/술집 등 선택·조합 | 선택한 분류 결과만 표시 | 실행 전 | PARTIAL: member selected Korean filter only at 1265×720; combinations, roles and viewports remain open. | PARTIAL |
+| 5 | 검색 초기화/전체 필터 초기화 | Guest/member/owner/admin | 360, 1440 | 검색 및 다른 필터 설정 후 지우기/초기화 | 검색어·관련 필터가 초기 상태로 복원되고 결과 갱신 | Guest | localhost:3002에서 검색+PUB 적용 후 초기화 클릭. URL `/`, 기본 종류, 검색 공란, 3개 메뉴가 복구됨; member/viewport coverage remains open. | PARTIAL |
+| 6 | 음식 종류 선택 | Guest/member/owner/admin | 360, 1440 | 한식/양식/중식/일식/분식/카페/술집 등 선택·조합 | 선택한 분류 결과만 표시 | Guest | `주점` 선택 후 적용하자 URL에 `category=PUB`가 반영됨. 검색어와 합성 메뉴 결과 1개가 유지됨. 다른 종류·조합·역할·뷰포트는 미검증; prior member Korean selection remains partial evidence. | PARTIAL |
 | 7 | 지역 선택·적용·초기화 | Guest/member/owner/admin | 360, 1440 | 지역을 바꾸고 적용 및 초기화 | 지역 필터가 반영·해제됨 | 실행 전 | NOT RUN |
-| 8 | 장소 검색 입력·검색·결과 선택 | Guest/member/owner/admin | 360, 390, 768, 1440 | 장소 검색 후 결과를 선택 | 선택 위치가 기준점이 되고 지도 API 키 부재 시 오류 안내로 fail-closed | 실행 전 | NOT RUN |
-| 9 | 현재 위치 사용 | Guest/member/owner/admin | 360, 390 | 위치 허용 및 거부 상태에서 버튼 조작 | 허용 시 좌표 설정; 거부/미지원 시 이해 가능한 안내, 임의 위치 미설정 | 실행 전 | NOT RUN |
-| 10 | 반경 선택 | Guest/member/owner/admin | 360, 1440 | 각 제공 반경(포함: 수백 m, 1km)을 선택하고 적용 | 선택 반경 내 결과로 갱신, 위치 기준 없는 경우 안내 | 실행 전 | NOT RUN |
-| 11 | 정렬 선택 | Guest/member/owner/admin | 360, 1440 | 전체/맛/가성비/양 점수, 리뷰 수 등 제공값 선택 | 선택 기준으로 결과 정렬, 미평가 항목의 순서 확인 | 실행 전 | NOT RUN |
-| 12 | 내 리뷰 개인 필터 | Guest | 360, 1440 | 로그아웃 상태에서 선택 | 로그인으로 안내/이동, 개인 데이터 노출 없음 | 실행 전 | PARTIAL: cookie-free GET /account, /my-reviews, /wishlist, /admin and /restaurants/12/manage redirected to /login; route protection only, no guest browser UI proof. | PARTIAL |
+| 8 | 장소 검색 입력·검색·결과 선택 | Guest/member/owner/admin | 360, 390, 768, 1440 | 장소 검색 후 결과를 선택 | 선택 위치가 기준점이 되고 지도 API 키 부재 시 오류 안내로 fail-closed | Guest | `단국대학교 죽전캠퍼스` 검색을 눌렀고, 해당 키가 설정되지 않았다는 안내가 표시됨. 결과 선택은 불가능했으며 missing-key 동작만 확인; other roles/viewports NOT RUN. | PARTIAL |
+| 9 | 현재 위치 사용 | Guest/member/owner/admin | 360, 390 | 위치 허용 및 거부 상태에서 버튼 조작 | 허용 시 좌표 설정; 거부/미지원 시 이해 가능한 안내, 임의 위치 미설정 | Guest | `현재 위치로`를 눌렀을 때 현재 위치를 확인하지 못했다는 안내가 표시됐고 캠퍼스 기본 위치는 유지됨. 브라우저 권한 허용 성공은 하지 않음; mobile/other roles NOT RUN. | PARTIAL |
+| 10 | 반경 선택 | Guest/member/owner/admin | 360, 1440 | 각 제공 반경(포함: 수백 m, 1km)을 선택하고 적용 | 선택 반경 내 결과로 갱신, 위치 기준 없는 경우 안내 | Guest | 1km 선택/적용 후 URL에 `radius=1000`; 결과 2개로 갱신, 좌표 없는 메뉴 1개 제외 안내 확인. 300m/500m 비교, other roles/viewports NOT RUN. | PARTIAL |
+| 11 | 정렬 선택 | Guest/member/owner/admin | 360, 1440 | 전체/맛/가성비/양 점수, 리뷰 수 등 제공값 선택 | 선택 기준으로 결과 정렬, 미평가 항목의 순서 확인 | Guest | `맛 평점순`을 선택·적용해 URL `sort=taste` 확인. 데이터별 정렬 순위 비교는 하지 않음; 나머지 sort/roles/viewports NOT RUN. | PARTIAL |
+| 12 | 내 리뷰 개인 필터 | Guest | 360, 1440 | 로그아웃 상태에서 선택 | 로그인으로 안내/이동, 개인 데이터 노출 없음 | Guest | 홈의 `내가 리뷰한 메뉴`를 눌렀을 때 `/login?next=...`로 이동. 직접 route redirect evidence also recorded above; member/other viewport remains open. | PARTIAL |
 | 13 | 내 리뷰 개인 필터 | Member/owner/admin | 360, 1440 | 검색·분류·지역·반경·정렬과 조합해 선택/해제 | 본인 리뷰 메뉴만 필터링, 다른 필터와 동시 적용 | 실행 전 | PARTIAL: authenticated member pointer search on /my-reviews only at 1265×720; wider filter and role/viewport coverage remains open. | PARTIAL |
 | 14 | 찜한 메뉴 개인 필터 | Guest | 360, 1440 | 로그아웃 상태에서 선택 | 로그인으로 안내/이동, 찜 목록 노출 없음 | 실행 전 | PARTIAL: cookie-free GET /wishlist redirected to /login; route protection only, no guest browser UI proof. | PARTIAL |
 | 15 | 찜한 메뉴 개인 필터 | Member/owner/admin | 360, 1440 | 검색·분류·지역·반경·정렬과 조합해 선택/해제 | 본인 찜 메뉴만 필터링, 다른 필터와 동시 적용 | 실행 전 | NOT RUN |
 | 16 | 메뉴 카드 상세 링크 | Guest/member/owner/admin | 360, 390, 768, 1440 | 사진/제목/상세 링크 각각 선택 | 올바른 메뉴 상세 페이지로 이동 | 실행 전 | PARTIAL: member pointer opened /menus/12 from a result at 1265×720; other link targets, roles and viewports remain open. | PARTIAL |
-| 17 | 메뉴 찜/찜 해제 | Guest | 360, 1440 | 찜 버튼 클릭 | 로그인 안내, DB 쓰기 거부 | 실행 전 | NOT RUN |
+| 17 | 메뉴 찜/찜 해제 | Guest | 360, 1440 | 가게 메뉴 카드의 찜 버튼 클릭 | 로그인 안내, DB 쓰기 거부 | Guest | `/restaurants/13`에서 합성 메뉴 찜 버튼을 누르자 `/login?next=/restaurants/13`로 이동; 찜 쓰기는 발생하지 않음. 해제는 member에서만 가능; mobile NOT RUN. | PARTIAL |
 | 18 | 메뉴 찜/찜 해제 | Member/owner/admin | 360, 1440 | 찜 버튼을 누르고 다시 눌러 해제 | 상태/개수/aria-pressed 갱신, 다른 계정에 노출되지 않음 | 실행 전 | PARTIAL: member favorite/unfavorite pointer toggle at 1265×720; broader roles/viewports and refresh persistence remain open. | PARTIAL |
-| 19 | 식당 상세·메뉴·업주 관리 링크 | Guest/member/owner/admin | 360, 1440 | 카드에서 식당 상세, 메뉴 목록, 관리 링크 선택 | 목적 경로가 정확하고 역할에 맞는 관리 링크만 노출 | 실행 전 | NOT RUN |
-| 20 | 회원가입 입력·제출·오류 | Guest | 360, 390, 1440 | 유효하지 않은 입력과 synthetic 신규 계정으로 가입 | 검증 오류 안내; 성공 시 로그인 상태/안내와 안전한 next 경로 | 실행 전 | NOT RUN |
-| 21 | 로그인 입력·제출·오류 | Guest | 360, 390, 1440 | 실패 로그인, 성공 로그인, `next` 경로 로그인 | 오류 안내; 성공 후 허용된 경로로 복귀, 외부/위험 경로 차단 | 실행 전 | NOT RUN |
+| 19 | 식당 상세·메뉴·업주 관리 링크 | Guest/member/owner/admin | 360, 1440 | 카드에서 식당 상세, 메뉴 목록, 관리 링크 선택 | 목적 경로가 정확하고 역할에 맞는 관리 링크만 노출 | Guest | 메뉴 13 상세의 식당 링크를 열어 `/restaurants/13`, fixture 식당 및 메뉴 2개가 표시됨. 메뉴/관리 링크별 역할 노출과 viewport는 NOT RUN. | PARTIAL |
+| 20 | 회원가입 입력·제출·오류 | Guest | 360, 390, 1440 | 유효하지 않은 입력과 synthetic 신규 계정으로 가입 | 검증 오류 안내; 성공 시 로그인 상태/안내와 안전한 next 경로 | Guest | 빈 가입 폼 제출 시 브라우저 필수 입력 오류가 표시됨. 유효 계정 등록은 SMTP/계정 데이터 부작용을 추가하지 않기 위해 진행하지 않음; other viewports NOT RUN. | PARTIAL |
+| 21 | 로그인 입력·제출·오류 | Guest | 360, 390, 1440 | 실패 로그인, 성공 로그인, `next` 경로 로그인 | 오류 안내; 성공 후 허용된 경로로 복귀, 외부/위험 경로 차단 | Guest | 빈 로그인 제출 시 필수 입력 안내 확인; 리뷰 진입 링크는 `/login?next=/menus/13`를 보존. fixture 계정 로그인은 credential을 안전히 CUA에 전달할 수 없어 BLOCKED; other viewports NOT RUN. | PARTIAL |
 | 22 | 로그아웃 | Member/owner/admin | 360, 1440 | 로그아웃 선택 후 보호 경로 접근 | 세션 종료, 보호 경로 차단, 개인 정보/찜 미표시 | 실행 전 | NOT RUN |
 | 23 | 내 계정 페이지 링크·현재 정보 | Member/owner/admin | 360, 390, 1440 | 계정 화면 열기 | 이름/이메일 표시; 이메일 편집 입력은 없음 | 실행 전 | NOT RUN |
 | 24 | 표시 이름 저장 및 입력 검증 | Member/owner/admin | 360, 1440 | 이름 정상/빈 값/경계값 저장 | 성공·한국어 오류, 화면과 저장값 동기화 | 실행 전 | NOT RUN |
 | 25 | 비밀번호 변경 및 검증 오류 | Member/owner/admin | 360, 1440 | 현재·새 비밀번호 입력, 오입력/불일치 및 정상 저장 | 접근성 있는 오류; 성공 후 새 비밀번호로 로그인 가능 | 실행 전 | NOT RUN |
-| 26 | 리뷰 작성 진입/로그인 유도 | Guest | 360, 1440 | 리뷰 작성 버튼/링크 선택 | 로그인으로 이동하고 안전한 메뉴 복귀 경로 보존 | 실행 전 | NOT RUN |
+| 26 | 리뷰 작성 진입/로그인 유도 | Guest | 360, 1440 | 리뷰 작성 버튼/링크 선택 | 로그인으로 이동하고 안전한 메뉴 복귀 경로 보존 | Guest | 메뉴 13의 `로그인하고 리뷰 작성` 선택 후 `/login?next=/menus/13`로 이동. | PARTIAL |
 | 27 | 리뷰 별점 5개 별의 왼쪽 절반 | Member/owner/admin | 360, 390, 1440 | 전체/세부 별 각 왼쪽 클릭 | 0.5 단위 정확한 값; 10개 별 나열 아님 | 실행 전 | PARTIAL: member pointer selected/deselected 0.5 on own review edit form at 1265×720, restored 5.0 and cancelled; other star halves, dimensions, roles and viewports remain open. | PARTIAL |
 | 28 | 리뷰 별점 5개 별의 오른쪽 절반 | Member/owner/admin | 360, 390, 1440 | 전체/세부 별 각 오른쪽 클릭 | 1.0 단위 정확한 값; 별 5개만 표시 | 실행 전 | NOT RUN |
 | 29 | 전체/세부 동일 별 재클릭 | Member/owner/admin | 360, 1440 | 같은 값을 재클릭 | 입력값 제거; 전체 점수는 필수라 제출 차단, 선택 세부값은 NULL | 실행 전 | NOT RUN |
 | 30 | 세부 평가 선택 사항 | Member/owner/admin | 360, 1440 | 맛·가성비·양 미입력으로 전체 점수만 저장 | 저장 허용; 세부 정보는 보조 표시 또는 미평가 | 실행 전 | NOT RUN |
 | 31 | 댓글 입력·1,000자 제한 | Member/owner/admin | 360, 1440 | 빈 댓글, 1,000자, 초과 입력 | 댓글 없이 저장 가능; 1,000자 초과 차단/오류 | 실행 전 | NOT RUN |
 | 32 | 이벤트 비참여 동의 | Member/owner/admin | 360, 1440 | 체크 안 한 제출과 체크한 제출 | 미체크는 차단; 체크 시 제출 성공 | 실행 전 | NOT RUN |
-| 33 | 리뷰 사진 선택·업로드·실패/재시도·제거 | Member/owner/admin | 360, 390, 1440 | synthetic 사진 선택, 추가, 오류/재시도, 제거 | 상태·진행률·파일목록 일치; 권리 확인 체크 UI 없음; 자체 객체만 cleanup | 실행 전 | NOT RUN |
+| 33 | 리뷰 사진 선택·업로드·실패/재시도·제거 | Member/owner/admin | 360, 390, 1440 | synthetic 사진 선택, 추가, 오류/재시도, 제거 | 상태·진행률·파일목록 일치; 권리 확인 체크 UI 없음; 자체 객체만 cleanup | Member | BLOCKED: role login unavailable in this CUA pass; the upload UI/file chooser was not reached. Local QA image candidates were not selected or uploaded. | BLOCKED |
 | 34 | 리뷰 작성 제출/취소 | Member/owner/admin | 360, 1440 | 유효/무효 제출 및 취소 | 저장 후 리뷰/집계 갱신; 취소 시 미저장 작성 종료 | 실행 전 | NOT RUN |
 | 35 | 타인 리뷰 좋아요/취소 | Member/owner/admin | 360, 1440 | 타인 리뷰에 좋아요 후 다시 취소 | 수/상태 전환 및 새로고침 후 보존 | 실행 전 | PARTIAL: member pointer liked/unliked another review at 1265×720 and restored count; broader roles/viewports and reload persistence remain open. | PARTIAL |
 | 36 | 본인 리뷰 좋아요 시도 | Member/owner/admin | 360, 1440 | 본인 리뷰 카드 확인 및 직접 API 합성 요청 | UI에 좋아요 미노출; API/RLS 거부 | 실행 전 | NOT RUN |
@@ -49,14 +49,14 @@
 | 41 | 리뷰·메뉴 이미지 오류/만료 새로고침 | Guest/member/owner/admin | 360, 390, 768, 1440 | 이미지 실패를 유발하고 재시도 동작 관찰 | 제한된 재발급, 전체 문서 이동 없음, bounded fallback; 요청 빈도 기록 | 실행 전 | NOT RUN |
 | 42 | 내 리뷰 페이지 및 이동 링크 | Guest/member/owner/admin | 360, 1440 | 페이지 링크 또는 직접 URL 열기 | 인증 안내 또는 본인 데이터만 표시, 찜/홈 링크 이동 | 실행 전 | PARTIAL: cookie-free GET /my-reviews redirected to /login; route protection only. Member page/link UI was pointer-tested only at 1265×720; roles/viewports and links remain open. | PARTIAL |
 | 43 | 찜 목록 및 이동 링크 | Guest/member/owner/admin | 360, 1440 | 페이지 링크 또는 직접 URL 열기 | 인증 안내 또는 본인 찜만 표시, 내 리뷰/홈 링크 이동 | 실행 전 | PARTIAL: cookie-free GET /wishlist redirected to /login; route protection only, no guest browser UI proof. | PARTIAL |
-| 44 | 서버 관리자 운영자 페이지 접근 | Guest/member/owner | 360, 1440 | 직접 URL 및 UI 링크 접근 | 비서버관리자 거부, 숨겨진 내용·행 미노출 | 실행 전 | PARTIAL: cookie-free GET /admin redirected to /login; route protection only, no role-specific rendered content/browser UI proof. | PARTIAL |
+| 44 | 서버 관리자 운영자 페이지 접근 | Guest/member/owner | 360, 1440 | 직접 URL 및 UI 링크 접근 | 비서버관리자 거부, 숨겨진 내용·행 미노출 | Guest | CUA에서 `/admin` 직접 열자 `/login?next=/admin`으로 이동. 역할별 인증 상태 및 내부 화면은 확인 못 함; prior cookie-free route result remains. | PARTIAL |
 | 45 | 업주 할당 검색/가게·사용자 선택 | Server admin | 360, 1440 | synthetic 계정·가게 검색 및 선택 | 옵션·현재 할당이 정확히 표시 | 실행 전 | NOT RUN |
 | 46 | 업주 할당/회수 | Server admin | 360, 1440 | synthetic 사용자-가게 할당 및 회수 | 권한·목록이 갱신되고 연관 범위 정확 | 실행 전 | NOT RUN |
 | 47 | 업주 할당 직접 API 권한 | Guest/member/owner | 360, 1440 | 할당/회수 API 호출 시도 | 서버/RLS가 거부 | 실행 전 | NOT RUN |
 | 48 | 업주 메뉴 추가/수정/초기화 | 해당 owner/server admin | 360, 1440 | synthetic 메뉴 저장·편집·폼 초기화 | 이름/설명/가격/분류 저장 후 목록 및 카드 갱신 | 실행 전 | NOT RUN |
 | 49 | 업주 메뉴 비활성화/재활성화 | 해당 owner/server admin | 360, 1440 | 메뉴 상태 변경 및 공개 화면 확인 | 비활성은 일반 탐색에서 숨김; 적절한 연결 리뷰와 권한 정책 유지 | 실행 전 | NOT RUN |
 | 50 | 다른 가게 메뉴 추가·수정 시도 | 다른 owner/member/guest | 360, 1440 | 직접 관리 경로/API/다른 restaurant ID 시도 | UI/API/RLS 모두 거부, 원래 메뉴 보존 | 실행 전 | NOT RUN |
-| 51 | 메뉴 사진 선택·업로드·실패/재시도/제거 | 해당 owner/server admin | 360, 390, 1440 | synthetic 사진 업로드 및 조치 | 오류 안내/재시도/파일 목록 정확, 권리 확인 동의 없음 | 실행 전 | NOT RUN |
+| 51 | 메뉴 사진 선택·업로드·실패/재시도/제거 | 해당 owner/server admin | 360, 390, 1440 | synthetic 사진 업로드 및 조치 | 오류 안내/재시도/파일 목록 정확, 권리 확인 동의 없음 | Owner/server admin | BLOCKED: role login unavailable in this CUA pass; the upload UI/file chooser was not reached. Local QA image candidates were not selected or uploaded. | BLOCKED |
 | 52 | loading/empty/error/success/image/no-image 화면 | Guest/member/owner/admin | 360, 390, 768, 1440 | 빈 검색/실패/성공/이미지 오류 상태 관찰 | 레이아웃 깨짐·가로 넘침 없음, 오류 재시도 가능 | 실행 전 | NOT RUN |
 | 53 | 키보드/포커스/ARIA 선택 컨트롤 | 모든 해당 역할 | 360, 1440 | Tab/Shift+Tab/Enter/Space 및 스크린리더 이름 검사 | 조작 가능, 포커스 보임, 상태/별점/버튼 이름 전달 | 실행 전 | NOT RUN |
 | 54 | 브라우저 뒤로/앞으로 및 필터 조합 | Guest/member/owner/admin | 360, 390, 768, 1440 | 필터 변경→상세→뒤로/앞으로, 필터 조합 | 주소/폼/결과가 일관되고 조건이 의도치 않게 초기화되지 않음 | 실행 전 | NOT RUN |
@@ -225,3 +225,80 @@ A Hybrid Tester inspected the available CUA browser inventory and found only the
 The Lead sent cookie-free, read-only HTTP requests to local `http://127.0.0.1:3001`: `/`, `/login`, `/signup`, `/menus/12`, and `/restaurants/12` returned 200; `/account`, `/my-reviews`, `/wishlist`, `/admin`, and `/restaurants/12/manage` redirected with 307 to `/login`. Query values are intentionally omitted. The home route returned 200 with each of `q=곰포차`, `sort=overall`, and `category=KOREAN`. These probes establish only HTTP route responses and redirect behavior; they do not prove visible controls, search correctness, rendered guest behavior, browser back/forward, or responsive UI.
 
 Pointer evidence is limited to member rows 4, 6, 13, 16, 18, 27, 35, and 42 at 1265×720. The cookie-free route evidence is limited to route protection for rows 12, 14, 42, 43, and 44. These rows remain PARTIAL; remaining roles, viewports and behaviors stay open. No guest click/back-forward or residual responsive assertions were performed. No state-changing action occurred, and no review/account/photo was created or deleted.
+
+### 2026-09-27 temporary local QA guest click pass
+
+Independent CUA click pass on temporary local Next app `http://localhost:3002/` and local disposable Supabase, guest session, one observed 1280×720 viewport. It did not touch `.env.local`, hosted settings, Production, the preserved `127.0.0.1:3001` tab, or database data. No screenshot was saved. Browser history back/forward was not exercised.
+
+| Observed control/flow | Result | Evidence |
+|---|---|---|
+| Home search and apply | PASS (guest path) | Search for the exact synthetic menu name returned one matching card and the URL contained `q`; applying the `주점` category added `category=PUB`. |
+| Clear all filters | PASS (guest path) | After search/category filters, `필터 초기화` returned to `/`, blank search/default category, and three result cards. |
+| 1km radius | PASS (guest path) | `1km` and `필터 적용` updated the URL to `radius=1000`; two results remained and an explanatory message said one menu without coordinates was excluded. |
+| Taste sort | PARTIAL | Selected `맛 평점순`; URL updated to `sort=taste`. No independent rank comparison across menus was performed. |
+| Place search without Naver credentials | PASS (expected fail-closed path) | Search button eventually showed configuration guidance that the Naver Local client credentials are missing; no place result could be selected. |
+| Current-location failure path | PASS (negative path) | Clicking `현재 위치로` showed a message that location could not be obtained and kept the campus default. No permission grant was accepted. |
+| Guest review and favorite controls | PASS (guest path) | Menu 13's review CTA retained `/menus/13` in `next`; favorite on a restaurant menu card redirected to login with that route retained. |
+| Guest personal/admin/account route guard | PASS (guest path) | Clicking home `내가 리뷰한 메뉴` and direct opening `/admin`, `/account`, and `/my-reviews` landed on login with each route in `next`; no personal/admin rows appeared. |
+| Signup/login validation | PARTIAL | Empty submit showed required-field validation. No new account or successful login was attempted. |
+| Menu and restaurant details | PASS (guest path) | Menu 13 detail rendered rating/subrating and one review; its restaurant link opened restaurant 13 and two menus. The page initially showed a loading label which resolved to the review after the next browser observation. |
+| Login to synthetic roles and authenticated workflows | BLOCKED | Fixture credentials were not exposed in terminal/tool output; the CUA virtual clipboard had no data and could not access the OS clipboard. No secret or credential was output. Member/owner/server-admin interactions and menu/review/media mutations were not attempted. |
+| Successful photo upload | BLOCKED | Role login was unavailable, so the upload UI/file chooser was not reached. Local QA image candidates existed in the temporary app copy, but none was selected or uploaded. |
+| Responsive coverage and browser history | NOT RUN | CUA viewport was not overridden; no 360/390/768/1440 claims. Back/forward was not used. |
+| Browser/app availability at close | BLOCKED | Following a `menus/12` detail observation, CUA showed a browser “page crashed” interstitial. A fresh local tab could not connect (`ERR_CONNECTION_REFUSED`); a local HTTP health request timed out. Treat this as an end-of-pass environment interruption, not a proven product defect. |
+
+No reviews, likes, favorites, account data, menu data, Storage objects, Vault secrets, or settings were changed during this pass. Exact role, viewport, media, edit/delete, admin and sort-order gaps remain open; the 57-row suite and Task 09 remain PARTIAL.
+
+### 2026-09-27 hosted public guest browser pass
+
+Hybrid Tester directly interacted with the deployed public site at `https://yum-review.vercel.app/` using the Codex In-app Browser. The tested session was a guest. The browser exposed no explicit viewport dimensions, so no responsive-size claim is made. All actions were read-only navigation or non-mutating filters/empty-form validation. No account was used or created, no review/like/favorite was submitted, and no hosted settings or data were changed.
+
+| Observed control/flow | Result | Exact visible state |
+|---|---|---|
+| Hosted home/catalog | PASS (guest, observed viewport only) | Home rendered `72 등록 메뉴` and `72 개 메뉴`; filter controls and guest login/signup links were available. |
+| Menu search and result | PASS | Entered `곰라면` and clicked `필터 적용`; URL became `/?q=%EA%B3%B0%EB%9D%BC%EB%A9%B4`, one menu appeared: 곰포차 죽전점 곰라면, 3,900원. |
+| Cuisine filter | PASS (control/application), result semantics PARTIAL | Chose `한식`, applied; URL added `category=KOREAN` and result count became 0 for the combined `곰라면` query. No broader cuisine dataset comparison was performed. |
+| Region filter | PASS (control/application) | Chose `죽전`, applied; URL added `region=%EC%A3%BD%EC%A0%84`. Combined query/cuisine remained empty. |
+| Taste sort | PASS (control/application), ranking PARTIAL | Chose `맛 평점순`, applied; URL added `sort=taste`. The active results were empty, so relative ordering was not validated. |
+| 1 km radius | PASS (control/application), distance semantics PARTIAL | Chose `1km`, applied; URL added `radius=1000`. Combined active filters had zero results, so boundary-distance calculations were not independently evaluated. |
+| Filter reset | PASS | Clicked `필터 초기화`; URL returned to `/`, search cleared and all selectors returned to defaults. |
+| Empty place search | PASS (empty-input path only) | With the place field blank, clicked `장소 찾기`; visible message: `장소 이름이나 주소를 입력해 주세요.` No external place lookup was submitted. |
+| Menu detail navigation | PASS | Opened `/menus/2`; detail showed 곰라면, 3,900원, overall/taste/value/portion as `미평가`, and 0 reviews. Image accessible name `곰라면 메뉴 사진` was present. |
+| Restaurant detail navigation | PASS | Clicked the restaurant link to `/restaurants/1`; page showed 곰포차 죽전점, region 죽전, and its menu list. |
+| Guest review-login redirect | PASS | Clicked `로그인하고 리뷰 작성` on `/menus/2`; landed on `/login?next=%2Fmenus%2F2`. |
+| Guest personal-filter redirect | PASS (home path preservation) | Clicked `내가 리뷰한 메뉴`; landed on `/login?next=%2F`. No personal data appeared. |
+| Empty login validation | PASS | Clicked `로그인` with both fields blank; browser showed `이 입력란을 작성하세요.` and focused the email field. |
+| Empty signup validation | PASS | Clicked `가입하기` with all fields blank; browser showed `이 입력란을 작성하세요.` and focused the first required field. No account was created. |
+
+This is a hosted guest-only pass, not full acceptance QA. Authenticated member/owner/server-admin paths, writes, media upload, successful place lookup, non-empty multi-result sort ranking, exact responsive viewports, and deeper error states remain unverified. Preserve the overall matrix and Task 09 as PARTIAL until remaining evidence is acquired.
+
+### 2026-09-28 synthetic photo-hide flow availability check
+
+Requested browser-only continuation for the latest photo-hide flow. The target was the temporary local QA app at `http://127.0.0.1:3002/`; browser navigation returned `ERR_CONNECTION_REFUSED` before a page rendered. No viewport was available, the route could not be inspected beyond `/`, and no owner session or visible-state panel controls could be exercised in this pass.
+
+Before any destructive UI action, the exact local fixture manifest was inspected. Its synthetic fixture listed three owner/member media assets, all `PENDING` with upload-intent or missing-object purposes; it listed no attached synthetic image. The manifest's aggregate baseline already had one review-photo row, which is pre-existing and not attributable to the synthetic fixture, so it was left untouched. No photo-hide or purge action was clicked, and no fixture, Storage object, hosted data, or Gompocha association was changed.
+
+| Check | Result | Evidence |
+|---|---|---|
+| Local app navigation | BLOCKED | Opened `http://127.0.0.1:3002/`; browser returned `ERR_CONNECTION_REFUSED` before rendering. Viewport unavailable. |
+| Exact synthetic fixture photo eligibility | NO SAFE TARGET | Three fixture media assets were pending intents; none was a confirmed attached photo. The existing baseline review-photo row was not targeted. |
+| Synthetic owner login and latest visible-state controls | NOT RUN | App was unreachable, so no login or panel interaction occurred. |
+| Recoverable “사진 숨기기” interaction / removePhoto behavior | NOT RUN | No confirmed attached synthetic photo existed to safely use as the UI target. |
+
+This availability/eligibility check made no application or data changes. Existing earlier ImageUpload panel observations remain historical evidence only; current visible-state controls and removePhoto race behavior are unverified. Keep Task 09 PARTIAL.
+### 2026-09-27 synthetic owner ImageUpload continuation
+
+An authenticated browser pass used the synthetic owner and only the disposable local Supabase stack at `http://127.0.0.1:3002/`. The owner opened the existing synthetic restaurant 13/menu 13 editor. The image panel mounted and showed “메뉴 사진”, accepted JPEG/PNG/WebP, the stated per-image 100MB limit, the empty-photo message, and the “사진 선택” button. The panel had no existing menu photo, so there was no preview to refresh or compare. No photo was selected or uploaded and no DB/Storage row was changed.
+
+| Observed flow | Result | Evidence |
+|---|---|---|
+| Synthetic owner authentication | PASS | Header identified `QA owner 451d4d4571`; owner-only management link was visible. |
+| Existing synthetic menu editor | PASS | Opened restaurant 13 management and edited menu 13, `QA 테스트 메뉴 A 451d4d4571`. |
+| ImageUpload panel mount | PASS | Panel appeared under the saved synthetic menu with accepted formats, size text, empty state, and photo-selection control. |
+| Existing menu image preview / refresh race | NOT RUN | Menu 13 had no registered photo. This pass did not create one. |
+| File selection, upload, removal | BLOCKED | Clicking the visible “사진 선택” button left the page and accessibility tree unchanged; this CUA surface did not expose a file-chooser handle or native picker. No upload was submitted. |
+| Hidden-tab 45-second refresh behavior | NOT RUN | The browser controls exposed no page-visibility override or timed network observation. |
+| Console/network request overlap | NOT RUN | The CUA surface used here exposed no console/network log API. |
+| Viewport | PARTIAL | Browser screenshot showed a desktop layout; exact dimensions were unavailable. No responsive-size claim is made. |
+
+This was a bounded interaction check, not proof of upload or refresh-race correctness. No hosted endpoint, production account/data, Gompocha menu, or non-synthetic local row was changed. Overall QA and the role/viewport matrix remain PARTIAL.
