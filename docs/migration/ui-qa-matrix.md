@@ -2,7 +2,7 @@
 
 실행 대상: 로컬 Next.js 앱 및 disposable local Supabase. 이 문서에는 `http://localhost:3001/`과 temporary QA app `http://localhost:3002/`에서 각각 수행한 pass가 구분되어 기록된다. 외부/hosted 서비스, `localhost:3000`, 운영 데이터는 대상에서 제외한다.
 
-상태는 각 실제 조작 후 `PASS`, `FAIL`, `PARTIAL`, `BLOCKED`, `NOT RUN`으로 갱신한다. 아래 57개 행은 역할·화면 크기별 전체 회귀 검사이며, 각 행을 끝까지 확인하지 않은 부분 검사는 `NOT RUN`으로 유지한다. 부분 브라우저 확인은 문서 아래 별도 기록한다. QA 중 만든 합성 계정·행·Storage 객체는 정확한 식별자를 기록하고 이 actor가 생성한 항목만 종료 전에 제거한다.
+상태는 각 실제 조작 후 `PASS`, `FAIL`, `PARTIAL`, `BLOCKED`, `NOT RUN`으로 갱신한다. 아래 57개 행은 역할·화면 크기별 전체 회귀 검사이며, 각 행을 끝까지 확인하지 않은 부분 검사는 `NOT RUN`으로 유지한다. 부분 브라우저 확인은 문서 아래 별도 기록한다. QA 중 만든 합성 계정·행·Storage 객체는 정확한 식별자를 기록하고 QA 실행에서 생성한 항목만 종료 전에 제거한다.
 
 | # | 화면/컨트롤 | 역할 | 뷰포트 | 시작 상태 및 조작 | 기대 결과 | 실제 결과/증거 | 상태 |
 |---:|---|---|---|---|---|---|---|
@@ -171,11 +171,11 @@ Next.js 프로덕션 빌드와 TypeScript 검사는 더미 loopback 설정으로
 
 ### 2026-09-26 내 리뷰 필터 확인 시도
 
-Hybrid QA 실행 시작 시 브라우저 인벤토리에 Codex in-app browser는 있었지만 열린 탭 목록이 비어 있었다. 지정 origin `http://127.0.0.1:3001/`의 기존 탭을 가져오려 했으나 “Tab not found in browser 1”로 실패했다. 새 탭을 열거나 로그인하지 않아 `/my-reviews` 페이지와 뷰포트는 관찰하지 못했다. 내 리뷰 검색·종류·지역·정렬·적용·초기화 필터와 찜 토글은 실행하지 않았다. 결과: NOT RUN, 기존 인증 브라우저 세션에 접근 불가.
+QA 확인을 시작할 때 브라우저 인벤토리에 Codex in-app browser는 있었지만 열린 탭 목록이 비어 있었다. 지정 origin `http://127.0.0.1:3001/`의 기존 탭을 가져오려 했으나 “Tab not found in browser 1”로 실패했다. 새 탭을 열거나 로그인하지 않아 `/my-reviews` 페이지와 뷰포트는 관찰하지 못했다. 내 리뷰 검색·종류·지역·정렬·적용·초기화 필터와 찜 토글은 실행하지 않았다. 결과: NOT RUN, 기존 인증 브라우저 세션에 접근 불가.
 
 ### 2026-09-26 member 개인 필터 직접 관찰 보충
 
-다음은 Lead가 직접 CUA 브라우저에서 관찰한 단일 인증 synthetic member 세션의 보충 증거다. 로컬 Next.js `http://127.0.0.1:3001/`와 disposable local Supabase를 사용했고, 계정은 `QA 사진 확인자`였다. 기존 57개 역할·viewport 기준 행의 상태는 변경하지 않으며, 전체 matrix는 여전히 부분 검사다.
+다음은 CUA 브라우저에서 관찰한 단일 인증 synthetic member 세션의 보충 증거다. 로컬 Next.js `http://127.0.0.1:3001/`와 disposable local Supabase를 사용했고, 계정은 `QA 사진 확인자`였다. 기존 57개 역할·viewport 기준 행의 상태는 변경하지 않으며, 전체 matrix는 여전히 부분 검사다.
 
 - `/my-reviews`에서 정확한 검색 `QA 사진 메뉴`는 review 1건을 반환했고 `qa-no-match-20260926`은 empty state를 표시했다. 필터 초기화로 review가 복구됐다. `category=KOREAN`, `region=죽전`, `sort=taste`, `mineReviews=1` 조합은 radius 없이 review 1건이었다. `radius=1000`은 좌표가 없는 식당 때문에 제외했고, radius 제거 후 1건이 복구됐다.
 - 조합 필터 상태에서 메뉴 12를 열고 브라우저 Back을 누르자 전체 필터 URL과 폼, review 1건이 복원됐다. Forward는 메뉴 상세로 이동했다. 처음의 짧은 인증 hydration/loading 상태는 인증된 review 상세로 해소됐다.
@@ -184,7 +184,7 @@ Hybrid QA 실행 시작 시 브라우저 인벤토리에 Codex in-app browser는
 
 ### 2026-09-26 member 찜·좋아요·리뷰 수정 폼 상호작용 보충
 
-Lead가 로컬 `http://127.0.0.1:3001/`의 인증 member `QA 사진 확인자` 세션에서 직접 관찰한 추가 증거다. 단일 브라우저 뷰포트에 한정되며, 전체 57개 역할·viewport matrix와 Task 09는 PARTIAL로 유지한다. 임시 찜은 검사 후 해제했다. 리뷰·계정·사진 데이터는 생성, 저장, 수정 또는 삭제하지 않았다.
+로컬 `http://127.0.0.1:3001/`에서 인증 member `QA 사진 확인자` 세션에서 직접 관찰한 추가 증거다. 단일 브라우저 뷰포트에 한정되며, 전체 57개 역할·viewport matrix와 Task 09는 PARTIAL로 유지한다. 임시 찜은 검사 후 해제했다. 리뷰·계정·사진 데이터는 생성, 저장, 수정 또는 삭제하지 않았다.
 
 | 확인한 동작 | 결과 | 관찰한 근거 |
 |---|---|---|
@@ -198,7 +198,7 @@ Lead가 로컬 `http://127.0.0.1:3001/`의 인증 member `QA 사진 확인자` �
 
 ### 2026-09-26 member 포인터 회귀 확인
 
-Hybrid Tester가 인증된 synthetic member `QA 사진 확인자` 세션에서 로컬 `http://127.0.0.1:3001/`을 CUA 포인터 좌표로 조작했다. 관찰 뷰포트는 1265×720 한 가지다. 각 변경 뒤 접근성 상태 또는 URL을 다시 확인했다. 브라우저 뷰포트 크기 override를 사용할 수 없어 360·390·768·1440px 결과는 확인하지 않았다. 이미지 캡처는 문서용 파일로 저장할 수 없어 본 보충에는 포함하지 않았다.
+인증된 synthetic member `QA 사진 확인자` 세션에서 로컬 `http://127.0.0.1:3001/`을 CUA 포인터 좌표로 조작했다. 관찰 뷰포트는 1265×720 한 가지다. 각 변경 뒤 접근성 상태 또는 URL을 다시 확인했다. 브라우저 뷰포트 크기 override를 사용할 수 없어 360·390·768·1440px 결과는 확인하지 않았다. 이미지 캡처는 문서용 파일로 저장할 수 없어 본 보충에는 포함하지 않았다.
 
 | 확인한 동작 | 결과 | 관찰한 근거 |
 |---|---|---|
@@ -215,14 +215,14 @@ Hybrid Tester가 인증된 synthetic member `QA 사진 확인자` 세션에서 �
 
 ### 2026-09-26 홈 화면 반응형 가로 넘침 확인
 
-Lead가 로컬 홈 화면에서 CSS 뷰포트 너비 360, 390, 768, 1440px를 각각 확인했다. 각 너비에서 `document.documentElement.scrollWidth <= innerWidth`가 참이어서 문서 전체의 가로 넘침은 관찰되지 않았다. 이 결과는 해당 네 너비에서 홈 화면 셸의 가로 넘침만 확인한다. 컨트롤 조작, 데이터 상태, 다른 경로 또는 각 화면 크기에서의 전체 역할별 흐름을 검증한 결과는 아니다. 캡처 파일은 저장하지 않았다. 기존 57개 matrix 행 상태는 그대로 두며 Task 09는 PARTIAL이다.
+로컬 홈 화면에서 CSS 뷰포트 너비 360, 390, 768, 1440px를 각각 확인했다. 각 너비에서 `document.documentElement.scrollWidth <= innerWidth`가 참이어서 문서 전체의 가로 넘침은 관찰되지 않았다. 이 결과는 해당 네 너비에서 홈 화면 셸의 가로 넘침만 확인한다. 컨트롤 조작, 데이터 상태, 다른 경로 또는 각 화면 크기에서의 전체 역할별 흐름을 검증한 결과는 아니다. 캡처 파일은 저장하지 않았다. 기존 57개 matrix 행 상태는 그대로 두며 Task 09는 PARTIAL이다.
 
 
 ## 2026-09-26 residual route-only QA and browser inventory limit
 
-A Hybrid Tester inspected the available CUA browser inventory and found only the Codex In-app Browser. A second IAB tab inherited the existing authenticated synthetic member session for `QA 사진 확인자`; no logout, data mutation, or guest-browser claim was made. No screenshots were saved. The residual run's bounded self-report is `reported` and linked to its decision.
+The available CUA browser inventory was inspected and found only the Codex In-app Browser. A second IAB tab inherited the existing authenticated synthetic member session for `QA 사진 확인자`; no logout, data mutation, or guest-browser claim was made. No screenshots were saved.
 
-The Lead sent cookie-free, read-only HTTP requests to local `http://127.0.0.1:3001`: `/`, `/login`, `/signup`, `/menus/12`, and `/restaurants/12` returned 200; `/account`, `/my-reviews`, `/wishlist`, `/admin`, and `/restaurants/12/manage` redirected with 307 to `/login`. Query values are intentionally omitted. The home route returned 200 with each of `q=곰포차`, `sort=overall`, and `category=KOREAN`. These probes establish only HTTP route responses and redirect behavior; they do not prove visible controls, search correctness, rendered guest behavior, browser back/forward, or responsive UI.
+Cookie-free, read-only HTTP requests were sent to local `http://127.0.0.1:3001`: `/`, `/login`, `/signup`, `/menus/12`, and `/restaurants/12` returned 200; `/account`, `/my-reviews`, `/wishlist`, `/admin`, and `/restaurants/12/manage` redirected with 307 to `/login`. Query values are intentionally omitted. The home route returned 200 with each of `q=곰포차`, `sort=overall`, and `category=KOREAN`. These probes establish only HTTP route responses and redirect behavior; they do not prove visible controls, search correctness, rendered guest behavior, browser back/forward, or responsive UI.
 
 Pointer evidence is limited to member rows 4, 6, 13, 16, 18, 27, 35, and 42 at 1265×720. The cookie-free route evidence is limited to route protection for rows 12, 14, 42, 43, and 44. These rows remain PARTIAL; remaining roles, viewports and behaviors stay open. No guest click/back-forward or residual responsive assertions were performed. No state-changing action occurred, and no review/account/photo was created or deleted.
 
@@ -251,7 +251,7 @@ No reviews, likes, favorites, account data, menu data, Storage objects, Vault se
 
 ### 2026-09-27 hosted public guest browser pass
 
-Hybrid Tester directly interacted with the deployed public site at `https://yum-review.vercel.app/` using the Codex In-app Browser. The tested session was a guest. The browser exposed no explicit viewport dimensions, so no responsive-size claim is made. All actions were read-only navigation or non-mutating filters/empty-form validation. No account was used or created, no review/like/favorite was submitted, and no hosted settings or data were changed.
+A read-only browser pass was performed on the deployed public site at `https://yum-review.vercel.app/` using the Codex In-app Browser. The tested session was a guest. The browser exposed no explicit viewport dimensions, so no responsive-size claim is made. All actions were read-only navigation or non-mutating filters/empty-form validation. No account was used or created, no review/like/favorite was submitted, and no hosted settings or data were changed.
 
 | Observed control/flow | Result | Exact visible state |
 |---|---|---|

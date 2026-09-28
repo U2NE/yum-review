@@ -58,12 +58,10 @@ QA는 별도 Compose 프로젝트와 데이터베이스를 사용합니다. 실�
 .\scripts\run-qa-e2e.ps1
 ```
 
-검증한 경로와 남은 데이터/권한 범위는 [QA 기록](.planning/phases/02-product-expansion/QA.md)에 정리되어 있습니다.
+검증한 경로와 남은 데이터/권한 범위는 [QA 기록](docs/migration/ui-qa-matrix.md)에 정리되어 있습니다.
 
 ## 관련 파일
 
-- 승인 사양: `.planning/phases/02-product-expansion/SPEC.md`
-- Hybrid 실행 계획: `.planning/phases/02-product-expansion/PLAN.md`
 - 카탈로그 출처: `docs/jukjeon-catalog-sources.md`
 - 로컬 서버 시작: `scripts/run-local-mvp.ps1`
 - 격리 브라우저 QA: `scripts/run-qa-e2e.ps1`
