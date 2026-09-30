@@ -72,6 +72,17 @@ export function assertExactStoragePaths(storagePaths: readonly string[], assetPa
   }
 }
 
+/** Removes only the two restaurant columns introduced by the consent migration.
+ * They are absent from the pre-migration catalog shape and therefore cannot be
+ * part of a before/after preservation comparison across that schema change.
+ */
+export function normalizeHostedRestaurantRow(row: Record<string, unknown>): Record<string, unknown> {
+  const catalogRow = { ...row };
+  delete catalogRow.location_consent_version;
+  delete catalogRow.location_consent_at;
+  return catalogRow;
+}
+
 export function buildDryRunArgs(dbUrl: string): string[] {
   return ["db", "push", "--dry-run", "--db-url", dbUrl];
 }
@@ -288,7 +299,7 @@ export async function readHostedCatalog(config: RuntimeConfig): Promise<CatalogS
     };
     await Promise.all(Array.from({ length: Math.min(5, items.length) }, () => readWorker()));
     return {
-      restaurants: restaurantsResult.rows.map(row => row.row),
+      restaurants: restaurantsResult.rows.map(row => normalizeHostedRestaurantRow(row.row)),
       menus: menusResult.rows.map(row => ({ ...row.row, restaurantId: row.row.restaurant_id })),
       menuPhotos: photos,
     };

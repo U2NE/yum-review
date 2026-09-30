@@ -17,3 +17,18 @@
 | Account/review purge | NOT STARTED | No account or review data was deleted. Supabase freeze, Storage principal/TUS proof, and the separately verified legacy purge remain required. |
 
 This document records release readiness, not completion of the broader G8 plan. Do not call the service fully ready until all blocked provider, deployment, QA, and legacy gates have evidence.
+
+## G9 update — 2026-10-01
+
+| Area | Status | Evidence / remaining gate |
+|---|---|---|
+| Hosted database schema | PASS | The tracked CLI apply recorded all four approved migrations through `20260928140000`; history has 18 versions. The exact three PG17 membership rows and restricted role attributes match the approved shape; guard-owner `CREATE` is absent from `private` and `public`; the write freeze remains inactive. |
+| Restaurant/menu and MENU preservation | BLOCKED | Post-apply counts remain 3/72/40, MENU byte total remains 11,576,811, Gompocha remains 1/40/40, and the exact Storage path set matches metadata. The apply wrapper's same-process keyed manifest compare failed after the two restaurant consent columns were added. Its process-only key and earlier snapshot were not persisted, so exact historical same-key reconciliation is unavailable. |
+| Supabase Auth password policy and Site URL | NOT VERIFIED | No hosted Auth setting was changed or rechecked during G9. |
+| Sender and SMTP | BLOCKED / NOT VERIFIED | No delivery test or sender change was performed. Built-in SMTP limits still prevent a production deliverability claim. |
+| Vercel production release | NOT RUN | No push, deployment, callback check, or production smoke occurred. |
+| Legacy schema/data and consent drops | BLOCKED | No legacy operation was attempted. See [legacy release verification](legacy-release-verification.md). |
+| Role/viewport QA | NOT RUN for G9 | No new browser QA was performed. The matrix remains partial. |
+| Account/review purge | NOT STARTED | No account or review data was deleted; Auth, Storage-principal, TUS, and legacy proofs remain required. |
+
+The hosted schema is applied, but release readiness remains **BLOCKED** until the historical preservation comparison gap is resolved and the remaining authorized gates are completed. The updated manifest wrapper excludes only the two consent columns newly introduced by G9 for future comparisons; that code correction is prospective and is not proof of the earlier before/after state.

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { assertExactPendingMigrations, assertExactStoragePaths, buildApplyArgs, buildDryRunArgs, safeCliFailure } from "../../scripts/qa/hosted-catalog-manifest";
+import { assertExactPendingMigrations, assertExactStoragePaths, buildApplyArgs, buildDryRunArgs, normalizeHostedRestaurantRow, safeCliFailure } from "../../scripts/qa/hosted-catalog-manifest";
 
 const expected = [
   "20260928115000_personal_data_write_freeze.sql",
@@ -26,6 +26,13 @@ test("hosted MENU Storage path gate requires the exact 40-object set", () => {
   assert.throws(() => assertExactStoragePaths(paths.slice(1), paths));
   assert.throws(() => assertExactStoragePaths([...paths, "menu/synthetic/extra.webp"], paths));
   assert.throws(() => assertExactStoragePaths([...paths.slice(0, 39), paths[0]], paths));
+});
+
+test("hosted row comparison ignores only the two G9-added restaurant consent columns", () => {
+  const before = { id: 7, name: "synthetic", address: "sample", latitude: 1, longitude: 2 };
+  const after = { ...before, location_consent_version: null, location_consent_at: null };
+  assert.deepEqual(normalizeHostedRestaurantRow(after), before);
+  assert.deepEqual(normalizeHostedRestaurantRow({ ...after, address: "changed" }), { ...before, address: "changed" });
 });
 
 test("CLI failure reporting preserves only bounded code and SQLSTATE, never raw output", () => {
