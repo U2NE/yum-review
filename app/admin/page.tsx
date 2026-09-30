@@ -4,6 +4,7 @@ import { OwnerAssignments, type AdminRestaurant, type AdminUser, type OwnerAssig
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { requireServerAdmin } from "@/lib/auth/guards";
 import { listAuthUserIds } from "@/lib/supabase/admin.server";
+import { personalWriteFreezeResponse } from "@/lib/supabase/personal-write-gate.server";
 import styles from "@/components/auth/auth.module.css";
 
 export const metadata: Metadata = { title: "운영자 관리" };
@@ -70,6 +71,8 @@ export default async function AdminPage() {
     "use server";
 
     const { supabase: callerClient } = await requireServerAdmin();
+    const freezeResponse = await personalWriteFreezeResponse(callerClient);
+    if (freezeResponse) return { ok: false, message: "개인정보 변경을 잠시 중단했습니다." };
     if (
       !USER_ID_PATTERN.test(userId) ||
       !/^\d+$/.test(restaurantId) ||

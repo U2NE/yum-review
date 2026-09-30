@@ -4,6 +4,11 @@ const BUCKET = "yum-review-media";
 const SIGNED_READ_TTL_SECONDS = 60 * 60;
 type BrowserSupabaseClient = ReturnType<typeof createSupabaseBrowserClient>;
 
+async function requirePersonalWritesOpen(supabase: BrowserSupabaseClient) {
+  const { data, error } = await supabase.rpc("personal_data_write_is_frozen");
+  if (error || data !== false) throw new Error("개인정보 변경을 잠시 중단했습니다.");
+}
+
 export type MediaPreview = {
   id: string;
   url: string;
@@ -96,6 +101,7 @@ export async function attachMenuPhoto(
   menuId: number,
   mediaId: string | null,
 ): Promise<void> {
+  await requirePersonalWritesOpen(supabase);
   const { data, error } = await supabase
     .from("menus")
     .update({ photo_media_id: mediaId })
@@ -111,6 +117,7 @@ export async function attachReviewPhoto(
   mediaId: string,
   sortOrder = 0,
 ): Promise<void> {
+  await requirePersonalWritesOpen(supabase);
   const { error } = await supabase.from("review_photos").upsert(
     { review_id: reviewId, media_id: mediaId, sort_order: sortOrder },
     { onConflict: "review_id,media_id", ignoreDuplicates: true },
@@ -127,6 +134,7 @@ export async function detachReviewPhoto(
   reviewId: number,
   mediaId: string,
 ): Promise<void> {
+  await requirePersonalWritesOpen(supabase);
   const { data, error } = await supabase
     .from("review_photos")
     .delete()
@@ -142,6 +150,7 @@ export async function queueDetachedMediaCleanup(
   supabase: BrowserSupabaseClient,
   mediaId: string,
 ): Promise<void> {
+  await requirePersonalWritesOpen(supabase);
   const { data, error } = await supabase.rpc("queue_media_cleanup", { p_media_id: mediaId });
   if (error || data !== true) throw new Error("사진은 숨겼지만 정리 요청을 등록하지 못했어요. 관리자에게 문의해 주세요.");
 }

@@ -9,6 +9,7 @@ import {
 } from "@/lib/media/verify-proof";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { claimMediaVerificationSlot, releaseMediaVerificationSlot } from "@/lib/supabase/admin.server";
+import { personalWriteFreezeResponse } from "@/lib/supabase/personal-write-gate.server";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -53,6 +54,8 @@ function retryResponse(seconds: number) {
 
 export async function POST(request: Request) {
   if (request.headers.get("origin") !== new URL(request.url).origin) return response("요청을 확인해 주세요.", 403);
+  const freezeResponse = await personalWriteFreezeResponse();
+  if (freezeResponse) return freezeResponse;
   const parsed = await readBoundedJson(request, 2048);
   if (!parsed.ok) return response("요청 형식이 올바르지 않습니다.", parsed.status);
   const body = parsed.value;

@@ -68,7 +68,15 @@ export function SignupForm({ returnTo }: { returnTo: string }) {
         return;
       }
 
-      const { data, error } = await createSupabaseBrowserClient().auth.signUp({
+      const supabase = createSupabaseBrowserClient();
+      const { data: frozen, error: freezeError } = await supabase.rpc("personal_data_write_is_frozen");
+      if (freezeError || frozen !== false) {
+        setPending(false);
+        setMessage("개인정보 변경을 잠시 중단했습니다.");
+        return;
+      }
+
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {

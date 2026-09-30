@@ -2,6 +2,11 @@ import type { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 type SupabaseClient = ReturnType<typeof createSupabaseBrowserClient>;
 
+async function requirePersonalWritesOpen(supabase: SupabaseClient) {
+  const { data, error } = await supabase.rpc("personal_data_write_is_frozen");
+  if (error || data !== false) throw new Error("개인정보 변경을 잠시 중단했습니다.");
+}
+
 export type ReviewLikeSummary = { count: number; likedByMe: boolean };
 
 function chunk<T>(items: T[], size: number): T[][] {
@@ -72,6 +77,7 @@ export async function toggleReviewLike(
   if (!viewerId || viewerId === reviewOwnerId) {
     throw new Error("다른 사람의 리뷰에만 좋아요를 누를 수 있어요.");
   }
+  await requirePersonalWritesOpen(supabase);
 
   if (currentlyLiked) {
     const { error } = await supabase

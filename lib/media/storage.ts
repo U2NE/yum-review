@@ -105,6 +105,11 @@ function tusHeaders(accessToken: string): Record<string, string> {
   };
 }
 
+async function assertMediaWritesOpen(client: BrowserSupabaseClient): Promise<void> {
+  const { data, error } = await client.rpc("personal_data_write_is_frozen");
+  if (error || data !== false) throw new Error("개인정보 변경을 잠시 중단했습니다.");
+}
+
 async function readOffset(location: string, accessToken: string, expectedSize: number): Promise<number> {
   const response = await fetch(location, {
     method: "HEAD",
@@ -126,6 +131,7 @@ async function uploadTus(
   file: File,
   onProgress?: (progress: MediaUploadProgress) => void,
 ): Promise<void> {
+  await assertMediaWritesOpen(client);
   const { data: sessionData, error: sessionError } = await client.auth.getSession();
   const accessToken = sessionData.session?.access_token;
   if (sessionError || !accessToken) throw new Error("로그인 상태를 확인한 뒤 다시 시도해 주세요.");
@@ -166,6 +172,7 @@ async function uploadTus(
     let sent = false;
     for (let attempt = 0; attempt < 5 && !sent; attempt += 1) {
       try {
+        await assertMediaWritesOpen(client);
         const response = await fetch(location, {
           method: "PATCH",
           headers: {
@@ -188,6 +195,7 @@ async function uploadTus(
           throw new Error("큰 사진을 저장하지 못했어요. 업로드를 다시 시도해 주세요.");
         }
       } catch (error) {
+        if (error instanceof Error && error.message.includes("개인정보 변경을 잠시 중단했습니다")) throw error;
         if (error instanceof Error && error.message.includes("큰 사진을 저장하지 못했어요")) throw error;
         if (attempt === 4) throw new Error("큰 사진 업로드 연결이 불안정해요. 파일을 다시 선택해 주세요.");
         await new Promise((resolve) => setTimeout(resolve, 350 * (attempt + 1)));
@@ -216,6 +224,7 @@ export async function uploadMedia(
   target: UploadTarget,
   onProgress?: (progress: MediaUploadProgress) => void,
 ): Promise<MediaUploadResult> {
+  await assertMediaWritesOpen(supabase);
   const prepared = await validateAndOptimizeImage(sourceFile);
   const { data: userData, error: userError } = await supabase.auth.getUser();
   if (userError || !userData.user) throw new Error("사진을 올리려면 먼저 로그인해 주세요.");
@@ -237,6 +246,7 @@ export async function uploadMedia(
     if (prepared.file.size > TUS_UPLOAD_THRESHOLD) {
       await uploadTus(supabase, row.object_path, prepared.file, onProgress);
     } else {
+      await assertMediaWritesOpen(supabase);
       const { error } = await supabase.storage.from(BUCKET).upload(row.object_path, prepared.file, {
         contentType: prepared.contentType,
         cacheControl: "3600",
@@ -255,6 +265,11 @@ export async function uploadMedia(
     });
     if (!activation.ok) throw new Error("사진은 전송됐지만 실제 파일 검증을 완료하지 못했어요. 다시 시도해 주세요.");
   } catch (error) {
+    try {
+      await assertMediaWritesOpen(supabase);
+    } catch {
+      throw error;
+    }
     // Tombstoning is safe even if the transfer failed halfway; physical removal
     // remains delayed and retryable under the local Storage delete policy.
     const { data: queued, error: cleanupError } = await supabase.rpc("queue_media_cleanup", { p_media_id: row.media_id });

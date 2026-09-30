@@ -1,9 +1,11 @@
 package com.yumreview.media;
 
 import com.yumreview.auth.AppUser;
+import com.yumreview.auth.PersonalDataWriteGateFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.convert.DurationStyle;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -32,15 +34,25 @@ public class ImageLifecycleService {
     private final ImageStorageService storage;
     private final MediaConfiguration.MediaProperties properties;
     private final TransactionTemplate cleanupTransaction;
+    private final PersonalDataWriteGateFilter writeGate;
 
+    @Autowired
     public ImageLifecycleService(StoredImageRepository images, ImageStorageService storage,
                                  MediaConfiguration.MediaProperties properties,
-                                 PlatformTransactionManager transactionManager) {
+                                 PlatformTransactionManager transactionManager,
+                                 PersonalDataWriteGateFilter writeGate) {
         this.images = images;
         this.storage = storage;
         this.properties = properties;
+        this.writeGate = writeGate;
         this.cleanupTransaction = new TransactionTemplate(transactionManager);
         this.cleanupTransaction.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+    }
+
+    ImageLifecycleService(StoredImageRepository images, ImageStorageService storage,
+                          MediaConfiguration.MediaProperties properties,
+                          PlatformTransactionManager transactionManager) {
+        this(images, storage, properties, transactionManager, null);
     }
 
     /**
@@ -51,6 +63,7 @@ public class ImageLifecycleService {
     @Transactional(propagation = Propagation.MANDATORY)
     public StoredImage requireAttachableBy(String mediaId, AppUser actor,
                                            ImageStorageService.MediaKind expectedKind) {
+        requireWritesOpen();
         if (actor == null || actor.getId() == null || expectedKind == null) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "사진을 연결할 권한이 없습니다.");
         }
@@ -84,6 +97,7 @@ public class ImageLifecycleService {
      */
     @Transactional(propagation = Propagation.MANDATORY)
     public void scheduleDeletion(String mediaId) {
+        requireWritesOpen();
         StoredImage image = images.findLockedByMediaId(mediaId).orElse(null);
         if (image == null) return;
         image.markDeletePending();
@@ -92,6 +106,7 @@ public class ImageLifecycleService {
 
     @Transactional
     int markAgedUnattachedImagesForDeletion() {
+        if (writesFrozen()) return 0;
         OffsetDateTime before = OffsetDateTime.now(ZoneOffset.UTC)
                 .minus(duration(properties.getUnattachedImageGrace()));
         List<StoredImage> candidates = images.findByLifecycleStatusAndCreatedAtBeforeOrderByCreatedAtAsc(
@@ -109,6 +124,7 @@ public class ImageLifecycleService {
     }
 
     int retryPendingDeletes() {
+        if (writesFrozen()) return 0;
         List<StoredImage> pending = images.findByLifecycleStatusOrderByCreatedAtAsc(
                 StoredImage.DELETE_PENDING, PageRequest.of(0, 200));
         int deleted = 0;
@@ -117,6 +133,10 @@ public class ImageLifecycleService {
     }
 
     int cleanStaleTemporaryFiles() {
+        return underOpenWriteGate(this::cleanStaleTemporaryFilesInsideGate);
+    }
+
+    private int cleanStaleTemporaryFilesInsideGate() {
         var directory = properties.getTemporaryDirectory();
         OffsetDateTime cutoff = OffsetDateTime.now(ZoneOffset.UTC)
                 .minus(duration(properties.getStagingFileGrace()));
@@ -138,6 +158,10 @@ public class ImageLifecycleService {
     }
 
     int cleanAgedOrphanFiles() {
+        return underOpenWriteGate(this::cleanAgedOrphanFilesInsideGate);
+    }
+
+    private int cleanAgedOrphanFilesInsideGate() {
         OffsetDateTime cutoff = OffsetDateTime.now(ZoneOffset.UTC)
                 .minus(duration(properties.getUnattachedImageGrace()));
         int removed = 0;
@@ -158,6 +182,18 @@ public class ImageLifecycleService {
         return removed;
     }
 
+    private int underOpenWriteGate(java.util.function.IntSupplier cleanup) {
+        if (writesFrozen()) return 0;
+        Integer result = cleanupTransaction.execute(status -> {
+            if (writeGate != null && writeGate.lockSharedAndIsFrozen()) {
+                status.setRollbackOnly();
+                return 0;
+            }
+            return cleanup.getAsInt();
+        });
+        return result == null ? 0 : result;
+    }
+
     private void registerAfterCommitCleanup(String mediaId) {
         if (!TransactionSynchronizationManager.isSynchronizationActive()) {
             throw new IllegalStateException("Image lifecycle changes require an active transaction");
@@ -171,8 +207,13 @@ public class ImageLifecycleService {
     }
 
     private boolean cleanupOne(String mediaId) {
+        if (writesFrozen()) return false;
         try {
             Boolean removed = cleanupTransaction.execute(status -> {
+                if (writeGate != null && writeGate.lockSharedAndIsFrozen()) {
+                    status.setRollbackOnly();
+                    return false;
+                }
                 StoredImage image = images.findLockedByMediaId(mediaId).orElse(null);
                 if (image == null) return true;
                 if (!StoredImage.DELETE_PENDING.equals(image.getLifecycleStatus())) return false;
@@ -200,5 +241,16 @@ public class ImageLifecycleService {
 
     private static Duration duration(String configured) {
         return DurationStyle.detectAndParse(configured);
+    }
+
+    private void requireWritesOpen() {
+        if (writesFrozen()) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
+                    "개인정보 변경을 잠시 중단했습니다.");
+        }
+    }
+
+    private boolean writesFrozen() {
+        return writeGate != null && writeGate.isFrozen();
     }
 }

@@ -40,7 +40,14 @@ export function AccountSettings({
     }
 
     setNamePending(true);
-    const { error } = await createSupabaseBrowserClient()
+    const supabase = createSupabaseBrowserClient();
+    const { data: frozen, error: freezeError } = await supabase.rpc("personal_data_write_is_frozen");
+    if (freezeError || frozen !== false) {
+      setNamePending(false);
+      setNameMessage("개인정보 변경을 잠시 중단했습니다.");
+      return;
+    }
+    const { error } = await supabase
       .from("profiles")
       .update({ display_name: cleaned })
       .eq("user_id", userId);

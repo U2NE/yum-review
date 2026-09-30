@@ -4,6 +4,11 @@ type SupabaseClient = ReturnType<typeof createSupabaseBrowserClient>;
 type WishlistedMenuRow = { menu_id: number | string };
 type ActiveMenuRow = { id: number | string };
 
+async function requirePersonalWritesOpen(supabase: SupabaseClient) {
+  const { data, error } = await supabase.rpc("personal_data_write_is_frozen");
+  if (error || data !== false) throw new Error("개인정보 변경을 잠시 중단했습니다.");
+}
+
 export async function getWishlistedMenuIds(
   supabase: SupabaseClient,
   userId: string,
@@ -23,6 +28,7 @@ export async function toggleMenuWishlist(
   userId: string,
   currentlyWishlisted: boolean,
 ): Promise<boolean> {
+  await requirePersonalWritesOpen(supabase);
   if (!Number.isInteger(menuId) || menuId < 1 || !userId) {
     throw new Error("로그인 후 이용해 주세요.");
   }

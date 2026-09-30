@@ -1,6 +1,7 @@
 package com.yumreview.media;
 
 import com.yumreview.auth.AppUser;
+import com.yumreview.auth.PersonalDataWriteGateFilter;
 import com.yumreview.auth.RestaurantOwnerRepository;
 import javax.imageio.ImageIO;
 import javax.imageio.IIOImage;
@@ -12,6 +13,7 @@ import javax.imageio.stream.ImageOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -50,18 +52,29 @@ public class ImageStorageService {
     private final MediaConfiguration.MediaProperties properties;
     private final StoredImageRepository images;
     private final RestaurantOwnerRepository owners;
+    private final PersonalDataWriteGateFilter writeGate;
 
+    @Autowired
     public ImageStorageService(MediaConfiguration.MediaProperties properties,
                                StoredImageRepository images,
-                               RestaurantOwnerRepository owners) {
+                               RestaurantOwnerRepository owners,
+                               PersonalDataWriteGateFilter writeGate) {
         this.properties = properties;
         this.images = images;
         this.owners = owners;
+        this.writeGate = writeGate;
+    }
+
+    ImageStorageService(MediaConfiguration.MediaProperties properties,
+                        StoredImageRepository images,
+                        RestaurantOwnerRepository owners) {
+        this(properties, images, owners, null);
     }
 
     @Transactional
     public UploadResult upload(MultipartFile file, MediaKind kind, Provenance provenance,
                                boolean rightsAttested, String rightsBasis, AppUser actor) {
+        requireWritesOpen();
         if (actor == null || actor.getId() == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
         }
@@ -144,8 +157,18 @@ public class ImageStorageService {
     }
 
     void deleteStoredBytes(String storageKey) throws IOException {
+        if (writeGate != null && writeGate.isFrozen()) {
+            throw new IOException("Personal-data write freeze is active");
+        }
         Path path = resolveStorageKey(storageKey);
         Files.deleteIfExists(path);
+    }
+
+    private void requireWritesOpen() {
+        if (writeGate != null && writeGate.lockSharedAndIsFrozen()) {
+            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
+                    "개인정보 변경을 잠시 중단했습니다.");
+        }
     }
 
     Path activeImagePath(StoredImage image) {

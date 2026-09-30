@@ -8,6 +8,7 @@ import styles from "@/components/catalog/discovery/discovery.module.css";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { requireRestaurantOwner } from "@/lib/auth/guards";
 import { isCuisineCategory, loadRestaurantMenus } from "@/lib/data/catalog";
+import { personalWriteFreezeResponse } from "@/lib/supabase/personal-write-gate.server";
 
 export const metadata: Metadata = { title: "메뉴 관리" };
 export const dynamic = "force-dynamic";
@@ -42,6 +43,8 @@ export default async function RestaurantManagePage({ params }: RestaurantManageP
       return { ok: false, message: "가게 정보를 확인할 수 없어요." };
     }
     const { supabase: callerClient } = await requireRestaurantOwner(id);
+    const freezeResponse = await personalWriteFreezeResponse(callerClient);
+    if (freezeResponse) return { ok: false, message: "개인정보 변경을 잠시 중단했습니다." };
     const name = typeof input.name === "string" ? input.name.trim() : "";
     const description = typeof input.description === "string" ? input.description.trim() : "";
     const priceKrw = input.priceKrw;

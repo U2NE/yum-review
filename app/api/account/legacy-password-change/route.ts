@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { passwordPolicyIssue, passwordPolicyMessage } from "@/lib/auth/password-policy";
 import { readBoundedJson } from "@/lib/server/read-bounded-json.server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { personalWriteFreezeResponse } from "@/lib/supabase/personal-write-gate.server";
 
 export const runtime = "nodejs";
 
@@ -55,6 +56,8 @@ function isRetryablePasswordUpdateError(error: unknown) {
 
 export async function POST(request: Request) {
   if (request.headers.get("origin") !== new URL(request.url).origin) return reply("요청을 확인해 주세요.", 403);
+  const freezeResponse = await personalWriteFreezeResponse();
+  if (freezeResponse) return freezeResponse;
   let passwordChanged = false;
   let passwordUpdateAttempted = false;
   let legacyGateConfirmed = false;

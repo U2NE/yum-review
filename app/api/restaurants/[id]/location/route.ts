@@ -5,6 +5,7 @@ import { hasValidCoordinates } from "@/lib/location/distance";
 import { readBoundedJson } from "@/lib/server/read-bounded-json.server";
 import { consumeLocationSearchQuota } from "@/lib/security/location-rate-limit.server";
 import { setRestaurantLocationServer } from "@/lib/supabase/admin.server";
+import { personalWriteFreezeResponse } from "@/lib/supabase/personal-write-gate.server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
@@ -25,6 +26,9 @@ export async function POST(request: Request, context: RouteContext) {
   if (!/^\d+$/.test(id) || !Number.isSafeInteger(Number(id)) || Number(id) < 1) {
     return reply({ error: "가게 정보를 확인할 수 없어요." }, 400);
   }
+
+  const freezeResponse = await personalWriteFreezeResponse();
+  if (freezeResponse) return freezeResponse;
 
   const parsed = await readBoundedJson(request, 2048);
   if (!parsed.ok) return reply({ error: "가게 주소와 동의 여부를 확인해 주세요." }, parsed.status);

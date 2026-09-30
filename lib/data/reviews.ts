@@ -31,6 +31,11 @@ export type ReviewCardData = ReviewRow & {
 
 type SupabaseClient = ReturnType<typeof createSupabaseBrowserClient>;
 
+async function requirePersonalWritesOpen(supabase: SupabaseClient) {
+  const { data, error } = await supabase.rpc("personal_data_write_is_frozen");
+  if (error || data !== false) throw new Error("개인정보 변경을 잠시 중단했습니다.");
+}
+
 export async function fetchMenuReviews(
   supabase: SupabaseClient,
   menuId: number,
@@ -86,6 +91,7 @@ export async function saveReview(
   payload: ReviewSavePayload,
   existingReviewId?: number,
 ): Promise<ReviewRow> {
+  await requirePersonalWritesOpen(supabase);
   if (!Number.isInteger(payload.menuId) || payload.menuId < 1) {
     throw new Error("메뉴 정보를 확인할 수 없어요.");
   }
@@ -143,6 +149,7 @@ export async function deleteReview(
   viewerId: string,
   allowAdminDelete = false,
 ) {
+  await requirePersonalWritesOpen(supabase);
   let query = supabase.from("reviews").delete().eq("id", reviewId);
   if (!allowAdminDelete) query = query.eq("user_id", viewerId);
   const { data, error } = await query.select("id").maybeSingle();

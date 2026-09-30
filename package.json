@@ -11,11 +11,13 @@
     "migrate:import": "tsx scripts/migrate/import-supabase.ts",
     "migrate:verify": "tsx scripts/migrate/verify-supabase-import.ts",
     "test:unit": "tsx --test scripts/migrate/import-media.test.ts scripts/qa/catalog-preservation-manifest.test.ts tests/unit/browser-qa-safety.test.ts",
-    "test:integration": "tsx --test tests/integration/purge-journal.test.ts tests/integration/owner-menu-disposable-crud.test.ts",
+    "test:integration": "tsx --test tests/integration/purge-journal.test.ts tests/integration/owner-menu-disposable-crud.test.ts tests/integration/personal-data-write-freeze.test.ts",
+    "test:schema:disposable": "npx supabase test db",
     "qa:catalog-manifest": "tsx scripts/qa/catalog-preservation-manifest.ts",
     "qa:browser-matrix": "tsx scripts/qa/run-browser-matrix.ts",
     "test:owner-menu-fixture": "tsx scripts/qa/owner-menu-fixture.ts --self-test",
-    "qa:purge": "tsx scripts/qa/personal-data-purge.ts"
+    "qa:purge": "tsx scripts/qa/personal-data-purge.ts",
+    "qa:purge-freeze": "tsx scripts/qa/purge-write-freeze.ts"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.7",
