@@ -7,6 +7,7 @@ import { requireSignedIn, readMyAccess } from "@/lib/auth/guards";
 import { DANKOOK_JUKJEON } from "@/lib/data/location";
 import { loadDiscoveryCatalog, parseCatalogFilters } from "@/lib/data/catalog";
 import type { ReviewCardData, ReviewRow } from "@/lib/data/reviews";
+import styles from "@/components/auth/auth.module.css";
 
 export const metadata: Metadata = { title: "내 리뷰" };
 export const dynamic = "force-dynamic";
@@ -41,7 +42,7 @@ export default async function MyReviewsPage({
   const reviewResults = await Promise.all(chunks(menuIds).map((ids) =>
     supabase
       .from("reviews")
-      .select("id, user_id, menu_id, overall_score, taste_score, value_score, portion_score, comment, non_event_review_consent, created_at, updated_at")
+      .select("id, user_id, menu_id, overall_score, taste_score, value_score, portion_score, comment, created_at, updated_at")
       .eq("user_id", userId)
       .in("menu_id", ids),
   ));
@@ -65,16 +66,16 @@ export default async function MyReviewsPage({
   });
 
   return (
-    <div style={{ minHeight: "100vh" }}>
+    <div className={styles.page}>
       <SiteHeader />
-      <main style={{ width: "calc(100% - 2rem)", maxWidth: "72rem", margin: "2rem auto 4rem", display: "grid", gap: "1.2rem" }}>
-        <header style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "end", gap: "1rem" }}>
+      <main className={styles.listPage}>
+        <header className={styles.listHeader}>
           <div>
-            <p style={{ color: "var(--accent)", fontWeight: 700, margin: 0 }}>내 기록</p>
-            <h1 style={{ margin: "0.2rem 0", fontSize: "clamp(1.7rem, 5vw, 2.4rem)" }}>내 리뷰</h1>
-            <p style={{ margin: 0, color: "var(--muted)" }}>내가 먹어 본 메뉴와 기록을 한곳에서 관리해요.</p>
+            <p className={styles.listEyebrow}>내 기록</p>
+            <h1 className={styles.listTitle}>내 리뷰</h1>
+            <p className={styles.listDescription}>내가 먹어 본 메뉴와 기록을 한곳에서 관리해요.</p>
           </div>
-          <Link href="/wishlist" style={linkButton}>찜한 메뉴 보기</Link>
+          <Link className={styles.listLink} href="/wishlist">찜한 메뉴 보기</Link>
         </header>
 
         <DiscoveryFilters
@@ -88,49 +89,33 @@ export default async function MyReviewsPage({
         />
 
         {loadFailed ? (
-          <section role="alert" style={emptyPanel}>
-            <h2 style={{ margin: "0 0 0.3rem", fontSize: "1.1rem" }}>리뷰를 불러오지 못했어요</h2>
-            <p style={{ margin: 0, color: "var(--muted)" }}>잠시 후 페이지를 새로고침해 주세요.</p>
+          <section className={styles.emptyPanel} role="alert">
+            <h2>리뷰를 불러오지 못했어요</h2>
+            <p>잠시 후 페이지를 새로고침해 주세요.</p>
           </section>
         ) : cards.length ? (
           <>
-            <p style={{ margin: 0, color: "var(--muted)" }}>검색 결과 {cards.length}개</p>
-            {cards.map(({ review, menuName }) => (
-              <ReviewCard
-                key={review.id}
-                review={review}
-                menuName={menuName}
-                currentUserId={userId}
-                isServerAdmin={access.isServerAdmin}
-              />
-            ))}
+            <p className={styles.resultCount}>검색 결과 {cards.length}개</p>
+            <div className={styles.reviewList}>
+              {cards.map(({ review, menuName }) => (
+                <ReviewCard
+                  key={review.id}
+                  review={review}
+                  menuName={menuName}
+                  currentUserId={userId}
+                  isServerAdmin={access.isServerAdmin}
+                />
+              ))}
+            </div>
           </>
         ) : (
-          <section style={emptyPanel}>
-            <h2 style={{ margin: "0 0 0.3rem", fontSize: "1.1rem" }}>조건에 맞는 리뷰가 없어요</h2>
-            <p style={{ margin: "0 0 0.8rem", color: "var(--muted)" }}>검색어나 지역·거리 조건을 바꾸거나 메뉴를 둘러보세요.</p>
-            <Link href="/" style={linkButton}>메뉴 둘러보기</Link>
+          <section className={styles.emptyPanel}>
+            <h2>조건에 맞는 리뷰가 없어요</h2>
+            <p>검색어나 지역·거리 조건을 바꾸거나 메뉴를 둘러보세요.</p>
+            <Link className={styles.listLink} href="/">메뉴 둘러보기</Link>
           </section>
         )}
       </main>
     </div>
   );
 }
-
-const linkButton = {
-  display: "inline-flex",
-  width: "fit-content",
-  border: "1px solid var(--line)",
-  borderRadius: "999px",
-  background: "var(--surface)",
-  padding: "0.5rem 0.85rem",
-  textDecoration: "none",
-  fontWeight: 650,
-} as const;
-
-const emptyPanel = {
-  border: "1px solid var(--line)",
-  borderRadius: "0.85rem",
-  padding: "1.3rem",
-  background: "var(--surface)",
-} as const;

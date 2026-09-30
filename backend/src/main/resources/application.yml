@@ -31,6 +31,11 @@ spring:
     enabled: true
 
 yum-review:
+  vworld:
+    api-key: ${VWORLD_API_KEY:}
+  location-rate-limit:
+    url: ${UPSTASH_REDIS_REST_URL:}
+    token: ${UPSTASH_REDIS_REST_TOKEN:}
   media:
     directory: ${YUM_REVIEW_MEDIA_DIR:./var/media}
     max-upload-bytes: 99999999

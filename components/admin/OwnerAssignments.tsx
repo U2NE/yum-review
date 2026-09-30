@@ -28,6 +28,7 @@ export function OwnerAssignments({
   const [selectedUser, setSelectedUser] = useState("");
   const [selectedRestaurant, setSelectedRestaurant] = useState("");
   const [message, setMessage] = useState("");
+  const [messageIsError, setMessageIsError] = useState(false);
   const [pendingKey, setPendingKey] = useState("");
 
   const usersById = useMemo(() => new Map(users.map((user) => [user.id, user])), [users]);
@@ -53,11 +54,14 @@ export function OwnerAssignments({
     const key = `${userId}:${restaurantId}`;
     setPendingKey(key);
     setMessage("");
+    setMessageIsError(false);
     try {
       const result = await setOwner(userId, restaurantId, isOwner);
       setMessage(result.message);
+      setMessageIsError(!result.ok);
     } catch {
       setMessage("요청을 처리하지 못했어요. 권한을 확인하고 다시 시도해 주세요.");
+      setMessageIsError(true);
     } finally {
       setPendingKey("");
     }
@@ -124,7 +128,7 @@ export function OwnerAssignments({
         </button>
       </div>
 
-      {message ? <p className={styles.message} role="status">{message}</p> : null}
+      {message ? <p className={`${styles.message} ${messageIsError ? "" : styles.success}`} role={messageIsError ? "alert" : "status"}>{message}</p> : null}
 
       <h2 className={styles.sectionTitle}>현재 연결</h2>
       {filteredAssignments.length ? (

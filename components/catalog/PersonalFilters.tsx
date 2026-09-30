@@ -58,7 +58,8 @@ function filterButton(active: boolean) {
     borderRadius: "999px",
     background: active ? "var(--accent-soft)" : "var(--surface)",
     color: active ? "var(--ink)" : "var(--muted)",
-    padding: "0.38rem 0.72rem",
+    minHeight: "44px",
+    padding: "0.5rem 0.9rem",
     cursor: "pointer",
     fontWeight: active ? 700 : 500,
   } as const;

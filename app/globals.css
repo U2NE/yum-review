@@ -1,14 +1,15 @@
 :root {
   color-scheme: light;
-  --paper: #f7f5f1;
-  --surface: #fffefa;
-  --ink: #292722;
-  --muted: #77736b;
-  --line: #e7e2d9;
-  --accent: #a7472c;
-  --accent-soft: #f3e6de;
-  --focus: #285e58;
-  --radius-card: 0.75rem;
+  --paper: #f4f7f0;
+  --surface: #ffffff;
+  --ink: #1c2b24;
+  --muted: #59675e;
+  --line: #d8e1d8;
+  --accent: #155e4b;
+  --accent-soft: #e8f1d9;
+  --focus: #146a61;
+  --citrus: #d6e86a;
+  --radius-card: 1rem;
   --content-width: 72rem;
 }
 
@@ -38,6 +39,10 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+main {
+  min-width: 0;
+}
+
 button,
 input,
 select,
@@ -52,6 +57,18 @@ a {
   text-underline-offset: 0.18em;
 }
 
+button,
+a,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
@@ -64,4 +81,15 @@ textarea:focus-visible {
 ::selection {
   background: var(--accent-soft);
   color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

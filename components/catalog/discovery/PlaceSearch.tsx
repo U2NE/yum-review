@@ -1,17 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import type { PlaceSuggestion } from "@/lib/data/location";
 import styles from "./discovery.module.css";
-
-type PlaceSuggestion = {
-  name: string;
-  category: string;
-  address: string;
-  roadAddress: string;
-  sourceUrl: string;
-  latitude: number | null;
-  longitude: number | null;
-};
 
 type PlaceSearchPayload = {
   configured: boolean;
@@ -38,8 +29,8 @@ export function PlaceSearch({
       setResults([]);
       return;
     }
-    if (cleaned.length > 100) {
-      setMessage("장소 검색어는 100자 이하여야 해요.");
+    if (cleaned.length > 160) {
+      setMessage("주소는 160자 이내로 입력해 주세요.");
       setResults([]);
       return;
     }
@@ -64,20 +55,20 @@ export function PlaceSearch({
 
   return (
     <section className={styles.placeSearch} aria-labelledby="place-search-title">
-      <h3 id="place-search-title">장소로 중심 바꾸기</h3>
+      <h3 id="place-search-title">주소로 거리 기준 정하기</h3>
       <form className={styles.placeForm} onSubmit={search}>
-        <label className={styles.visuallyHidden} htmlFor="place-query">장소 이름 또는 주소</label>
+        <label className={styles.visuallyHidden} htmlFor="place-query">주소 검색</label>
         <input
           id="place-query"
           className={styles.input}
           type="search"
-          maxLength={100}
+          maxLength={160}
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="예: 죽전역, 단국대학교"
+          placeholder="예: 서울 중구 세종대로 110"
         />
         <button className={styles.secondaryButton} type="submit" disabled={pending}>
-          {pending ? "찾는 중…" : "장소 찾기"}
+          {pending ? "주소 확인 중…" : "주소 찾기"}
         </button>
       </form>
       {message ? <p className={styles.placeMessage} role="status">{message}</p> : null}

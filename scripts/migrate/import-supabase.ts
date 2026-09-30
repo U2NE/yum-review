@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { Client } from "pg";
 
-export const EXPORT_FORMAT = "yum-review.spring-export/v1";
+export const EXPORT_FORMAT = "yum-review.spring-export/v2";
 export const TASK07_MEDIA_CONTRACT = "Normal interactive uploads send bytes to the configured yum-review-media Storage bucket and call POST /api/media/verify; that authenticated server path verifies the stored object and invokes public.activate_media_upload(p_media_id uuid, p_proof_payload text, p_proof_signature text) with a one-use proof. The retired one-argument activation RPC does not exist. Legacy bulk media imports use only the separate scripts/migrate/import-media.ts --apply --local-disposable-target workflow against a disposable local Supabase target. That importer validates the mapped uploader and exact menu/review target, checks the Storage object, byte count, and SHA-256 against the import manifest, then performs guarded local activation and exact photo association in its local database transaction. On any mismatch, preserve pending and unlinked media. Do not call the user-facing activation RPC or hand-roll a service-role bypass for bulk import.";
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const LOOPBACK_HOSTS = new Set(["localhost", "127.0.0.1", "::1", "[::1]"]);
@@ -31,7 +31,7 @@ export type ExportMenu = {
 export type ExportOwner = { userId: string; restaurantId: string; createdAt: string };
 export type ExportReview = {
   id: string; userId: string; menuId: string; overallScore: string; tasteScore: string; valueScore: string;
-  portionScore: string; comment: string | null; nonEventReviewConsent: boolean | null; createdAt: string; updatedAt: string;
+  portionScore: string; comment: string | null; createdAt: string; updatedAt: string;
 };
 export type ExportMedia = {
   mediaId: string; targetMediaId: string; storageKey: string; uploadedByUserId: string; contentType: string;
@@ -47,7 +47,7 @@ export type ImportArtifact = {
   manifest: {
     format: string; createdAt: string; sourceMigrations: string[]; counts: Record<string, number>;
     deferredMedia: { binaryObjectCount: number; staticMenuPhotoCount: number; total: number; staticMenuPhotoPaths: string[] };
-    dataSha256: string; emailConfirmationMapping: string; consentNullsPreserved: boolean;
+    dataSha256: string; emailConfirmationMapping: string;
   };
   data: ImportData;
 };
@@ -138,6 +138,10 @@ function validateData(data: ImportData): void {
     if (!userIds.has(owner.userId) || !restaurantIds.has(owner.restaurantId)) throw new Error("Orphan owner relation in private export.");
   }
   for (const review of data.reviews) {
+    const reviewKeys = ["id", "userId", "menuId", "overallScore", "tasteScore", "valueScore", "portionScore", "comment", "createdAt", "updatedAt"];
+    if (Object.keys(review).sort().join("\u0000") !== reviewKeys.sort().join("\u0000")) {
+      throw new Error("Unsupported review fields in private export.");
+    }
     assertId(review.id, "review ID"); assertId(review.userId, "review user ID"); assertId(review.menuId, "review menu ID");
     if (!userIds.has(review.userId) || !menuIds.has(review.menuId)) throw new Error("Orphan review relation in private export.");
     for (const score of [review.overallScore, review.tasteScore, review.valueScore, review.portionScore]) {
@@ -200,7 +204,7 @@ export async function readImportArtifact(inputPath: string, repositoryRoot?: str
   }
   const bundle = artifact as unknown as ImportArtifact;
   if (bundle.manifest.format !== EXPORT_FORMAT || bundle.manifest.emailConfirmationMapping !== "unconfirmed" ||
-      bundle.manifest.consentNullsPreserved !== true || bundle.manifest.dataSha256 !== digest(bundle.data)) {
+      bundle.manifest.dataSha256 !== digest(bundle.data)) {
     throw new Error("Private export manifest or integrity digest is invalid.");
   }
   validateData(bundle.data);
@@ -477,13 +481,12 @@ export async function inspectTargetState(
   for (const review of data.reviews) {
     const uuid = userUuidByLegacy.get(review.userId)!;
     const values = [review.id, uuid, review.menuId, review.overallScore, review.tasteScore, review.valueScore,
-      review.portionScore, review.comment, review.nonEventReviewConsent, review.createdAt, review.updatedAt];
+      review.portionScore, review.comment, review.createdAt, review.updatedAt];
     const action = await classify(client, "reviews", review.id,
       `SELECT id::text AS identity,
         (user_id = $2::uuid AND menu_id = $3 AND overall_score = $4::numeric AND taste_score = $5::numeric
          AND value_score = $6::numeric AND portion_score = $7::numeric AND comment IS NOT DISTINCT FROM $8
-         AND non_event_review_consent IS NOT DISTINCT FROM $9::boolean AND created_at = $10::timestamptz
-         AND updated_at = $11::timestamptz) AS exact
+         AND created_at = $9::timestamptz AND updated_at = $10::timestamptz) AS exact
        FROM public.reviews WHERE id = $1 OR (user_id = $2::uuid AND menu_id = $3)`, values, review.id);
     actions.reviews.set(review.id, action); if (action === "conflict") plan.conflicts += 1;
   }
@@ -630,11 +633,11 @@ async function insertPlannedRows(client: Client, artifact: ImportArtifact, plan:
     if (action("reviews", review.id) !== "insert") continue;
     await client.query(
       `INSERT INTO public.reviews (id, user_id, menu_id, overall_score, taste_score, value_score, portion_score,
-        comment, non_event_review_consent, created_at, updated_at)
+        comment, created_at, updated_at)
        VALUES ($1, $2::uuid, $3, $4::numeric, $5::numeric, $6::numeric, $7::numeric,
-        $8, $9::boolean, $10::timestamptz, $11::timestamptz)`,
+        $8, $9::timestamptz, $10::timestamptz)`,
       [review.id, targetUserId.get(review.userId)!, review.menuId, review.overallScore, review.tasteScore,
-        review.valueScore, review.portionScore, review.comment, review.nonEventReviewConsent, review.createdAt, review.updatedAt],
+        review.valueScore, review.portionScore, review.comment, review.createdAt, review.updatedAt],
     );
   }
 

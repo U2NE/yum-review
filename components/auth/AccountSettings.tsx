@@ -1,8 +1,18 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { passwordPolicyIssue, passwordPolicyMessage } from "@/lib/auth/password-policy";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 import styles from "./auth.module.css";
+
+function clearSubmittedPasswords(formElement: HTMLFormElement) {
+  for (const name of ["currentPassword", "password", "confirmation"]) {
+    const field = formElement.elements.namedItem(name);
+    if (field instanceof HTMLInputElement) field.value = "";
+  }
+}
+
+const unknownPasswordChangeMessage = "요청 결과를 확인하지 못했어요. 방금 제출한 새 비밀번호가 현재 비밀번호로 적용됐을 수 있습니다. 현재 비밀번호 입력란에 그 비밀번호를 입력하고, 다음 새 비밀번호는 그 비밀번호와 다르게 설정해 주세요.";
 
 export function AccountSettings({
   userId,
@@ -16,6 +26,9 @@ export function AccountSettings({
   const [passwordMessage, setPasswordMessage] = useState("");
   const [namePending, setNamePending] = useState(false);
   const [passwordPending, setPasswordPending] = useState(false);
+  const [gateRecoveryRequired, setGateRecoveryRequired] = useState(false);
+  const [passwordOutcomeUnknown, setPasswordOutcomeUnknown] = useState(false);
+  const [passwordChangeCommittedNeedsRecovery, setPasswordChangeCommittedNeedsRecovery] = useState(false);
 
   async function saveDisplayName(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -50,8 +63,9 @@ export function AccountSettings({
     const password = String(form.get("password") ?? "");
     const confirmation = String(form.get("confirmation") ?? "");
 
-    if (password.length < 8) {
-      setPasswordMessage("비밀번호를 8자 이상 입력해 주세요.");
+    const policyIssue = passwordPolicyIssue(password);
+    if (policyIssue) {
+      setPasswordMessage(passwordPolicyMessage(policyIssue));
       return;
     }
     if (password !== confirmation) {
@@ -64,30 +78,88 @@ export function AccountSettings({
     }
 
     setPasswordPending(true);
-    const response = await fetch("/api/account/legacy-password-change", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ currentPassword, newPassword: password }),
-      credentials: "same-origin",
-      cache: "no-store",
-    });
-    setPasswordPending(false);
+    try {
+      const response = await fetch("/api/account/legacy-password-change", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ currentPassword, newPassword: password }),
+        credentials: "same-origin",
+        cache: "no-store",
+      });
+      const result = await response.json().catch(() => null) as {
+        error?: string;
+        gatePending?: boolean;
+        outcomeUnknown?: boolean;
+        passwordChanged?: boolean;
+        passwordUnchanged?: boolean;
+      } | null;
 
-    if (!response.ok) {
-      const result = await response.json().catch(() => null) as { error?: string } | null;
-      setPasswordMessage(result?.error ?? "비밀번호를 변경하지 못했어요. 잠시 후 다시 시도해 주세요.");
-      return;
+      if (!response.ok) {
+        if (result?.passwordUnchanged === true || response.status === 400 || response.status === 401 || response.status === 403 || response.status === 422) {
+          setGateRecoveryRequired(false);
+          setPasswordChangeCommittedNeedsRecovery(false);
+          setPasswordOutcomeUnknown(false);
+          setPasswordMessage(result?.error ?? "비밀번호를 변경하지 못했어요. 입력한 내용을 확인하고 다시 시도해 주세요.");
+          return;
+        }
+        if (!result) {
+          setGateRecoveryRequired(false);
+          setPasswordChangeCommittedNeedsRecovery(false);
+          setPasswordOutcomeUnknown(true);
+          clearSubmittedPasswords(formElement);
+          setPasswordMessage(unknownPasswordChangeMessage);
+          return;
+        }
+
+        if (result?.gatePending === true) {
+          setGateRecoveryRequired(true);
+          setPasswordChangeCommittedNeedsRecovery(result.passwordChanged === true);
+          setPasswordOutcomeUnknown(result.passwordChanged !== true);
+          clearSubmittedPasswords(formElement);
+        } else if (result?.passwordChanged === true) {
+          setGateRecoveryRequired(false);
+          setPasswordChangeCommittedNeedsRecovery(true);
+          setPasswordOutcomeUnknown(false);
+          clearSubmittedPasswords(formElement);
+        } else if (result?.outcomeUnknown === true) {
+          setGateRecoveryRequired(false);
+          setPasswordChangeCommittedNeedsRecovery(false);
+          setPasswordOutcomeUnknown(true);
+          clearSubmittedPasswords(formElement);
+        } else if (response.status >= 500) {
+          setGateRecoveryRequired(false);
+          setPasswordChangeCommittedNeedsRecovery(false);
+          setPasswordOutcomeUnknown(true);
+          clearSubmittedPasswords(formElement);
+          setPasswordMessage(unknownPasswordChangeMessage);
+          return;
+        }
+        setPasswordMessage(result.error ?? "비밀번호를 변경하지 못했어요. 잠시 후 다시 시도해 주세요.");
+        return;
+      }
+
+      formElement.reset();
+      setGateRecoveryRequired(false);
+      setPasswordOutcomeUnknown(false);
+      setPasswordChangeCommittedNeedsRecovery(false);
+      setPasswordMessage("비밀번호를 변경했어요.");
+    } catch {
+      setGateRecoveryRequired(false);
+      setPasswordChangeCommittedNeedsRecovery(false);
+      setPasswordOutcomeUnknown(true);
+      clearSubmittedPasswords(formElement);
+      setPasswordMessage(unknownPasswordChangeMessage);
+    } finally {
+      setPasswordPending(false);
     }
-    formElement.reset();
-    setPasswordMessage("비밀번호를 변경했어요.");
   }
 
   return (
-    <div className={styles.card}>
-      <h1 className={styles.title}>내 계정</h1>
+    <section className={styles.card} aria-labelledby="account-settings-title">
+      <h2 className={styles.title} id="account-settings-title">프로필과 비밀번호</h2>
       <p className={styles.description}>표시 이름과 비밀번호를 관리할 수 있어요.</p>
 
-      <h2 className={styles.sectionTitle}>표시 이름</h2>
+      <h3 className={styles.sectionTitle}>표시 이름</h3>
       <form className={styles.form} onSubmit={saveDisplayName}>
         <label className={styles.field}>
           이름
@@ -111,10 +183,14 @@ export function AccountSettings({
         </button>
       </form>
 
-      <h2 className={styles.sectionTitle}>비밀번호</h2>
-      <form className={styles.form} onSubmit={savePassword}>
+      <h3 className={styles.sectionTitle}>비밀번호</h3>
+      <form className={styles.form} method="post" onSubmit={savePassword}>
         <label className={styles.field}>
-          현재 비밀번호
+          {passwordChangeCommittedNeedsRecovery
+            ? "방금 제출해 변경된 비밀번호 (현재 비밀번호)"
+            : gateRecoveryRequired || passwordOutcomeUnknown
+              ? "방금 제출한 새 비밀번호일 수 있는 현재 비밀번호"
+              : "현재 비밀번호"}
           <input
             className={styles.input}
             name="currentPassword"
@@ -146,14 +222,14 @@ export function AccountSettings({
           />
         </label>
         {passwordMessage ? (
-          <p className={`${styles.message} ${passwordMessage.includes("변경했어요") ? styles.success : ""}`} role="status">
+          <p className={`${styles.message} ${passwordMessage === "비밀번호를 변경했어요." ? styles.success : ""}`} role="status">
             {passwordMessage}
           </p>
         ) : null}
         <button className={styles.button} type="submit" disabled={passwordPending}>
-          {passwordPending ? "변경 중…" : "비밀번호 변경"}
+          {passwordPending ? "변경 중…" : gateRecoveryRequired ? "다른 비밀번호로 변경하고 완료 처리" : "비밀번호 변경"}
         </button>
       </form>
-    </div>
+    </section>
   );
 }

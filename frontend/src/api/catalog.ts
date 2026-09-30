@@ -71,6 +71,13 @@ export function searchPlaces(q: string) {
   return apiRequest<{ configured: boolean; success: boolean; message: string | null; results: PlaceSuggestion[] }>(`/api/location/search?${params.toString()}`)
 }
 
+export function reverseGeocode(latitude: number, longitude: number) {
+  return apiRequest<{ configured: boolean; success: boolean; message: string | null; address: string | null }>(
+    '/api/location/reverse',
+    { method: 'POST', json: { latitude, longitude } },
+  )
+}
+
 export function searchMenusAsList(input: MenuSearchInput = {}): Promise<MenuCard[]> {
   return searchMenus(input).then((result) => result.menus)
 }

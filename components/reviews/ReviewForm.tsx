@@ -10,7 +10,6 @@ type InitialReview = {
   value_score?: number | null;
   portion_score?: number | null;
   comment?: string | null;
-  non_event_review_consent?: boolean | null;
 };
 
 type ReviewFormProps = {
@@ -78,9 +77,9 @@ function RatingControl({
               style={{
                 position: "relative",
                 display: "inline-block",
-                width: "2.15rem",
-                height: "2.3rem",
-                flex: "0 0 2.15rem",
+                width: "2.75rem",
+                height: "2.75rem",
+                flex: "0 0 2.75rem",
               }}
             >
               <svg
@@ -94,7 +93,7 @@ function RatingControl({
                   pointerEvents: "none",
                 }}
               >
-                <path d={starPath} fill="#e4ddd2" stroke="#a99f91" strokeWidth="0.5" />
+                <path d={starPath} fill="#e5ece2" stroke="#829083" strokeWidth="0.5" />
               </svg>
               <span
                 aria-hidden="true"
@@ -108,7 +107,7 @@ function RatingControl({
                 }}
               >
                 <svg viewBox="0 0 24 24" style={{ width: "1.95rem", height: "1.95rem", maxWidth: "none" }}>
-                  <path d={starPath} fill="#a7472c" stroke="#7e321f" strokeWidth="0.5" />
+                  <path d={starPath} fill="#155e4b" stroke="#104f40" strokeWidth="0.5" />
                 </svg>
               </span>
               {[0, 1].map((half) => {
@@ -163,7 +162,6 @@ export function ReviewForm({ menuId, initialReview, onSave, onCancel }: ReviewFo
     portionScore: initialReview?.portion_score ?? null,
   });
   const [comment, setComment] = useState(initialReview?.comment ?? "");
-  const [consented, setConsented] = useState(false);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -176,10 +174,6 @@ export function ReviewForm({ menuId, initialReview, onSave, onCancel }: ReviewFo
     setError(null);
     if (scores.overallScore === null) {
       setError("전체 별점을 선택해 주세요.");
-      return;
-    }
-    if (!consented) {
-      setError("이벤트 참여 없이 작성한 리뷰인지 확인해 주세요.");
       return;
     }
     if ([...comment].length > 1000) {
@@ -196,7 +190,6 @@ export function ReviewForm({ menuId, initialReview, onSave, onCancel }: ReviewFo
         valueScore: scores.valueScore,
         portionScore: scores.portionScore,
         comment: comment.trim() || null,
-        nonEventConsent: true,
       });
     } catch (saveError) {
       setError(saveError instanceof Error ? saveError.message : "리뷰를 저장하지 못했어요.");
@@ -240,16 +233,6 @@ export function ReviewForm({ menuId, initialReview, onSave, onCancel }: ReviewFo
           {[...comment].length}/1,000
         </span>
       </label>
-      <label style={{ display: "flex", gap: "0.6rem", alignItems: "flex-start" }}>
-        <input
-          type="checkbox"
-          checked={consented}
-          onChange={(event) => setConsented(event.target.checked)}
-          required
-          style={{ marginTop: "0.32rem" }}
-        />
-        <span>이 리뷰는 이벤트 참여나 대가 없이 작성했어요. (필수)</span>
-      </label>
       {error ? <p role="alert" style={{ margin: 0, color: "#9a2e20" }}>{error}</p> : null}
       <div style={{ display: "flex", flexWrap: "wrap", gap: "0.55rem" }}>
         <button type="submit" disabled={pending} style={primaryButton}>
@@ -270,6 +253,7 @@ const primaryButton = {
   borderRadius: "999px",
   background: "var(--accent)",
   color: "white",
+  minHeight: "44px",
   padding: "0.55rem 1rem",
   fontWeight: 700,
   cursor: "pointer",
@@ -279,6 +263,7 @@ const secondaryButton = {
   border: "1px solid var(--line)",
   borderRadius: "999px",
   background: "var(--surface)",
+  minHeight: "44px",
   padding: "0.55rem 1rem",
   cursor: "pointer",
 } as const;

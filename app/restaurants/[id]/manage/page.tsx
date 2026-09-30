@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { RestaurantLocationForm } from "@/components/admin/RestaurantLocationForm";
 import { MenuEditor, type MenuSaveInput, type MenuSaveResult } from "@/components/admin/MenuEditor";
 import styles from "@/components/catalog/discovery/discovery.module.css";
 import { SiteHeader } from "@/components/site/SiteHeader";
@@ -119,6 +120,13 @@ export default async function RestaurantManagePage({ params }: RestaurantManageP
               <p className={styles.eyebrow}>가게 관리</p>
               <h1>{result.restaurant.name}</h1>
               <p className={styles.editorIntro}>등록된 메뉴를 만들고 수정하거나 비공개로 보관할 수 있어요.</p>
+            </section>
+            <section className={styles.detailSection}>
+              <RestaurantLocationForm
+                restaurantId={id}
+                address={result.restaurant.address}
+                hasCoordinates={result.restaurant.latitude !== null && result.restaurant.longitude !== null}
+              />
             </section>
             <section className={styles.detailSection}>
               <MenuEditor

@@ -1,11 +1,11 @@
 .filters {
   display: grid;
-  gap: 1.15rem;
+  gap: 1rem;
   border: 1px solid var(--line);
-  border-radius: 1rem;
+  border-radius: var(--radius-card);
   padding: clamp(1rem, 3vw, 1.5rem);
   background: var(--surface);
-  box-shadow: 0 0.8rem 2rem rgb(41 39 34 / 4%);
+  box-shadow: 0 0.75rem 2rem rgb(28 43 36 / 4%);
 }
 
 .filterHeading,
@@ -41,10 +41,14 @@
 }
 
 .textButton {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
   border: 0;
-  padding: 0.4rem 0;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.6rem;
   background: transparent;
-  color: var(--muted);
+  color: var(--accent);
   cursor: pointer;
   font-size: 0.88rem;
   text-decoration: underline;
@@ -71,9 +75,9 @@
   width: 100%;
   min-height: 2.75rem;
   border: 1px solid var(--line);
-  border-radius: 0.5rem;
-  padding: 0.55rem 0.7rem;
-  background: #fff;
+  border-radius: 0.65rem;
+  padding: 0.55rem 0.75rem;
+  background: var(--surface);
   color: var(--ink);
 }
 
@@ -82,6 +86,13 @@
   grid-template-columns: minmax(8rem, 0.8fr) minmax(10rem, 1.4fr) auto auto;
   align-items: end;
   margin-top: 0.75rem;
+}
+
+.locationDisclosure {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.5;
 }
 
 .centerLabel {
@@ -106,8 +117,8 @@
 .secondaryButton {
   min-height: 2.75rem;
   border: 1px solid var(--accent);
-  border-radius: 0.55rem;
-  padding: 0.5rem 0.85rem;
+  border-radius: 0.65rem;
+  padding: 0.5rem 0.9rem;
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 750;
@@ -142,7 +153,7 @@
   display: grid;
   gap: 0.65rem;
   border-top: 1px solid var(--line);
-  padding-top: 1rem;
+  padding-top: 1.25rem;
 }
 
 .placeSearch h3 {
@@ -168,19 +179,16 @@
 .placeResult {
   display: grid;
   width: 100%;
+  min-height: 2.75rem;
   gap: 0.12rem;
   border: 1px solid var(--line);
-  border-radius: 0.55rem;
-  padding: 0.65rem 0.75rem;
-  background: #fff;
+  border-radius: 0.65rem;
+  padding: 0.65rem 0.8rem;
+  background: var(--surface);
   color: var(--muted);
   cursor: pointer;
   text-align: left;
   font-size: 0.82rem;
-}
-
-.placeResult:hover:not(:disabled) {
-  border-color: var(--accent);
 }
 
 .placeResult:disabled {
@@ -222,13 +230,20 @@
 .homePage,
 .detailPage {
   min-height: 100vh;
-  padding: 0 1.25rem 4rem;
+  padding: 0 1rem 4rem;
+}
+
+@media (min-width: 851px) {
+  .homePage,
+  .detailPage {
+    padding-inline: 1.5rem;
+  }
 }
 
 .homeContent,
 .detailContent {
   width: min(100%, var(--content-width));
-  margin: 2.2rem auto 0;
+  margin: 2rem auto 0;
 }
 
 .hero {
@@ -236,7 +251,10 @@
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: end;
   gap: 2rem;
-  padding: 1rem 0 2.2rem;
+  border: 1px solid #d4e4cf;
+  border-radius: var(--radius-card);
+  padding: clamp(1.25rem, 4vw, 2rem);
+  background: linear-gradient(115deg, #e8f1d9 0%, #f8faf4 70%);
 }
 
 .hero h1 {
@@ -245,6 +263,7 @@
   font-size: clamp(2rem, 5.3vw, 3.5rem);
   line-height: 1.13;
   letter-spacing: -0.055em;
+  word-break: keep-all;
 }
 
 .heroDescription {
@@ -252,13 +271,16 @@
   margin: 0.85rem 0 0;
   color: var(--muted);
   font-size: clamp(0.95rem, 2vw, 1.08rem);
+  word-break: keep-all;
 }
 
 .heroAside {
   display: grid;
   justify-items: end;
   gap: 0.18rem;
-  padding-bottom: 0.35rem;
+  min-width: 7rem;
+  border-left: 1px solid #c9dac6;
+  padding: 0.15rem 0 0.15rem 1.25rem;
   color: var(--muted);
   font-size: 0.86rem;
 }
@@ -271,15 +293,16 @@
 
 .heroNumber {
   color: var(--ink);
-  font-size: 2.2rem;
+  font-size: clamp(2rem, 4vw, 2.75rem);
   font-weight: 800;
   letter-spacing: -0.06em;
+  line-height: 1;
 }
 
 .results {
   display: grid;
-  gap: 1.1rem;
-  margin-top: 2.2rem;
+  gap: 1rem;
+  margin-top: 2rem;
 }
 
 .resultsHeading,
@@ -309,10 +332,128 @@
   gap: 1rem;
 }
 
+.menuCard {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--surface);
+  box-shadow: 0 0.25rem 1rem rgb(28 43 36 / 4%);
+}
+
+.reviewCard {
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+  background: var(--surface);
+  box-shadow: 0 0.25rem 1rem rgb(28 43 36 / 4%);
+}
+
+.reviewCard a {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+}
+
+.reviewSection {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.menuCardLink {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.menuCardImage {
+  aspect-ratio: 16 / 10;
+  border-radius: 0.95rem 0.95rem 0 0;
+  overflow: hidden;
+  background: var(--accent-soft);
+}
+
+.menuCardImage > * {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.menuCardName {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.9rem 1rem 0.45rem;
+}
+
+.menuCardName span {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.menuCardName strong {
+  overflow-wrap: anywhere;
+  font-size: 1.08rem;
+  line-height: 1.35;
+}
+
+.menuCardDetails {
+  display: grid;
+  gap: 0.65rem;
+  padding: 0.2rem 1rem 1rem;
+}
+
+.menuCardMetadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.menuCardRating {
+  display: grid;
+  gap: 0.05rem;
+}
+
+.menuCardRating strong {
+  font-size: 1.2rem;
+}
+
+.menuCardRating small {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.wishButton {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.5rem 0.8rem;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.wishButton[aria-pressed="true"] {
+  border-color: #b8cdaa;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.wishButton:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
 .stateCard {
   border: 1px solid var(--line);
-  border-radius: 0.85rem;
-  padding: 1.1rem 1.2rem;
+  border-radius: var(--radius-card);
+  padding: 1.1rem 1.25rem;
   background: var(--surface);
   color: var(--muted);
 }
@@ -328,23 +469,39 @@
   margin: 0 0 0.45rem;
 }
 
+.homeContent > .stateCard {
+  margin-top: 2rem;
+}
+
+.homeContent > .stateCard p {
+  word-break: keep-all;
+}
+
 .stateCard a {
+  display: inline-flex;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  align-items: center;
   color: var(--accent);
   font-weight: 700;
 }
 
 .locationHint {
   margin: 0;
-  border-radius: 0.6rem;
-  padding: 0.65rem 0.8rem;
+  border: 1px solid #d4e4cf;
+  border-radius: 0.65rem;
+  padding: 0.7rem 0.85rem;
   background: var(--accent-soft);
-  color: #78351f;
+  color: var(--ink);
   font-size: 0.86rem;
 }
 
 .backLink {
   display: inline-flex;
-  margin-bottom: 1rem;
+  min-height: 2.75rem;
+  align-items: center;
+  margin: 0 0 0.5rem;
+  padding: 0.2rem 0.35rem;
   color: var(--muted);
   font-size: 0.88rem;
   text-decoration: none;
@@ -353,10 +510,10 @@
 .restaurantHero,
 .menuDetailCard {
   border: 1px solid var(--line);
-  border-radius: 1rem;
+  border-radius: var(--radius-card);
   padding: clamp(1.15rem, 4vw, 2rem);
   background: var(--surface);
-  box-shadow: 0 0.8rem 2rem rgb(41 39 34 / 4%);
+  box-shadow: 0 0.75rem 2rem rgb(28 43 36 / 4%);
 }
 
 .restaurantHero h1,
@@ -389,7 +546,7 @@
 }
 
 .detailSection {
-  margin-top: 2.3rem;
+  margin-top: 2rem;
 }
 
 .detailSectionHeading {
@@ -404,14 +561,49 @@
 
 .restaurantManageLink {
   display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
   border: 1px solid var(--line);
   border-radius: 999px;
-  padding: 0.48rem 0.8rem;
+  padding: 0.5rem 0.9rem;
   background: var(--surface);
   color: var(--ink);
   font-size: 0.85rem;
   font-weight: 700;
   text-decoration: none;
+}
+
+
+@media (hover: hover) {
+  .input:hover,
+  .select:hover {
+    border-color: #aabaae;
+  }
+
+  .primaryButton:hover:not(:disabled) {
+    background: #104f40;
+  }
+
+  .secondaryButton:hover:not(:disabled),
+  .placeResult:hover:not(:disabled),
+  .wishButton:hover:not(:disabled),
+  .restaurantManageLink:hover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .menuCard:hover {
+    border-color: #9fb7a4;
+    box-shadow: 0 0.5rem 1.4rem rgb(28 43 36 / 8%);
+  }
+
+  .reviewCard:hover {
+    border-color: #9fb7a4;
+  }
+
+  .backLink:hover {
+    color: var(--accent);
+  }
 }
 
 .menuDetailCard {
@@ -485,6 +677,12 @@
   font-size: 0.9rem;
 }
 
+@media (max-width: 760px) {
+  .menuDetailCard {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 850px) {
   .filterGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -530,6 +728,10 @@
 
   .heroAside {
     justify-items: start;
+    min-width: 0;
+    border-top: 1px solid #c9dac6;
+    border-left: 0;
+    padding: 0.8rem 0 0;
   }
 
   .menuGrid,

@@ -10,7 +10,7 @@ const scoreFields = [
   { key: 'portionScore', label: '양', helper: '양은 적당했나요?' },
 ] as const
 type ScoreKey = typeof scoreFields[number]['key']
-type ReviewInitial = Omit<Partial<ReviewInput>, 'nonEventReviewConsent'> & { photoMediaIds?: string[]; nonEventReviewConsent?: boolean | null }
+type ReviewInitial = Partial<ReviewInput> & { photoMediaIds?: string[] }
 
 type ReviewFormProps = {
   initialValue?: ReviewInitial
@@ -27,7 +27,6 @@ export default function ReviewForm({ initialValue, onSubmit, onCancel, submitLab
     portionScore: initialValue?.portionScore ?? 0,
   })
   const [comment, setComment] = useState(initialValue?.comment ?? '')
-  const [consent, setConsent] = useState(initialValue?.nonEventReviewConsent === true)
   const [rightsAttested, setRightsAttested] = useState(false)
   const [files, setFiles] = useState<File[]>([])
   const [removed, setRemoved] = useState<string[]>([])
@@ -50,11 +49,10 @@ export default function ReviewForm({ initialValue, onSubmit, onCancel, submitLab
     event.preventDefault()
     setError('')
     if (Object.values(scores).some((score) => score < 0.5 || score > 5)) { setError('네 가지 항목의 별점을 모두 선택해 주세요.'); return }
-    if (!consent) { setError('리뷰 이벤트 참여가 아닌 솔직한 리뷰라는 점에 동의해 주세요.'); return }
     if (files.length > 0 && !rightsAttested) { setError('첨부 사진의 촬영자이거나 게시 권한이 있는지 확인해 주세요.'); return }
     if (comment.length > 1000) { setError('코멘트는 1,000자 이내로 작성해 주세요.'); return }
     setSaving(true)
-    try { await onSubmit({ ...scores, comment: comment.trim() || null, nonEventReviewConsent: true }, files, removed) }
+    try { await onSubmit({ ...scores, comment: comment.trim() || null }, files, removed) }
     catch (reason) { setError(reviewErrorMessage(reason)) }
     finally { setSaving(false) }
   }
@@ -82,7 +80,6 @@ export default function ReviewForm({ initialValue, onSubmit, onCancel, submitLab
       <label className="photo-rights-check"><input type="checkbox" checked={rightsAttested} onChange={(event) => setRightsAttested(event.target.checked)} /><span>이 사진은 제가 촬영했거나, 게시 권한을 확인한 사진입니다.</span></label>
     </div>
 
-    <label className="review-consent"><input type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} /><span><b>리뷰 이벤트 참여가 아닌 솔직한 리뷰입니다.</b><small>이 항목에 동의해야 리뷰를 등록할 수 있어요.</small></span></label>
     <div className="review-form-footer"><span className="review-character-count">{comment.length.toLocaleString('ko-KR')} / 1,000자</span>{error && <p className="review-form-error" role="alert">{error}</p>}<div className="review-form-actions"><button type="button" className="button button-outline" onClick={onCancel} disabled={saving}>취소</button><button type="submit" className="button button-dark" disabled={saving}>{saving ? '저장 중…' : submitLabel ?? (initialValue ? '수정 저장' : '리뷰 저장')} <span aria-hidden="true">↗</span></button></div></div>
   </form>
 }

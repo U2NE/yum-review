@@ -1,7 +1,8 @@
 import "server-only";
 
 import type { createSupabaseServerClient } from "@/lib/supabase/server";
-import { DANKOOK_JUKJEON, DISTANCE_OPTIONS, type DistanceOption } from "@/lib/data/location";
+import { DISTANCE_OPTIONS, type DistanceOption } from "@/lib/data/location";
+import { hasValidCoordinates, isWithinRadius, type Coordinates } from "@/lib/location/distance";
 
 type SupabaseServerClient = Awaited<ReturnType<typeof createSupabaseServerClient>>;
 
@@ -24,9 +25,6 @@ export type CatalogFilters = {
   category: string;
   region: string;
   radius: DistanceOption;
-  latitude: number;
-  longitude: number;
-  place: string;
   sort: CatalogSort;
   mineReviews: boolean;
   wishlistedOnly: boolean;
@@ -130,12 +128,6 @@ export function isCuisineCategory(value: string): boolean {
 
 export function parseCatalogFilters(params: Record<string, string | string[] | undefined>): CatalogFilters {
   const first = (value: string | string[] | undefined) => Array.isArray(value) ? value[0] ?? "" : value ?? "";
-  const latitude = numeric(first(params.lat));
-  const longitude = numeric(first(params.lon));
-  const hasValidCoordinates = latitude !== null
-    && longitude !== null
-    && latitude >= -90 && latitude <= 90
-    && longitude >= -180 && longitude <= 180;
   const radiusValue = first(params.radius);
   const sortValue = first(params.sort);
   const categoryValue = first(params.category);
@@ -145,9 +137,6 @@ export function parseCatalogFilters(params: Record<string, string | string[] | u
     category: isCuisineCategory(categoryValue) ? categoryValue : "",
     region: first(params.region).trim().slice(0, 120),
     radius: DISTANCE_OPTIONS.includes(radiusValue as DistanceOption) ? radiusValue as DistanceOption : "all",
-    latitude: hasValidCoordinates ? latitude : DANKOOK_JUKJEON.latitude,
-    longitude: hasValidCoordinates ? longitude : DANKOOK_JUKJEON.longitude,
-    place: hasValidCoordinates ? first(params.place).trim().slice(0, 80) || DANKOOK_JUKJEON.label : DANKOOK_JUKJEON.label,
     sort: SORT_OPTIONS.includes(sortValue as CatalogSort) ? sortValue as CatalogSort : "overall",
     mineReviews: first(params.mineReviews) === "1",
     wishlistedOnly: first(params.wishlistedOnly) === "1",
@@ -290,16 +279,6 @@ async function fetchUserMenuIds(supabase: SupabaseServerClient, userId: string |
   return { reviewed, wishlisted };
 }
 
-function haversineMeters(a: RestaurantSummary, latitude: number, longitude: number) {
-  if (a.latitude === null || a.longitude === null) return null;
-  const radians = (degrees: number) => degrees * (Math.PI / 180);
-  const latDelta = radians(a.latitude - latitude);
-  const lonDelta = radians(a.longitude - longitude);
-  const value = Math.sin(latDelta / 2) ** 2
-    + Math.cos(radians(latitude)) * Math.cos(radians(a.latitude)) * Math.sin(lonDelta / 2) ** 2;
-  return 6_371_000 * 2 * Math.atan2(Math.sqrt(value), Math.sqrt(1 - value));
-}
-
 function sortMenus(items: MenuCatalogItem[], sort: CatalogSort) {
   const scoreField: Record<Exclude<CatalogSort, "reviewCount">, keyof MenuCatalogItem> = {
     overall: "score",
@@ -388,23 +367,12 @@ export async function loadDiscoveryCatalog(
   const items = await hydrateMenus(supabase, menus, restaurants, userId);
   const regions = [...new Set(allRestaurants.map((row) => row.region?.trim()).filter((region): region is string => Boolean(region)))].sort((a, b) => a.localeCompare(b, "ko"));
   const query = filters.q.toLocaleLowerCase("ko");
-  const radius = filters.radius === "all" ? null : Number(filters.radius);
-  let excludedWithoutCoordinates = 0;
-
   const filtered = items.filter((item) => {
     if (filters.category && item.cuisineCategory !== filters.category) return false;
     if (filters.region && item.restaurant.region !== filters.region) return false;
     if (query && ![item.name, item.description, item.restaurant.name, item.restaurant.description, item.restaurant.address]
       .filter((value): value is string => Boolean(value))
       .some((value) => value.toLocaleLowerCase("ko").includes(query))) return false;
-    if (radius !== null) {
-      const distance = haversineMeters(item.restaurant, filters.latitude, filters.longitude);
-      if (distance === null) {
-        excludedWithoutCoordinates += 1;
-        return false;
-      }
-      if (distance > radius) return false;
-    }
     if (filters.mineReviews && !item.hasReviewed) return false;
     if (filters.wishlistedOnly && !item.isWishlisted) return false;
     return true;
@@ -414,8 +382,47 @@ export async function loadDiscoveryCatalog(
     items: sortMenus(filtered, filters.sort),
     regions,
     totalMenus: menus.length,
-    excludedWithoutCoordinates,
+    excludedWithoutCoordinates: 0,
   };
+}
+
+/** Return only restaurant IDs so visitor coordinates and stored locations stay server-side. */
+export async function loadRestaurantIdsWithinRadius(
+  supabase: SupabaseServerClient,
+  origin: Coordinates,
+  radiusMeters: number,
+): Promise<string[]> {
+  if (!hasValidCoordinates(origin.latitude, origin.longitude)
+      || ![300, 500, 1000].includes(radiusMeters)) {
+    throw new Error("거리 검색 위치를 확인해 주세요.");
+  }
+
+  const matchingIds: string[] = [];
+  for (let start = 0; ; start += PAGE_SIZE) {
+    const { data, error } = await supabase
+      .from("restaurants")
+      .select("id, latitude, longitude")
+      .order("id", { ascending: true })
+      .range(start, start + PAGE_SIZE - 1);
+    if (error) throw new Error("거리 검색 정보를 불러오지 못했어요.");
+
+    const page = (data ?? []) as Array<{
+      id: number | string;
+      latitude: number | string | null;
+      longitude: number | string | null;
+    }>;
+    for (const restaurant of page) {
+      const id = safeId(restaurant.id);
+      const latitude = numeric(restaurant.latitude);
+      const longitude = numeric(restaurant.longitude);
+      if (id && latitude !== null && longitude !== null && hasValidCoordinates(latitude, longitude)
+          && isWithinRadius(origin, { latitude, longitude }, radiusMeters)) {
+        matchingIds.push(id);
+      }
+    }
+    if (page.length < PAGE_SIZE) break;
+  }
+  return matchingIds;
 }
 
 export async function loadRestaurant(supabase: SupabaseServerClient, restaurantId: string) {

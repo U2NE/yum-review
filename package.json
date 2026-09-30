@@ -9,7 +9,13 @@
     "start": "next start",
     "migrate:export": "tsx scripts/migrate/export-spring-data.ts",
     "migrate:import": "tsx scripts/migrate/import-supabase.ts",
-    "migrate:verify": "tsx scripts/migrate/verify-supabase-import.ts"
+    "migrate:verify": "tsx scripts/migrate/verify-supabase-import.ts",
+    "test:unit": "tsx --test scripts/migrate/import-media.test.ts scripts/qa/catalog-preservation-manifest.test.ts tests/unit/browser-qa-safety.test.ts",
+    "test:integration": "tsx --test tests/integration/purge-journal.test.ts tests/integration/owner-menu-disposable-crud.test.ts",
+    "qa:catalog-manifest": "tsx scripts/qa/catalog-preservation-manifest.ts",
+    "qa:browser-matrix": "tsx scripts/qa/run-browser-matrix.ts",
+    "test:owner-menu-fixture": "tsx scripts/qa/owner-menu-fixture.ts --self-test",
+    "qa:purge": "tsx scripts/qa/personal-data-purge.ts"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.7",

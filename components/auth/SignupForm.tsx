@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
+import { passwordPolicyIssue, passwordPolicyMessage } from "@/lib/auth/password-policy";
+import { buildAuthConfirmationRedirectUrl, safeAuthReturnTo } from "@/lib/auth/redirect-url";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
-import { safeReturnTo } from "./safeReturnTo";
 import styles from "./auth.module.css";
 
 export function SignupForm({ returnTo }: { returnTo: string }) {
@@ -19,7 +20,7 @@ export function SignupForm({ returnTo }: { returnTo: string }) {
 
     const form = new FormData(event.currentTarget);
     const displayName = String(form.get("displayName") ?? "").trim();
-    const email = String(form.get("email") ?? "").trim();
+    const email = String(form.get("email") ?? "").trim().toLowerCase();
     const password = String(form.get("password") ?? "");
 
     if (!displayName || displayName.length > 80) {
@@ -27,46 +28,88 @@ export function SignupForm({ returnTo }: { returnTo: string }) {
       setMessage("이름은 1자 이상 80자 이하로 입력해 주세요.");
       return;
     }
-    if (password.length < 8) {
+    const policyIssue = passwordPolicyIssue(password);
+    if (policyIssue) {
       setPending(false);
-      setMessage("비밀번호를 8자 이상 입력해 주세요.");
+      setMessage(passwordPolicyMessage(policyIssue));
       return;
     }
 
-    const target = safeReturnTo(returnTo);
-    const emailRedirectTo = new URL(
-      `/login?next=${encodeURIComponent(target)}`,
-      window.location.origin,
-    ).toString();
-    const { data, error } = await createSupabaseBrowserClient().auth.signUp({
-      email,
-      password,
-      options: {
-        data: { display_name: displayName },
-        emailRedirectTo,
-      },
-    });
-
-    setPending(false);
-    if (error) {
-      setMessage("가입을 완료하지 못했어요. 입력한 정보를 확인해 주세요.");
+    const target = safeAuthReturnTo(returnTo);
+    const emailRedirectTo = buildAuthConfirmationRedirectUrl(target, window.location.origin);
+    if (!emailRedirectTo) {
+      setPending(false);
+      setMessage("가입 확인 주소 설정을 완료하지 못했어요. 잠시 후 다시 시도해 주세요.");
       return;
     }
 
-    if (data.session) {
-      window.location.assign(target);
-      return;
-    }
+    try {
+      const lookupResponse = await fetch("/api/auth/email-status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+        credentials: "same-origin",
+        cache: "no-store",
+      });
+      const lookup = await lookupResponse.json().catch(() => null) as { exists?: boolean; error?: string } | null;
+      if (lookupResponse.status === 429) {
+        setPending(false);
+        setMessage(lookup?.error ?? "잠시 후 다시 확인해 주세요.");
+        return;
+      }
+      if (!lookupResponse.ok || typeof lookup?.exists !== "boolean") {
+        setPending(false);
+        setMessage(lookup?.error ?? "가입 정보를 확인하지 못했어요. 잠시 후 다시 시도해 주세요.");
+        return;
+      }
+      if (lookup.exists) {
+        setPending(false);
+        setMessage("이미 가입된 이메일입니다. 로그인하거나 비밀번호를 확인해 주세요.");
+        return;
+      }
 
-    setSuccess(true);
-    setMessage("가입 확인 메일을 보냈어요. 메일의 링크를 눌러 가입을 마쳐 주세요.");
+      const { data, error } = await createSupabaseBrowserClient().auth.signUp({
+        email,
+        password,
+        options: {
+          data: { display_name: displayName },
+          emailRedirectTo,
+        },
+      });
+
+      setPending(false);
+      if (error) {
+        if (error.code === "user_already_exists" || error.code === "email_exists") {
+          setMessage("이미 가입된 이메일입니다. 로그인하거나 비밀번호를 확인해 주세요.");
+          return;
+        }
+        setMessage("가입을 완료하지 못했어요. 입력한 정보를 확인해 주세요.");
+        return;
+      }
+
+      if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+        setMessage("이미 가입된 이메일입니다. 로그인하거나 비밀번호를 확인해 주세요.");
+        return;
+      }
+
+      if (data.session) {
+        window.location.assign(target);
+        return;
+      }
+
+      setSuccess(true);
+      setMessage("가입 확인 메일 요청이 접수됐어요. 실제 수신 여부는 메일 발송 설정에 따라 달라질 수 있으니 스팸함도 확인해 주세요.");
+    } catch {
+      setPending(false);
+      setMessage("가입을 완료하지 못했어요. 잠시 후 다시 시도해 주세요.");
+    }
   }
 
   return (
     <div className={styles.card}>
       <h1 className={styles.title}>회원가입</h1>
       <p className={styles.description}>좋았던 메뉴의 기록을 한입씩 모아 보세요.</p>
-      <form className={styles.form} onSubmit={submit}>
+      <form className={styles.form} method="post" onSubmit={submit}>
         <label className={styles.field}>
           표시 이름
           <input
@@ -102,7 +145,7 @@ export function SignupForm({ returnTo }: { returnTo: string }) {
         </button>
       </form>
       <p className={styles.footerLinks}>
-        이미 계정이 있으신가요? <Link href={`/login?next=${encodeURIComponent(safeReturnTo(returnTo))}`}>로그인</Link>
+        이미 계정이 있으신가요? <Link href={`/login?next=${encodeURIComponent(safeAuthReturnTo(returnTo))}`}>로그인</Link>
       </p>
     </div>
   );

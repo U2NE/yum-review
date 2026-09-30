@@ -1,6 +1,6 @@
 .page {
   min-height: 100vh;
-  padding: 0 1.25rem 4rem;
+  padding: 0 1rem 4rem;
 }
 
 .header {
@@ -10,18 +10,20 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.25rem;
+  gap: 1rem;
   border-bottom: 1px solid var(--line);
 }
 
 .brandLink {
   display: inline-flex;
+  min-height: 2.75rem;
   align-items: center;
   gap: 0.5rem;
   color: var(--accent);
   font-size: 1.05rem;
   font-weight: 800;
   text-decoration: none;
+  flex: 0 0 auto;
 }
 
 .nav {
@@ -29,17 +31,18 @@
   align-items: center;
   justify-content: flex-end;
   flex-wrap: wrap;
-  gap: 0.65rem 1rem;
+  gap: 0.35rem 0.5rem;
   color: var(--muted);
   font-size: 0.9rem;
 }
 
 .nav a {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  border-radius: 0.55rem;
+  padding: 0 0.55rem;
   text-decoration: none;
-}
-
-.nav a:hover {
-  color: var(--accent);
 }
 
 .ownerLinks {
@@ -51,11 +54,11 @@
 .logoutButton,
 .button {
   display: inline-flex;
-  min-height: 2.65rem;
+  min-height: 2.75rem;
   align-items: center;
   justify-content: center;
   border: 1px solid var(--accent);
-  border-radius: 0.55rem;
+  border-radius: 0.65rem;
   padding: 0.55rem 0.95rem;
   background: var(--accent);
   color: white;
@@ -72,8 +75,9 @@
 
 .secondaryButton {
   border: 1px solid var(--line);
-  border-radius: 0.55rem;
-  padding: 0.5rem 0.85rem;
+  min-height: 2.75rem;
+  border-radius: 0.65rem;
+  padding: 0.5rem 0.9rem;
   background: var(--surface);
   color: var(--ink);
   cursor: pointer;
@@ -87,12 +91,12 @@
 
 .content {
   width: min(100%, 42rem);
-  margin: 3rem auto 0;
+  margin: 2rem auto 0;
 }
 
 .wideContent {
   width: min(100%, 68rem);
-  margin: 3rem auto 0;
+  margin: 2rem auto 0;
 }
 
 .card {
@@ -100,18 +104,20 @@
   border-radius: var(--radius-card);
   padding: clamp(1.25rem, 4vw, 2rem);
   background: var(--surface);
-  box-shadow: 0 0.75rem 2rem rgb(41 39 34 / 5%);
+  box-shadow: 0 0.75rem 2rem rgb(28 43 36 / 5%);
 }
 
 .title {
   margin: 0 0 0.35rem;
   font-size: clamp(1.55rem, 4vw, 2rem);
   letter-spacing: -0.035em;
+  word-break: keep-all;
 }
 
 .description {
   margin: 0 0 1.5rem;
   color: var(--muted);
+  word-break: keep-all;
 }
 
 .form {
@@ -130,25 +136,27 @@
 .input,
 .select {
   width: 100%;
-  min-height: 2.8rem;
+  min-height: 2.75rem;
   border: 1px solid var(--line);
-  border-radius: 0.5rem;
+  border-radius: 0.65rem;
   padding: 0.6rem 0.75rem;
-  background: #fff;
+  background: var(--surface);
 }
 
 .message {
   margin: 0;
-  border-radius: 0.5rem;
-  padding: 0.7rem 0.8rem;
-  background: var(--accent-soft);
-  color: #78351f;
+  border: 1px solid #e7c9c2;
+  border-radius: 0.65rem;
+  padding: 0.75rem 0.85rem;
+  background: #fbefec;
+  color: #79362d;
   font-size: 0.92rem;
 }
 
 .success {
-  background: #e9f1eb;
-  color: #285e46;
+  border-color: #c9dfc9;
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 .footerLinks {
@@ -157,9 +165,18 @@
   font-size: 0.92rem;
 }
 
+.footerLinks a {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  color: var(--accent);
+  font-weight: 700;
+}
+
 .sectionTitle {
-  margin: 1.7rem 0 0.75rem;
+  margin: 2rem 0 0.75rem;
   font-size: 1.2rem;
+  letter-spacing: -0.025em;
 }
 
 .toolbar {
@@ -178,12 +195,14 @@
 
 .assignmentRow {
   display: flex;
+  min-width: 0;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
   border: 1px solid var(--line);
-  border-radius: 0.55rem;
-  padding: 0.75rem;
+  border-radius: 0.75rem;
+  padding: 0.9rem;
+  background: var(--surface);
 }
 
 .assignmentMeta {
@@ -196,11 +215,123 @@
   color: var(--muted);
 }
 
+.listPage {
+  width: min(100%, var(--content-width));
+  margin: 2rem auto 4rem;
+  display: grid;
+  gap: 2rem;
+}
+
+.listHeader {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: end;
+  gap: 1rem;
+}
+
+.listEyebrow {
+  color: var(--accent);
+  font-size: 0.86rem;
+  font-weight: 750;
+  margin: 0;
+}
+
+.listTitle {
+  margin: 0.25rem 0;
+  font-size: clamp(1.55rem, 4vw, 2rem);
+  line-height: 1.18;
+  letter-spacing: -0.04em;
+}
+
+.listDescription {
+  margin: 0;
+  color: var(--muted);
+}
+
+.listLink {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.5rem 0.9rem;
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.resultCount {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.listGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.emptyPanel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  padding: clamp(1rem, 3vw, 1.5rem);
+  background: var(--surface);
+}
+
+.emptyPanel h2 {
+  margin: 0 0 0.3rem;
+  font-size: 1.1rem;
+}
+
+.emptyPanel p {
+  margin: 0 0 0.8rem;
+  color: var(--muted);
+}
+
+.reviewList {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (hover: hover) {
+  .nav a:hover {
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .secondaryButton:hover:not(:disabled),
+  .listLink:hover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+}
+
+@media (min-width: 851px) {
+  .page {
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (max-width: 850px) {
+  .listGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 760px) {
   .header {
     align-items: flex-start;
     flex-direction: column;
     padding: 1rem 0;
+  }
+
+  .nav {
+    justify-content: flex-start;
+    width: 100%;
   }
 
   .toolbar {
@@ -209,5 +340,21 @@
 
   .assignmentRow {
     align-items: flex-start;
+    flex-direction: column;
+  }
+
+}
+
+@media (max-width: 560px) {
+  .page {
+    padding-inline: 1rem;
+  }
+
+  .listPage {
+    gap: 1.5rem;
+  }
+
+  .listGrid {
+    grid-template-columns: 1fr;
   }
 }

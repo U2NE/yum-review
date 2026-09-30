@@ -3,3 +3,10 @@ server:
     session:
       cookie:
         secure: true
+
+yum-review:
+  vworld:
+    api-key: ${VWORLD_API_KEY:}
+  location-rate-limit:
+    url: ${UPSTASH_REDIS_REST_URL:}
+    token: ${UPSTASH_REDIS_REST_TOKEN:}

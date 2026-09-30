@@ -1,0 +1,4029 @@
+{
+  "schemaVersion": 1,
+  "sourceMatrix": "docs/migration/ui-qa-matrix.md",
+  "familyCount": 57,
+  "executionCount": 394,
+  "families": [
+    {
+      "id": "ui-01",
+      "sourceRow": 1,
+      "scenario": "홈 브랜드 로고 링크",
+      "roles": [
+        "guest",
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        390,
+        768,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-02",
+      "sourceRow": 2,
+      "scenario": "데스크톱 주요 내비게이션 링크",
+      "roles": [
+        "guest",
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-03",
+      "sourceRow": 3,
+      "scenario": "모바일 내비게이션/헤더",
+      "roles": [
+        "guest",
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        390
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-04",
+      "sourceRow": 4,
+      "scenario": "검색어 입력·적용",
+      "roles": [
+        "guest",
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        390,
+        768,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-05",
+      "sourceRow": 5,
+      "scenario": "검색 초기화/전체 필터 초기화",
+      "roles": [
+        "guest",
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-06",
+      "sourceRow": 6,
+      "scenario": "음식 종류 선택",
+      "roles": [
+        "guest",
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-07",
+      "sourceRow": 7,
+      "scenario": "지역 선택·적용·초기화",
+      "roles": [
+        "guest",
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-08",
+      "sourceRow": 8,
+      "scenario": "장소 검색 입력·검색·결과 선택",
+      "roles": [
+        "guest",
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        390,
+        768,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-09",
+      "sourceRow": 9,
+      "scenario": "현재 위치 사용",
+      "roles": [
+        "guest",
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        390
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-10",
+      "sourceRow": 10,
+      "scenario": "반경 선택",
+      "roles": [
+        "guest",
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-11",
+      "sourceRow": 11,
+      "scenario": "정렬 선택",
+      "roles": [
+        "guest",
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-12",
+      "sourceRow": 12,
+      "scenario": "내 리뷰 개인 필터",
+      "roles": [
+        "guest"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-13",
+      "sourceRow": 13,
+      "scenario": "내 리뷰 개인 필터",
+      "roles": [
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-14",
+      "sourceRow": 14,
+      "scenario": "찜한 메뉴 개인 필터",
+      "roles": [
+        "guest"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-15",
+      "sourceRow": 15,
+      "scenario": "찜한 메뉴 개인 필터",
+      "roles": [
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-16",
+      "sourceRow": 16,
+      "scenario": "메뉴 카드 상세 링크",
+      "roles": [
+        "guest",
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        390,
+        768,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-17",
+      "sourceRow": 17,
+      "scenario": "메뉴 찜/찜 해제",
+      "roles": [
+        "guest"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-18",
+      "sourceRow": 18,
+      "scenario": "메뉴 찜/찜 해제",
+      "roles": [
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-19",
+      "sourceRow": 19,
+      "scenario": "식당 상세·메뉴·업주 관리 링크",
+      "roles": [
+        "guest",
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-20",
+      "sourceRow": 20,
+      "scenario": "회원가입 입력·제출·오류",
+      "roles": [
+        "guest"
+      ],
+      "viewports": [
+        360,
+        390,
+        1440
+      ],
+      "mutationSurface": "personal-data"
+    },
+    {
+      "id": "ui-21",
+      "sourceRow": 21,
+      "scenario": "로그인 입력·제출·오류",
+      "roles": [
+        "guest"
+      ],
+      "viewports": [
+        360,
+        390,
+        1440
+      ],
+      "mutationSurface": "personal-data"
+    },
+    {
+      "id": "ui-22",
+      "sourceRow": 22,
+      "scenario": "로그아웃",
+      "roles": [
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "personal-data"
+    },
+    {
+      "id": "ui-23",
+      "sourceRow": 23,
+      "scenario": "내 계정 페이지 링크·현재 정보",
+      "roles": [
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        390,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-24",
+      "sourceRow": 24,
+      "scenario": "표시 이름 저장 및 입력 검증",
+      "roles": [
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "personal-data"
+    },
+    {
+      "id": "ui-25",
+      "sourceRow": 25,
+      "scenario": "비밀번호 변경 및 검증 오류",
+      "roles": [
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "personal-data"
+    },
+    {
+      "id": "ui-26",
+      "sourceRow": 26,
+      "scenario": "리뷰 작성 진입/로그인 유도",
+      "roles": [
+        "guest"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-27",
+      "sourceRow": 27,
+      "scenario": "리뷰 별점 5개 별의 왼쪽 절반",
+      "roles": [
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        390,
+        1440
+      ],
+      "mutationSurface": "personal-data"
+    },
+    {
+      "id": "ui-28",
+      "sourceRow": 28,
+      "scenario": "리뷰 별점 5개 별의 오른쪽 절반",
+      "roles": [
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        390,
+        1440
+      ],
+      "mutationSurface": "personal-data"
+    },
+    {
+      "id": "ui-29",
+      "sourceRow": 29,
+      "scenario": "전체/세부 동일 별 재클릭",
+      "roles": [
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "personal-data"
+    },
+    {
+      "id": "ui-30",
+      "sourceRow": 30,
+      "scenario": "세부 평가 선택 사항",
+      "roles": [
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "personal-data"
+    },
+    {
+      "id": "ui-31",
+      "sourceRow": 31,
+      "scenario": "댓글 입력·1,000자 제한",
+      "roles": [
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "personal-data"
+    },
+    {
+      "id": "ui-32",
+      "sourceRow": 32,
+      "scenario": "이벤트 비참여 동의",
+      "roles": [
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "personal-data"
+    },
+    {
+      "id": "ui-33",
+      "sourceRow": 33,
+      "scenario": "리뷰 사진 선택·업로드·실패/재시도·제거",
+      "roles": [
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        390,
+        1440
+      ],
+      "mutationSurface": "personal-data"
+    },
+    {
+      "id": "ui-34",
+      "sourceRow": 34,
+      "scenario": "리뷰 작성 제출/취소",
+      "roles": [
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "personal-data"
+    },
+    {
+      "id": "ui-35",
+      "sourceRow": 35,
+      "scenario": "타인 리뷰 좋아요/취소",
+      "roles": [
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "personal-data"
+    },
+    {
+      "id": "ui-36",
+      "sourceRow": 36,
+      "scenario": "본인 리뷰 좋아요 시도",
+      "roles": [
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "personal-data"
+    },
+    {
+      "id": "ui-37",
+      "sourceRow": 37,
+      "scenario": "본인 리뷰 수정·저장",
+      "roles": [
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "personal-data"
+    },
+    {
+      "id": "ui-38",
+      "sourceRow": 38,
+      "scenario": "리뷰 삭제 및 집계",
+      "roles": [
+        "member",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "personal-data"
+    },
+    {
+      "id": "ui-39",
+      "sourceRow": 39,
+      "scenario": "삭제 취소/중복 조작",
+      "roles": [
+        "member",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "personal-data"
+    },
+    {
+      "id": "ui-40",
+      "sourceRow": 40,
+      "scenario": "타인 리뷰 수정·삭제 직접 API",
+      "roles": [
+        "member",
+        "owner"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-41",
+      "sourceRow": 41,
+      "scenario": "리뷰·메뉴 이미지 오류/만료 새로고침",
+      "roles": [
+        "guest",
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        390,
+        768,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-42",
+      "sourceRow": 42,
+      "scenario": "내 리뷰 페이지 및 이동 링크",
+      "roles": [
+        "guest",
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-43",
+      "sourceRow": 43,
+      "scenario": "찜 목록 및 이동 링크",
+      "roles": [
+        "guest",
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-44",
+      "sourceRow": 44,
+      "scenario": "서버 관리자 운영자 페이지 접근",
+      "roles": [
+        "guest",
+        "member",
+        "owner"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-45",
+      "sourceRow": 45,
+      "scenario": "업주 할당 검색/가게·사용자 선택",
+      "roles": [
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "personal-data"
+    },
+    {
+      "id": "ui-46",
+      "sourceRow": 46,
+      "scenario": "업주 할당/회수",
+      "roles": [
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "personal-data"
+    },
+    {
+      "id": "ui-47",
+      "sourceRow": 47,
+      "scenario": "업주 할당 직접 API 권한",
+      "roles": [
+        "guest",
+        "member",
+        "owner"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-48",
+      "sourceRow": 48,
+      "scenario": "업주 메뉴 추가/수정/초기화",
+      "roles": [
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "catalog-menu"
+    },
+    {
+      "id": "ui-49",
+      "sourceRow": 49,
+      "scenario": "업주 메뉴 비활성화/재활성화",
+      "roles": [
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "catalog-menu"
+    },
+    {
+      "id": "ui-50",
+      "sourceRow": 50,
+      "scenario": "다른 가게 메뉴 추가·수정 시도",
+      "roles": [
+        "guest",
+        "member",
+        "owner"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "catalog-menu"
+    },
+    {
+      "id": "ui-51",
+      "sourceRow": 51,
+      "scenario": "메뉴 사진 선택·업로드·실패/재시도/제거",
+      "roles": [
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        390,
+        1440
+      ],
+      "mutationSurface": "menu-photo"
+    },
+    {
+      "id": "ui-52",
+      "sourceRow": 52,
+      "scenario": "loading/empty/error/success/image/no-image 화면",
+      "roles": [
+        "guest",
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        390,
+        768,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-53",
+      "sourceRow": 53,
+      "scenario": "키보드/포커스/ARIA 선택 컨트롤",
+      "roles": [
+        "guest",
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-54",
+      "sourceRow": 54,
+      "scenario": "브라우저 뒤로/앞으로 및 필터 조합",
+      "roles": [
+        "guest",
+        "member",
+        "owner",
+        "server-admin"
+      ],
+      "viewports": [
+        360,
+        390,
+        768,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-55",
+      "sourceRow": 55,
+      "scenario": "API 권한: 익명 리뷰 작성",
+      "roles": [
+        "guest"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-56",
+      "sourceRow": 56,
+      "scenario": "API 권한: 다른 사용자 프로필·찜 읽기",
+      "roles": [
+        "member"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    },
+    {
+      "id": "ui-57",
+      "sourceRow": 57,
+      "scenario": "API 권한: 다른 계정 미디어 연결/Storage 분리 객체",
+      "roles": [
+        "member",
+        "owner"
+      ],
+      "viewports": [
+        360,
+        1440
+      ],
+      "mutationSurface": "read-only"
+    }
+  ],
+  "cases": [
+    {
+      "caseId": "ui-01-guest-360",
+      "familyId": "ui-01",
+      "sourceRow": 1,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-01-guest-390",
+      "familyId": "ui-01",
+      "sourceRow": 1,
+      "role": "guest",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-01-guest-768",
+      "familyId": "ui-01",
+      "sourceRow": 1,
+      "role": "guest",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-01-guest-1440",
+      "familyId": "ui-01",
+      "sourceRow": 1,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-01-member-360",
+      "familyId": "ui-01",
+      "sourceRow": 1,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-01-member-390",
+      "familyId": "ui-01",
+      "sourceRow": 1,
+      "role": "member",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-01-member-768",
+      "familyId": "ui-01",
+      "sourceRow": 1,
+      "role": "member",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-01-member-1440",
+      "familyId": "ui-01",
+      "sourceRow": 1,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-01-owner-360",
+      "familyId": "ui-01",
+      "sourceRow": 1,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-01-owner-390",
+      "familyId": "ui-01",
+      "sourceRow": 1,
+      "role": "owner",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-01-owner-768",
+      "familyId": "ui-01",
+      "sourceRow": 1,
+      "role": "owner",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-01-owner-1440",
+      "familyId": "ui-01",
+      "sourceRow": 1,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-01-server-admin-360",
+      "familyId": "ui-01",
+      "sourceRow": 1,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-01-server-admin-390",
+      "familyId": "ui-01",
+      "sourceRow": 1,
+      "role": "server-admin",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-01-server-admin-768",
+      "familyId": "ui-01",
+      "sourceRow": 1,
+      "role": "server-admin",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-01-server-admin-1440",
+      "familyId": "ui-01",
+      "sourceRow": 1,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-02-guest-1440",
+      "familyId": "ui-02",
+      "sourceRow": 2,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-02-member-1440",
+      "familyId": "ui-02",
+      "sourceRow": 2,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-02-owner-1440",
+      "familyId": "ui-02",
+      "sourceRow": 2,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-02-server-admin-1440",
+      "familyId": "ui-02",
+      "sourceRow": 2,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-03-guest-360",
+      "familyId": "ui-03",
+      "sourceRow": 3,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-03-guest-390",
+      "familyId": "ui-03",
+      "sourceRow": 3,
+      "role": "guest",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-03-member-360",
+      "familyId": "ui-03",
+      "sourceRow": 3,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-03-member-390",
+      "familyId": "ui-03",
+      "sourceRow": 3,
+      "role": "member",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-03-owner-360",
+      "familyId": "ui-03",
+      "sourceRow": 3,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-03-owner-390",
+      "familyId": "ui-03",
+      "sourceRow": 3,
+      "role": "owner",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-03-server-admin-360",
+      "familyId": "ui-03",
+      "sourceRow": 3,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-03-server-admin-390",
+      "familyId": "ui-03",
+      "sourceRow": 3,
+      "role": "server-admin",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-04-guest-360",
+      "familyId": "ui-04",
+      "sourceRow": 4,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-04-guest-390",
+      "familyId": "ui-04",
+      "sourceRow": 4,
+      "role": "guest",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-04-guest-768",
+      "familyId": "ui-04",
+      "sourceRow": 4,
+      "role": "guest",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-04-guest-1440",
+      "familyId": "ui-04",
+      "sourceRow": 4,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-04-member-360",
+      "familyId": "ui-04",
+      "sourceRow": 4,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-04-member-390",
+      "familyId": "ui-04",
+      "sourceRow": 4,
+      "role": "member",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-04-member-768",
+      "familyId": "ui-04",
+      "sourceRow": 4,
+      "role": "member",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-04-member-1440",
+      "familyId": "ui-04",
+      "sourceRow": 4,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-04-owner-360",
+      "familyId": "ui-04",
+      "sourceRow": 4,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-04-owner-390",
+      "familyId": "ui-04",
+      "sourceRow": 4,
+      "role": "owner",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-04-owner-768",
+      "familyId": "ui-04",
+      "sourceRow": 4,
+      "role": "owner",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-04-owner-1440",
+      "familyId": "ui-04",
+      "sourceRow": 4,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-04-server-admin-360",
+      "familyId": "ui-04",
+      "sourceRow": 4,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-04-server-admin-390",
+      "familyId": "ui-04",
+      "sourceRow": 4,
+      "role": "server-admin",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-04-server-admin-768",
+      "familyId": "ui-04",
+      "sourceRow": 4,
+      "role": "server-admin",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-04-server-admin-1440",
+      "familyId": "ui-04",
+      "sourceRow": 4,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-05-guest-360",
+      "familyId": "ui-05",
+      "sourceRow": 5,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-05-guest-1440",
+      "familyId": "ui-05",
+      "sourceRow": 5,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-05-member-360",
+      "familyId": "ui-05",
+      "sourceRow": 5,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-05-member-1440",
+      "familyId": "ui-05",
+      "sourceRow": 5,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-05-owner-360",
+      "familyId": "ui-05",
+      "sourceRow": 5,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-05-owner-1440",
+      "familyId": "ui-05",
+      "sourceRow": 5,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-05-server-admin-360",
+      "familyId": "ui-05",
+      "sourceRow": 5,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-05-server-admin-1440",
+      "familyId": "ui-05",
+      "sourceRow": 5,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-06-guest-360",
+      "familyId": "ui-06",
+      "sourceRow": 6,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-06-guest-1440",
+      "familyId": "ui-06",
+      "sourceRow": 6,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-06-member-360",
+      "familyId": "ui-06",
+      "sourceRow": 6,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-06-member-1440",
+      "familyId": "ui-06",
+      "sourceRow": 6,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-06-owner-360",
+      "familyId": "ui-06",
+      "sourceRow": 6,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-06-owner-1440",
+      "familyId": "ui-06",
+      "sourceRow": 6,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-06-server-admin-360",
+      "familyId": "ui-06",
+      "sourceRow": 6,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-06-server-admin-1440",
+      "familyId": "ui-06",
+      "sourceRow": 6,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-07-guest-360",
+      "familyId": "ui-07",
+      "sourceRow": 7,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-07-guest-1440",
+      "familyId": "ui-07",
+      "sourceRow": 7,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-07-member-360",
+      "familyId": "ui-07",
+      "sourceRow": 7,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-07-member-1440",
+      "familyId": "ui-07",
+      "sourceRow": 7,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-07-owner-360",
+      "familyId": "ui-07",
+      "sourceRow": 7,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-07-owner-1440",
+      "familyId": "ui-07",
+      "sourceRow": 7,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-07-server-admin-360",
+      "familyId": "ui-07",
+      "sourceRow": 7,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-07-server-admin-1440",
+      "familyId": "ui-07",
+      "sourceRow": 7,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-08-guest-360",
+      "familyId": "ui-08",
+      "sourceRow": 8,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-08-guest-390",
+      "familyId": "ui-08",
+      "sourceRow": 8,
+      "role": "guest",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-08-guest-768",
+      "familyId": "ui-08",
+      "sourceRow": 8,
+      "role": "guest",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-08-guest-1440",
+      "familyId": "ui-08",
+      "sourceRow": 8,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-08-member-360",
+      "familyId": "ui-08",
+      "sourceRow": 8,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-08-member-390",
+      "familyId": "ui-08",
+      "sourceRow": 8,
+      "role": "member",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-08-member-768",
+      "familyId": "ui-08",
+      "sourceRow": 8,
+      "role": "member",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-08-member-1440",
+      "familyId": "ui-08",
+      "sourceRow": 8,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-08-owner-360",
+      "familyId": "ui-08",
+      "sourceRow": 8,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-08-owner-390",
+      "familyId": "ui-08",
+      "sourceRow": 8,
+      "role": "owner",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-08-owner-768",
+      "familyId": "ui-08",
+      "sourceRow": 8,
+      "role": "owner",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-08-owner-1440",
+      "familyId": "ui-08",
+      "sourceRow": 8,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-08-server-admin-360",
+      "familyId": "ui-08",
+      "sourceRow": 8,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-08-server-admin-390",
+      "familyId": "ui-08",
+      "sourceRow": 8,
+      "role": "server-admin",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-08-server-admin-768",
+      "familyId": "ui-08",
+      "sourceRow": 8,
+      "role": "server-admin",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-08-server-admin-1440",
+      "familyId": "ui-08",
+      "sourceRow": 8,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-09-guest-360",
+      "familyId": "ui-09",
+      "sourceRow": 9,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-09-guest-390",
+      "familyId": "ui-09",
+      "sourceRow": 9,
+      "role": "guest",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-09-member-360",
+      "familyId": "ui-09",
+      "sourceRow": 9,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-09-member-390",
+      "familyId": "ui-09",
+      "sourceRow": 9,
+      "role": "member",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-09-owner-360",
+      "familyId": "ui-09",
+      "sourceRow": 9,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-09-owner-390",
+      "familyId": "ui-09",
+      "sourceRow": 9,
+      "role": "owner",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-09-server-admin-360",
+      "familyId": "ui-09",
+      "sourceRow": 9,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-09-server-admin-390",
+      "familyId": "ui-09",
+      "sourceRow": 9,
+      "role": "server-admin",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-10-guest-360",
+      "familyId": "ui-10",
+      "sourceRow": 10,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-10-guest-1440",
+      "familyId": "ui-10",
+      "sourceRow": 10,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-10-member-360",
+      "familyId": "ui-10",
+      "sourceRow": 10,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-10-member-1440",
+      "familyId": "ui-10",
+      "sourceRow": 10,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-10-owner-360",
+      "familyId": "ui-10",
+      "sourceRow": 10,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-10-owner-1440",
+      "familyId": "ui-10",
+      "sourceRow": 10,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-10-server-admin-360",
+      "familyId": "ui-10",
+      "sourceRow": 10,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-10-server-admin-1440",
+      "familyId": "ui-10",
+      "sourceRow": 10,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-11-guest-360",
+      "familyId": "ui-11",
+      "sourceRow": 11,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-11-guest-1440",
+      "familyId": "ui-11",
+      "sourceRow": 11,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-11-member-360",
+      "familyId": "ui-11",
+      "sourceRow": 11,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-11-member-1440",
+      "familyId": "ui-11",
+      "sourceRow": 11,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-11-owner-360",
+      "familyId": "ui-11",
+      "sourceRow": 11,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-11-owner-1440",
+      "familyId": "ui-11",
+      "sourceRow": 11,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-11-server-admin-360",
+      "familyId": "ui-11",
+      "sourceRow": 11,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-11-server-admin-1440",
+      "familyId": "ui-11",
+      "sourceRow": 11,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-12-guest-360",
+      "familyId": "ui-12",
+      "sourceRow": 12,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-12-guest-1440",
+      "familyId": "ui-12",
+      "sourceRow": 12,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-13-member-360",
+      "familyId": "ui-13",
+      "sourceRow": 13,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-13-member-1440",
+      "familyId": "ui-13",
+      "sourceRow": 13,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-13-owner-360",
+      "familyId": "ui-13",
+      "sourceRow": 13,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-13-owner-1440",
+      "familyId": "ui-13",
+      "sourceRow": 13,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-13-server-admin-360",
+      "familyId": "ui-13",
+      "sourceRow": 13,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-13-server-admin-1440",
+      "familyId": "ui-13",
+      "sourceRow": 13,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-14-guest-360",
+      "familyId": "ui-14",
+      "sourceRow": 14,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-14-guest-1440",
+      "familyId": "ui-14",
+      "sourceRow": 14,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-15-member-360",
+      "familyId": "ui-15",
+      "sourceRow": 15,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-15-member-1440",
+      "familyId": "ui-15",
+      "sourceRow": 15,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-15-owner-360",
+      "familyId": "ui-15",
+      "sourceRow": 15,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-15-owner-1440",
+      "familyId": "ui-15",
+      "sourceRow": 15,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-15-server-admin-360",
+      "familyId": "ui-15",
+      "sourceRow": 15,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-15-server-admin-1440",
+      "familyId": "ui-15",
+      "sourceRow": 15,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-16-guest-360",
+      "familyId": "ui-16",
+      "sourceRow": 16,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-16-guest-390",
+      "familyId": "ui-16",
+      "sourceRow": 16,
+      "role": "guest",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-16-guest-768",
+      "familyId": "ui-16",
+      "sourceRow": 16,
+      "role": "guest",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-16-guest-1440",
+      "familyId": "ui-16",
+      "sourceRow": 16,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-16-member-360",
+      "familyId": "ui-16",
+      "sourceRow": 16,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-16-member-390",
+      "familyId": "ui-16",
+      "sourceRow": 16,
+      "role": "member",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-16-member-768",
+      "familyId": "ui-16",
+      "sourceRow": 16,
+      "role": "member",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-16-member-1440",
+      "familyId": "ui-16",
+      "sourceRow": 16,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-16-owner-360",
+      "familyId": "ui-16",
+      "sourceRow": 16,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-16-owner-390",
+      "familyId": "ui-16",
+      "sourceRow": 16,
+      "role": "owner",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-16-owner-768",
+      "familyId": "ui-16",
+      "sourceRow": 16,
+      "role": "owner",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-16-owner-1440",
+      "familyId": "ui-16",
+      "sourceRow": 16,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-16-server-admin-360",
+      "familyId": "ui-16",
+      "sourceRow": 16,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-16-server-admin-390",
+      "familyId": "ui-16",
+      "sourceRow": 16,
+      "role": "server-admin",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-16-server-admin-768",
+      "familyId": "ui-16",
+      "sourceRow": 16,
+      "role": "server-admin",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-16-server-admin-1440",
+      "familyId": "ui-16",
+      "sourceRow": 16,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-17-guest-360",
+      "familyId": "ui-17",
+      "sourceRow": 17,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-17-guest-1440",
+      "familyId": "ui-17",
+      "sourceRow": 17,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-18-member-360",
+      "familyId": "ui-18",
+      "sourceRow": 18,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-18-member-1440",
+      "familyId": "ui-18",
+      "sourceRow": 18,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-18-owner-360",
+      "familyId": "ui-18",
+      "sourceRow": 18,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-18-owner-1440",
+      "familyId": "ui-18",
+      "sourceRow": 18,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-18-server-admin-360",
+      "familyId": "ui-18",
+      "sourceRow": 18,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-18-server-admin-1440",
+      "familyId": "ui-18",
+      "sourceRow": 18,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-19-guest-360",
+      "familyId": "ui-19",
+      "sourceRow": 19,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-19-guest-1440",
+      "familyId": "ui-19",
+      "sourceRow": 19,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-19-member-360",
+      "familyId": "ui-19",
+      "sourceRow": 19,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-19-member-1440",
+      "familyId": "ui-19",
+      "sourceRow": 19,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-19-owner-360",
+      "familyId": "ui-19",
+      "sourceRow": 19,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-19-owner-1440",
+      "familyId": "ui-19",
+      "sourceRow": 19,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-19-server-admin-360",
+      "familyId": "ui-19",
+      "sourceRow": 19,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-19-server-admin-1440",
+      "familyId": "ui-19",
+      "sourceRow": 19,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-20-guest-360",
+      "familyId": "ui-20",
+      "sourceRow": 20,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-20-guest-390",
+      "familyId": "ui-20",
+      "sourceRow": 20,
+      "role": "guest",
+      "viewport": 390,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-20-guest-1440",
+      "familyId": "ui-20",
+      "sourceRow": 20,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-21-guest-360",
+      "familyId": "ui-21",
+      "sourceRow": 21,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-21-guest-390",
+      "familyId": "ui-21",
+      "sourceRow": 21,
+      "role": "guest",
+      "viewport": 390,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-21-guest-1440",
+      "familyId": "ui-21",
+      "sourceRow": 21,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-22-member-360",
+      "familyId": "ui-22",
+      "sourceRow": 22,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-22-member-1440",
+      "familyId": "ui-22",
+      "sourceRow": 22,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-22-owner-360",
+      "familyId": "ui-22",
+      "sourceRow": 22,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-22-owner-1440",
+      "familyId": "ui-22",
+      "sourceRow": 22,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-22-server-admin-360",
+      "familyId": "ui-22",
+      "sourceRow": 22,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-22-server-admin-1440",
+      "familyId": "ui-22",
+      "sourceRow": 22,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-23-member-360",
+      "familyId": "ui-23",
+      "sourceRow": 23,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-23-member-390",
+      "familyId": "ui-23",
+      "sourceRow": 23,
+      "role": "member",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-23-member-1440",
+      "familyId": "ui-23",
+      "sourceRow": 23,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-23-owner-360",
+      "familyId": "ui-23",
+      "sourceRow": 23,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-23-owner-390",
+      "familyId": "ui-23",
+      "sourceRow": 23,
+      "role": "owner",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-23-owner-1440",
+      "familyId": "ui-23",
+      "sourceRow": 23,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-23-server-admin-360",
+      "familyId": "ui-23",
+      "sourceRow": 23,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-23-server-admin-390",
+      "familyId": "ui-23",
+      "sourceRow": 23,
+      "role": "server-admin",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-23-server-admin-1440",
+      "familyId": "ui-23",
+      "sourceRow": 23,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-24-member-360",
+      "familyId": "ui-24",
+      "sourceRow": 24,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-24-member-1440",
+      "familyId": "ui-24",
+      "sourceRow": 24,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-24-owner-360",
+      "familyId": "ui-24",
+      "sourceRow": 24,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-24-owner-1440",
+      "familyId": "ui-24",
+      "sourceRow": 24,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-24-server-admin-360",
+      "familyId": "ui-24",
+      "sourceRow": 24,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-24-server-admin-1440",
+      "familyId": "ui-24",
+      "sourceRow": 24,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-25-member-360",
+      "familyId": "ui-25",
+      "sourceRow": 25,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-25-member-1440",
+      "familyId": "ui-25",
+      "sourceRow": 25,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-25-owner-360",
+      "familyId": "ui-25",
+      "sourceRow": 25,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-25-owner-1440",
+      "familyId": "ui-25",
+      "sourceRow": 25,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-25-server-admin-360",
+      "familyId": "ui-25",
+      "sourceRow": 25,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-25-server-admin-1440",
+      "familyId": "ui-25",
+      "sourceRow": 25,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-26-guest-360",
+      "familyId": "ui-26",
+      "sourceRow": 26,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-26-guest-1440",
+      "familyId": "ui-26",
+      "sourceRow": 26,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-27-member-360",
+      "familyId": "ui-27",
+      "sourceRow": 27,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-27-member-390",
+      "familyId": "ui-27",
+      "sourceRow": 27,
+      "role": "member",
+      "viewport": 390,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-27-member-1440",
+      "familyId": "ui-27",
+      "sourceRow": 27,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-27-owner-360",
+      "familyId": "ui-27",
+      "sourceRow": 27,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-27-owner-390",
+      "familyId": "ui-27",
+      "sourceRow": 27,
+      "role": "owner",
+      "viewport": 390,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-27-owner-1440",
+      "familyId": "ui-27",
+      "sourceRow": 27,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-27-server-admin-360",
+      "familyId": "ui-27",
+      "sourceRow": 27,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-27-server-admin-390",
+      "familyId": "ui-27",
+      "sourceRow": 27,
+      "role": "server-admin",
+      "viewport": 390,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-27-server-admin-1440",
+      "familyId": "ui-27",
+      "sourceRow": 27,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-28-member-360",
+      "familyId": "ui-28",
+      "sourceRow": 28,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-28-member-390",
+      "familyId": "ui-28",
+      "sourceRow": 28,
+      "role": "member",
+      "viewport": 390,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-28-member-1440",
+      "familyId": "ui-28",
+      "sourceRow": 28,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-28-owner-360",
+      "familyId": "ui-28",
+      "sourceRow": 28,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-28-owner-390",
+      "familyId": "ui-28",
+      "sourceRow": 28,
+      "role": "owner",
+      "viewport": 390,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-28-owner-1440",
+      "familyId": "ui-28",
+      "sourceRow": 28,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-28-server-admin-360",
+      "familyId": "ui-28",
+      "sourceRow": 28,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-28-server-admin-390",
+      "familyId": "ui-28",
+      "sourceRow": 28,
+      "role": "server-admin",
+      "viewport": 390,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-28-server-admin-1440",
+      "familyId": "ui-28",
+      "sourceRow": 28,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-29-member-360",
+      "familyId": "ui-29",
+      "sourceRow": 29,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-29-member-1440",
+      "familyId": "ui-29",
+      "sourceRow": 29,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-29-owner-360",
+      "familyId": "ui-29",
+      "sourceRow": 29,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-29-owner-1440",
+      "familyId": "ui-29",
+      "sourceRow": 29,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-29-server-admin-360",
+      "familyId": "ui-29",
+      "sourceRow": 29,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-29-server-admin-1440",
+      "familyId": "ui-29",
+      "sourceRow": 29,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-30-member-360",
+      "familyId": "ui-30",
+      "sourceRow": 30,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-30-member-1440",
+      "familyId": "ui-30",
+      "sourceRow": 30,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-30-owner-360",
+      "familyId": "ui-30",
+      "sourceRow": 30,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-30-owner-1440",
+      "familyId": "ui-30",
+      "sourceRow": 30,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-30-server-admin-360",
+      "familyId": "ui-30",
+      "sourceRow": 30,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-30-server-admin-1440",
+      "familyId": "ui-30",
+      "sourceRow": 30,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-31-member-360",
+      "familyId": "ui-31",
+      "sourceRow": 31,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-31-member-1440",
+      "familyId": "ui-31",
+      "sourceRow": 31,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-31-owner-360",
+      "familyId": "ui-31",
+      "sourceRow": 31,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-31-owner-1440",
+      "familyId": "ui-31",
+      "sourceRow": 31,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-31-server-admin-360",
+      "familyId": "ui-31",
+      "sourceRow": 31,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-31-server-admin-1440",
+      "familyId": "ui-31",
+      "sourceRow": 31,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-32-member-360",
+      "familyId": "ui-32",
+      "sourceRow": 32,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-32-member-1440",
+      "familyId": "ui-32",
+      "sourceRow": 32,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-32-owner-360",
+      "familyId": "ui-32",
+      "sourceRow": 32,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-32-owner-1440",
+      "familyId": "ui-32",
+      "sourceRow": 32,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-32-server-admin-360",
+      "familyId": "ui-32",
+      "sourceRow": 32,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-32-server-admin-1440",
+      "familyId": "ui-32",
+      "sourceRow": 32,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-33-member-360",
+      "familyId": "ui-33",
+      "sourceRow": 33,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-33-member-390",
+      "familyId": "ui-33",
+      "sourceRow": 33,
+      "role": "member",
+      "viewport": 390,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-33-member-1440",
+      "familyId": "ui-33",
+      "sourceRow": 33,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-33-owner-360",
+      "familyId": "ui-33",
+      "sourceRow": 33,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-33-owner-390",
+      "familyId": "ui-33",
+      "sourceRow": 33,
+      "role": "owner",
+      "viewport": 390,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-33-owner-1440",
+      "familyId": "ui-33",
+      "sourceRow": 33,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-33-server-admin-360",
+      "familyId": "ui-33",
+      "sourceRow": 33,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-33-server-admin-390",
+      "familyId": "ui-33",
+      "sourceRow": 33,
+      "role": "server-admin",
+      "viewport": 390,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-33-server-admin-1440",
+      "familyId": "ui-33",
+      "sourceRow": 33,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-34-member-360",
+      "familyId": "ui-34",
+      "sourceRow": 34,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-34-member-1440",
+      "familyId": "ui-34",
+      "sourceRow": 34,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-34-owner-360",
+      "familyId": "ui-34",
+      "sourceRow": 34,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-34-owner-1440",
+      "familyId": "ui-34",
+      "sourceRow": 34,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-34-server-admin-360",
+      "familyId": "ui-34",
+      "sourceRow": 34,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-34-server-admin-1440",
+      "familyId": "ui-34",
+      "sourceRow": 34,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-35-member-360",
+      "familyId": "ui-35",
+      "sourceRow": 35,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-35-member-1440",
+      "familyId": "ui-35",
+      "sourceRow": 35,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-35-owner-360",
+      "familyId": "ui-35",
+      "sourceRow": 35,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-35-owner-1440",
+      "familyId": "ui-35",
+      "sourceRow": 35,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-35-server-admin-360",
+      "familyId": "ui-35",
+      "sourceRow": 35,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-35-server-admin-1440",
+      "familyId": "ui-35",
+      "sourceRow": 35,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-36-member-360",
+      "familyId": "ui-36",
+      "sourceRow": 36,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-36-member-1440",
+      "familyId": "ui-36",
+      "sourceRow": 36,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-36-owner-360",
+      "familyId": "ui-36",
+      "sourceRow": 36,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-36-owner-1440",
+      "familyId": "ui-36",
+      "sourceRow": 36,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-36-server-admin-360",
+      "familyId": "ui-36",
+      "sourceRow": 36,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-36-server-admin-1440",
+      "familyId": "ui-36",
+      "sourceRow": 36,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-37-member-360",
+      "familyId": "ui-37",
+      "sourceRow": 37,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-37-member-1440",
+      "familyId": "ui-37",
+      "sourceRow": 37,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-37-owner-360",
+      "familyId": "ui-37",
+      "sourceRow": 37,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-37-owner-1440",
+      "familyId": "ui-37",
+      "sourceRow": 37,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-37-server-admin-360",
+      "familyId": "ui-37",
+      "sourceRow": 37,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-37-server-admin-1440",
+      "familyId": "ui-37",
+      "sourceRow": 37,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-38-member-360",
+      "familyId": "ui-38",
+      "sourceRow": 38,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-38-member-1440",
+      "familyId": "ui-38",
+      "sourceRow": 38,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-38-server-admin-360",
+      "familyId": "ui-38",
+      "sourceRow": 38,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-38-server-admin-1440",
+      "familyId": "ui-38",
+      "sourceRow": 38,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-39-member-360",
+      "familyId": "ui-39",
+      "sourceRow": 39,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-39-member-1440",
+      "familyId": "ui-39",
+      "sourceRow": 39,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-39-server-admin-360",
+      "familyId": "ui-39",
+      "sourceRow": 39,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-39-server-admin-1440",
+      "familyId": "ui-39",
+      "sourceRow": 39,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-40-member-360",
+      "familyId": "ui-40",
+      "sourceRow": 40,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-40-member-1440",
+      "familyId": "ui-40",
+      "sourceRow": 40,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-40-owner-360",
+      "familyId": "ui-40",
+      "sourceRow": 40,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-40-owner-1440",
+      "familyId": "ui-40",
+      "sourceRow": 40,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-41-guest-360",
+      "familyId": "ui-41",
+      "sourceRow": 41,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-41-guest-390",
+      "familyId": "ui-41",
+      "sourceRow": 41,
+      "role": "guest",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-41-guest-768",
+      "familyId": "ui-41",
+      "sourceRow": 41,
+      "role": "guest",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-41-guest-1440",
+      "familyId": "ui-41",
+      "sourceRow": 41,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-41-member-360",
+      "familyId": "ui-41",
+      "sourceRow": 41,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-41-member-390",
+      "familyId": "ui-41",
+      "sourceRow": 41,
+      "role": "member",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-41-member-768",
+      "familyId": "ui-41",
+      "sourceRow": 41,
+      "role": "member",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-41-member-1440",
+      "familyId": "ui-41",
+      "sourceRow": 41,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-41-owner-360",
+      "familyId": "ui-41",
+      "sourceRow": 41,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-41-owner-390",
+      "familyId": "ui-41",
+      "sourceRow": 41,
+      "role": "owner",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-41-owner-768",
+      "familyId": "ui-41",
+      "sourceRow": 41,
+      "role": "owner",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-41-owner-1440",
+      "familyId": "ui-41",
+      "sourceRow": 41,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-41-server-admin-360",
+      "familyId": "ui-41",
+      "sourceRow": 41,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-41-server-admin-390",
+      "familyId": "ui-41",
+      "sourceRow": 41,
+      "role": "server-admin",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-41-server-admin-768",
+      "familyId": "ui-41",
+      "sourceRow": 41,
+      "role": "server-admin",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-41-server-admin-1440",
+      "familyId": "ui-41",
+      "sourceRow": 41,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-42-guest-360",
+      "familyId": "ui-42",
+      "sourceRow": 42,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-42-guest-1440",
+      "familyId": "ui-42",
+      "sourceRow": 42,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-42-member-360",
+      "familyId": "ui-42",
+      "sourceRow": 42,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-42-member-1440",
+      "familyId": "ui-42",
+      "sourceRow": 42,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-42-owner-360",
+      "familyId": "ui-42",
+      "sourceRow": 42,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-42-owner-1440",
+      "familyId": "ui-42",
+      "sourceRow": 42,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-42-server-admin-360",
+      "familyId": "ui-42",
+      "sourceRow": 42,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-42-server-admin-1440",
+      "familyId": "ui-42",
+      "sourceRow": 42,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-43-guest-360",
+      "familyId": "ui-43",
+      "sourceRow": 43,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-43-guest-1440",
+      "familyId": "ui-43",
+      "sourceRow": 43,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-43-member-360",
+      "familyId": "ui-43",
+      "sourceRow": 43,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-43-member-1440",
+      "familyId": "ui-43",
+      "sourceRow": 43,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-43-owner-360",
+      "familyId": "ui-43",
+      "sourceRow": 43,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-43-owner-1440",
+      "familyId": "ui-43",
+      "sourceRow": 43,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-43-server-admin-360",
+      "familyId": "ui-43",
+      "sourceRow": 43,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-43-server-admin-1440",
+      "familyId": "ui-43",
+      "sourceRow": 43,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-44-guest-360",
+      "familyId": "ui-44",
+      "sourceRow": 44,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-44-guest-1440",
+      "familyId": "ui-44",
+      "sourceRow": 44,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-44-member-360",
+      "familyId": "ui-44",
+      "sourceRow": 44,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-44-member-1440",
+      "familyId": "ui-44",
+      "sourceRow": 44,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-44-owner-360",
+      "familyId": "ui-44",
+      "sourceRow": 44,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-44-owner-1440",
+      "familyId": "ui-44",
+      "sourceRow": 44,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-45-server-admin-360",
+      "familyId": "ui-45",
+      "sourceRow": 45,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-45-server-admin-1440",
+      "familyId": "ui-45",
+      "sourceRow": 45,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-46-server-admin-360",
+      "familyId": "ui-46",
+      "sourceRow": 46,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-46-server-admin-1440",
+      "familyId": "ui-46",
+      "sourceRow": 46,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "personal-data"
+    },
+    {
+      "caseId": "ui-47-guest-360",
+      "familyId": "ui-47",
+      "sourceRow": 47,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-47-guest-1440",
+      "familyId": "ui-47",
+      "sourceRow": 47,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-47-member-360",
+      "familyId": "ui-47",
+      "sourceRow": 47,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-47-member-1440",
+      "familyId": "ui-47",
+      "sourceRow": 47,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-47-owner-360",
+      "familyId": "ui-47",
+      "sourceRow": 47,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-47-owner-1440",
+      "familyId": "ui-47",
+      "sourceRow": 47,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-48-owner-360",
+      "familyId": "ui-48",
+      "sourceRow": 48,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "catalog-menu"
+    },
+    {
+      "caseId": "ui-48-owner-1440",
+      "familyId": "ui-48",
+      "sourceRow": 48,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "catalog-menu"
+    },
+    {
+      "caseId": "ui-48-server-admin-360",
+      "familyId": "ui-48",
+      "sourceRow": 48,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "catalog-menu"
+    },
+    {
+      "caseId": "ui-48-server-admin-1440",
+      "familyId": "ui-48",
+      "sourceRow": 48,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "catalog-menu"
+    },
+    {
+      "caseId": "ui-49-owner-360",
+      "familyId": "ui-49",
+      "sourceRow": 49,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "catalog-menu"
+    },
+    {
+      "caseId": "ui-49-owner-1440",
+      "familyId": "ui-49",
+      "sourceRow": 49,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "catalog-menu"
+    },
+    {
+      "caseId": "ui-49-server-admin-360",
+      "familyId": "ui-49",
+      "sourceRow": 49,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "catalog-menu"
+    },
+    {
+      "caseId": "ui-49-server-admin-1440",
+      "familyId": "ui-49",
+      "sourceRow": 49,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "catalog-menu"
+    },
+    {
+      "caseId": "ui-50-guest-360",
+      "familyId": "ui-50",
+      "sourceRow": 50,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "catalog-menu"
+    },
+    {
+      "caseId": "ui-50-guest-1440",
+      "familyId": "ui-50",
+      "sourceRow": 50,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "catalog-menu"
+    },
+    {
+      "caseId": "ui-50-member-360",
+      "familyId": "ui-50",
+      "sourceRow": 50,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "catalog-menu"
+    },
+    {
+      "caseId": "ui-50-member-1440",
+      "familyId": "ui-50",
+      "sourceRow": 50,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "catalog-menu"
+    },
+    {
+      "caseId": "ui-50-owner-360",
+      "familyId": "ui-50",
+      "sourceRow": 50,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "catalog-menu"
+    },
+    {
+      "caseId": "ui-50-owner-1440",
+      "familyId": "ui-50",
+      "sourceRow": 50,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "catalog-menu"
+    },
+    {
+      "caseId": "ui-51-owner-360",
+      "familyId": "ui-51",
+      "sourceRow": 51,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "menu-photo"
+    },
+    {
+      "caseId": "ui-51-owner-390",
+      "familyId": "ui-51",
+      "sourceRow": 51,
+      "role": "owner",
+      "viewport": 390,
+      "mutationSurface": "menu-photo"
+    },
+    {
+      "caseId": "ui-51-owner-1440",
+      "familyId": "ui-51",
+      "sourceRow": 51,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "menu-photo"
+    },
+    {
+      "caseId": "ui-51-server-admin-360",
+      "familyId": "ui-51",
+      "sourceRow": 51,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "menu-photo"
+    },
+    {
+      "caseId": "ui-51-server-admin-390",
+      "familyId": "ui-51",
+      "sourceRow": 51,
+      "role": "server-admin",
+      "viewport": 390,
+      "mutationSurface": "menu-photo"
+    },
+    {
+      "caseId": "ui-51-server-admin-1440",
+      "familyId": "ui-51",
+      "sourceRow": 51,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "menu-photo"
+    },
+    {
+      "caseId": "ui-52-guest-360",
+      "familyId": "ui-52",
+      "sourceRow": 52,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-52-guest-390",
+      "familyId": "ui-52",
+      "sourceRow": 52,
+      "role": "guest",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-52-guest-768",
+      "familyId": "ui-52",
+      "sourceRow": 52,
+      "role": "guest",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-52-guest-1440",
+      "familyId": "ui-52",
+      "sourceRow": 52,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-52-member-360",
+      "familyId": "ui-52",
+      "sourceRow": 52,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-52-member-390",
+      "familyId": "ui-52",
+      "sourceRow": 52,
+      "role": "member",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-52-member-768",
+      "familyId": "ui-52",
+      "sourceRow": 52,
+      "role": "member",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-52-member-1440",
+      "familyId": "ui-52",
+      "sourceRow": 52,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-52-owner-360",
+      "familyId": "ui-52",
+      "sourceRow": 52,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-52-owner-390",
+      "familyId": "ui-52",
+      "sourceRow": 52,
+      "role": "owner",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-52-owner-768",
+      "familyId": "ui-52",
+      "sourceRow": 52,
+      "role": "owner",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-52-owner-1440",
+      "familyId": "ui-52",
+      "sourceRow": 52,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-52-server-admin-360",
+      "familyId": "ui-52",
+      "sourceRow": 52,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-52-server-admin-390",
+      "familyId": "ui-52",
+      "sourceRow": 52,
+      "role": "server-admin",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-52-server-admin-768",
+      "familyId": "ui-52",
+      "sourceRow": 52,
+      "role": "server-admin",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-52-server-admin-1440",
+      "familyId": "ui-52",
+      "sourceRow": 52,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-53-guest-360",
+      "familyId": "ui-53",
+      "sourceRow": 53,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-53-guest-1440",
+      "familyId": "ui-53",
+      "sourceRow": 53,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-53-member-360",
+      "familyId": "ui-53",
+      "sourceRow": 53,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-53-member-1440",
+      "familyId": "ui-53",
+      "sourceRow": 53,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-53-owner-360",
+      "familyId": "ui-53",
+      "sourceRow": 53,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-53-owner-1440",
+      "familyId": "ui-53",
+      "sourceRow": 53,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-53-server-admin-360",
+      "familyId": "ui-53",
+      "sourceRow": 53,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-53-server-admin-1440",
+      "familyId": "ui-53",
+      "sourceRow": 53,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-54-guest-360",
+      "familyId": "ui-54",
+      "sourceRow": 54,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-54-guest-390",
+      "familyId": "ui-54",
+      "sourceRow": 54,
+      "role": "guest",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-54-guest-768",
+      "familyId": "ui-54",
+      "sourceRow": 54,
+      "role": "guest",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-54-guest-1440",
+      "familyId": "ui-54",
+      "sourceRow": 54,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-54-member-360",
+      "familyId": "ui-54",
+      "sourceRow": 54,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-54-member-390",
+      "familyId": "ui-54",
+      "sourceRow": 54,
+      "role": "member",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-54-member-768",
+      "familyId": "ui-54",
+      "sourceRow": 54,
+      "role": "member",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-54-member-1440",
+      "familyId": "ui-54",
+      "sourceRow": 54,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-54-owner-360",
+      "familyId": "ui-54",
+      "sourceRow": 54,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-54-owner-390",
+      "familyId": "ui-54",
+      "sourceRow": 54,
+      "role": "owner",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-54-owner-768",
+      "familyId": "ui-54",
+      "sourceRow": 54,
+      "role": "owner",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-54-owner-1440",
+      "familyId": "ui-54",
+      "sourceRow": 54,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-54-server-admin-360",
+      "familyId": "ui-54",
+      "sourceRow": 54,
+      "role": "server-admin",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-54-server-admin-390",
+      "familyId": "ui-54",
+      "sourceRow": 54,
+      "role": "server-admin",
+      "viewport": 390,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-54-server-admin-768",
+      "familyId": "ui-54",
+      "sourceRow": 54,
+      "role": "server-admin",
+      "viewport": 768,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-54-server-admin-1440",
+      "familyId": "ui-54",
+      "sourceRow": 54,
+      "role": "server-admin",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-55-guest-360",
+      "familyId": "ui-55",
+      "sourceRow": 55,
+      "role": "guest",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-55-guest-1440",
+      "familyId": "ui-55",
+      "sourceRow": 55,
+      "role": "guest",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-56-member-360",
+      "familyId": "ui-56",
+      "sourceRow": 56,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-56-member-1440",
+      "familyId": "ui-56",
+      "sourceRow": 56,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-57-member-360",
+      "familyId": "ui-57",
+      "sourceRow": 57,
+      "role": "member",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-57-member-1440",
+      "familyId": "ui-57",
+      "sourceRow": 57,
+      "role": "member",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-57-owner-360",
+      "familyId": "ui-57",
+      "sourceRow": 57,
+      "role": "owner",
+      "viewport": 360,
+      "mutationSurface": "read-only"
+    },
+    {
+      "caseId": "ui-57-owner-1440",
+      "familyId": "ui-57",
+      "sourceRow": 57,
+      "role": "owner",
+      "viewport": 1440,
+      "mutationSurface": "read-only"
+    }
+  ]
+}

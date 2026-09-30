@@ -169,10 +169,7 @@ public class ReviewService {
 
     private static void validateRequest(AppUser principal, ReviewRequest request) {
         requireSignedIn(principal);
-        if (request == null || !Boolean.TRUE.equals(request.nonEventReviewConsent())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "리뷰 이벤트에 참여하지 않았다는 동의가 필요합니다.");
-        }
+        if (request == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "리뷰 내용을 확인해 주세요.");
         validateScore(request.overallScore());
         validateScore(request.tasteScore());
         validateScore(request.valueScore());

@@ -7,11 +7,9 @@ export type ReviewInput = {
   valueScore: number
   portionScore: number
   comment: string | null
-  nonEventReviewConsent: true
 }
 
-export type MyReview = Omit<ReviewInput, 'nonEventReviewConsent'> & {
-  nonEventReviewConsent: boolean | null
+export type MyReview = ReviewInput & {
   id: number
   menuId: number
   menuName: string
@@ -40,7 +38,7 @@ export function deleteReview(reviewId: number) { return apiRequest<void>(`/api/r
 export function reviewErrorMessage(error: unknown) {
   if (!(error instanceof ApiError)) return '리뷰를 저장하지 못했어요. 잠시 후 다시 시도해 주세요.'
   if (error.status === 0) return '서버에 연결할 수 없어요. 인터넷 연결을 확인해 주세요.'
-  if (error.status === 400) return error.message || '별점은 0.5점 간격으로 선택하고, 비이벤트 동의를 확인해 주세요.'
+  if (error.status === 400) return error.message || '별점은 0.5점 간격으로 선택해 주세요.'
   if (error.status === 401) return '로그인 상태가 만료됐어요. 다시 로그인해 주세요.'
   if (error.status === 403) return '본인이 작성한 리뷰만 수정하거나 삭제할 수 있어요. 로그인 상태도 확인해 주세요.'
   if (error.status === 404) return '메뉴나 리뷰를 찾을 수 없어요. 화면을 새로고침해 주세요.'

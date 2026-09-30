@@ -126,7 +126,6 @@ async function main(): Promise<void> {
         menuPhotos: actionCounts(plan).menuPhotos?.exact ?? 0,
         reviewPhotos: actionCounts(plan).reviewPhotos?.exact ?? 0,
       },
-      preservedNullConsentRows: artifact.data.reviews.filter((review) => review.nonEventReviewConsent === null).length,
       deferred_media: plan.deferredMedia,
       deferred_links: plan.deferredLinks,
       media_association_stage: mediaAssociationStage(plan),

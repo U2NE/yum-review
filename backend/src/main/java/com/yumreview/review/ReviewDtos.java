@@ -1,6 +1,5 @@
 package com.yumreview.review;
 
-import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
@@ -19,8 +18,7 @@ public final class ReviewDtos {
             @NotNull @DecimalMin("0.5") @DecimalMax("5.0") BigDecimal tasteScore,
             @NotNull @DecimalMin("0.5") @DecimalMax("5.0") BigDecimal valueScore,
             @NotNull @DecimalMin("0.5") @DecimalMax("5.0") BigDecimal portionScore,
-            @Size(max = 1000) String comment,
-            @NotNull @AssertTrue Boolean nonEventReviewConsent) { }
+            @Size(max = 1000) String comment) { }
 
     public record ReviewPhotoRequest(@NotBlank @Size(max = 64) String mediaId) { }
 
@@ -35,7 +33,6 @@ public final class ReviewDtos {
             BigDecimal valueScore,
             BigDecimal portionScore,
             String comment,
-            Boolean nonEventReviewConsent,
             List<String> photoMediaIds,
             OffsetDateTime createdAt,
             OffsetDateTime updatedAt) {
@@ -45,7 +42,7 @@ public final class ReviewDtos {
             return new ReviewResponse(review.getId(), menu.getId(), menu.getName(),
                     restaurant.getId(), restaurant.getName(), review.getOverallScore(),
                     review.getTasteScore(), review.getValueScore(), review.getPortionScore(),
-                    review.getComment(), review.getNonEventReviewConsent(), List.copyOf(photoMediaIds),
+                    review.getComment(), List.copyOf(photoMediaIds),
                     review.getCreatedAt(), review.getUpdatedAt());
         }
     }

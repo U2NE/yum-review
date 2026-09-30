@@ -43,9 +43,6 @@ public class Review {
     @Column(name = "portion_score", nullable = false, precision = 2, scale = 1)
     private BigDecimal portionScore;
 
-    @Column(name = "non_event_review_consent")
-    private Boolean nonEventReviewConsent;
-
     @Column(length = 1000)
     private String comment;
 
@@ -70,7 +67,6 @@ public class Review {
         this.tasteScore = request.tasteScore();
         this.valueScore = request.valueScore();
         this.portionScore = request.portionScore();
-        this.nonEventReviewConsent = request.nonEventReviewConsent();
         this.comment = request.comment() == null || request.comment().isBlank()
                 ? null : request.comment().trim();
         this.updatedAt = OffsetDateTime.now(ZoneOffset.UTC);
@@ -83,7 +79,6 @@ public class Review {
     public BigDecimal getTasteScore() { return tasteScore; }
     public BigDecimal getValueScore() { return valueScore; }
     public BigDecimal getPortionScore() { return portionScore; }
-    public Boolean getNonEventReviewConsent() { return nonEventReviewConsent; }
     public String getComment() { return comment; }
     public OffsetDateTime getCreatedAt() { return createdAt; }
     public OffsetDateTime getUpdatedAt() { return updatedAt; }

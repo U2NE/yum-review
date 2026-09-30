@@ -1,54 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
+import { safeAuthReturnTo } from "@/lib/auth/redirect-url";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
-import { safeReturnTo } from "./safeReturnTo";
 import styles from "./auth.module.css";
+
+const CONFIRMATION_ERROR = "인증 링크가 만료되었거나 이미 사용되었어요. 다시 로그인하거나 새 가입 확인 메일을 받아 주세요.";
 
 export function LoginForm({
   returnTo,
-  authorizationCode,
   callbackError,
-  exchangeAuthorizationCode,
 }: {
   returnTo: string;
-  authorizationCode: string | null;
   callbackError: boolean;
-  exchangeAuthorizationCode: (code: string) => Promise<{ ok: boolean }>;
 }) {
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(callbackError ? CONFIRMATION_ERROR : "");
   const [pending, setPending] = useState(false);
-  const attemptedCode = useRef<string | null>(null);
 
   useEffect(() => {
-    if (callbackError) {
-      setMessage("인증 링크가 만료되었거나 이미 사용되었어요. 다시 로그인하거나 새 가입 확인 메일을 받아 주세요.");
-      cleanCallbackParameters(returnTo);
-      return;
-    }
-    if (!authorizationCode || attemptedCode.current === authorizationCode) return;
-
-    attemptedCode.current = authorizationCode;
-    cleanCallbackParameters(returnTo);
-    setPending(true);
-    setMessage("가입 확인을 마치는 중이에요…");
-
-    void exchangeAuthorizationCode(authorizationCode)
-      .then((result) => {
-        if (!result.ok) {
-          setMessage("인증 링크가 만료되었거나 이미 사용되었어요. 다시 로그인하거나 새 가입 확인 메일을 받아 주세요.");
-          return;
-        }
-        window.location.assign(safeReturnTo(returnTo));
-      })
-      .catch(() => {
-        setMessage("가입 확인을 마치지 못했어요. 로그인하거나 새 가입 확인 메일을 받아 주세요.");
-      })
-      .finally(() => {
-        setPending(false);
-      });
-  }, [authorizationCode, callbackError, exchangeAuthorizationCode, returnTo]);
+    if (callbackError) cleanCallbackParameters(returnTo);
+  }, [callbackError, returnTo]);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -56,27 +28,56 @@ export function LoginForm({
     setPending(true);
 
     const form = new FormData(event.currentTarget);
-    const email = String(form.get("email") ?? "").trim();
+    const email = String(form.get("email") ?? "").trim().toLowerCase();
     const password = String(form.get("password") ?? "");
-    const { error } = await createSupabaseBrowserClient().auth.signInWithPassword({
-      email,
-      password,
-    });
 
-    setPending(false);
-    if (error) {
-      setMessage("로그인 정보를 확인해 주세요. 이메일 확인이 필요하다면 받은 편지함을 확인해 주세요.");
-      return;
+    try {
+      const lookupResponse = await fetch("/api/auth/email-status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+        credentials: "same-origin",
+        cache: "no-store",
+      });
+      const lookup = await lookupResponse.json().catch(() => null) as { exists?: boolean; error?: string } | null;
+      if (lookupResponse.status === 429) {
+        setMessage(lookup?.error ?? "잠시 후 다시 로그인해 주세요.");
+        return;
+      }
+      if (!lookupResponse.ok || typeof lookup?.exists !== "boolean") {
+        setMessage(lookup?.error ?? "로그인 정보를 확인하지 못했어요. 잠시 후 다시 시도해 주세요.");
+        return;
+      }
+      if (!lookup.exists) {
+        setMessage("가입된 이메일을 찾을 수 없습니다. 이메일 주소를 확인하거나 회원가입해 주세요.");
+        return;
+      }
+
+      const { error } = await createSupabaseBrowserClient().auth.signInWithPassword({ email, password });
+      if (error) {
+        if (error.code === "invalid_credentials") {
+          setMessage("비밀번호가 맞지 않습니다. 다시 확인해 주세요.");
+        } else if (error.code === "email_not_confirmed") {
+          setMessage("이메일 인증이 아직 완료되지 않았어요. 받은 편지함에서 한입기록 확인 메일을 찾아 주세요.");
+        } else {
+          setMessage("로그인을 완료하지 못했어요. 입력한 정보를 확인한 뒤 다시 시도해 주세요.");
+        }
+        return;
+      }
+
+      window.location.assign(safeAuthReturnTo(returnTo));
+    } catch {
+      setMessage("로그인을 완료하지 못했어요. 잠시 후 다시 시도해 주세요.");
+    } finally {
+      setPending(false);
     }
-
-    window.location.assign(safeReturnTo(returnTo));
   }
 
   return (
     <div className={styles.card}>
       <h1 className={styles.title}>로그인</h1>
       <p className={styles.description}>한입기록에 다시 오신 것을 환영해요.</p>
-      <form className={styles.form} onSubmit={submit}>
+      <form className={styles.form} method="post" onSubmit={submit}>
         <label className={styles.field}>
           이메일
           <input className={styles.input} name="email" type="email" autoComplete="email" required />
@@ -91,13 +92,13 @@ export function LoginForm({
             required
           />
         </label>
-        {message ? <p className={styles.message} role="status">{message}</p> : null}
+        {message ? <p className={styles.message} role="alert">{message}</p> : null}
         <button className={styles.button} type="submit" disabled={pending}>
           {pending ? "확인 중…" : "로그인"}
         </button>
       </form>
       <p className={styles.footerLinks}>
-        아직 계정이 없으신가요? <Link href={`/signup?next=${encodeURIComponent(safeReturnTo(returnTo))}`}>회원가입</Link>
+        아직 계정이 없으신가요? <Link href={`/signup?next=${encodeURIComponent(safeAuthReturnTo(returnTo))}`}>회원가입</Link>
       </p>
     </div>
   );
@@ -106,7 +107,7 @@ export function LoginForm({
 function cleanCallbackParameters(returnTo: string) {
   const url = new URL(window.location.href);
   url.search = "";
-  const safeTarget = safeReturnTo(returnTo);
+  const safeTarget = safeAuthReturnTo(returnTo);
   if (safeTarget !== "/") url.searchParams.set("next", safeTarget);
   window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}`);
 }

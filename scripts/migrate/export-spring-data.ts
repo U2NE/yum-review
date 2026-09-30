@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { Client } from "pg";
 
 const execFileAsync = promisify(execFile);
-const EXPORT_FORMAT = "yum-review.spring-export/v1";
+const EXPORT_FORMAT = "yum-review.spring-export/v2";
 // UUIDv5 of the DNS namespace and the stable project label `yum-review:migration:identity:v1`.
 // Keep this immutable across exports; identifiers are derived only from legacy table IDs.
 const PROJECT_IDENTITY_NAMESPACE = "e14b9b93-d2f5-5f85-8aad-9bd1e9c7c158";
@@ -65,7 +65,6 @@ type ReviewRow = {
   valueScore: string;
   portionScore: string;
   comment: string | null;
-  nonEventReviewConsent: boolean | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -233,7 +232,7 @@ async function exportRows(connectionString: string): Promise<ExportData> {
       client.query(`SELECT id::text AS id, user_id::text AS "userId", menu_id::text AS "menuId",
         overall_score::text AS "overallScore", taste_score::text AS "tasteScore",
         value_score::text AS "valueScore", portion_score::text AS "portionScore", comment,
-        non_event_review_consent AS "nonEventReviewConsent", created_at::text AS "createdAt", updated_at::text AS "updatedAt"
+        created_at::text AS "createdAt", updated_at::text AS "updatedAt"
         FROM public.review ORDER BY id`),
       client.query(`SELECT media_id AS "mediaId", storage_key AS "storageKey",
         uploaded_by_user_id::text AS "uploadedByUserId", content_type AS "contentType",
@@ -282,7 +281,7 @@ async function main(): Promise<void> {
   const manifest = {
     format: EXPORT_FORMAT,
     createdAt: new Date().toISOString(),
-    sourceMigrations: ["V1", "V2", "V3", "V4", "V5", "V6"],
+      sourceMigrations: ["V1", "V2", "V3", "V4", "V5", "V6", "V7"],
     counts: {
       users: data.users.length,
       restaurants: data.restaurants.length,
@@ -300,7 +299,6 @@ async function main(): Promise<void> {
     },
     dataSha256: sha256(data),
     emailConfirmationMapping: "unconfirmed",
-    consentNullsPreserved: true,
   };
   const artifact = { manifest, data };
   await writePrivateExport(outputPath, JSON.stringify(artifact) + "\n");

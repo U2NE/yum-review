@@ -173,7 +173,7 @@ export function MenuEditor({ restaurantName, menus, saveMenu }: MenuEditorProps)
             메뉴를 먼저 등록하면 사진을 추가할 수 있어요. 등록 후 메뉴 목록에서 <strong>수정</strong>을 눌러 사진을 관리해 주세요.
           </p>
         )}
-        {message ? <p className={styles.message} role={messageIsError ? "alert" : "status"}>{message}</p> : null}
+        {message ? <p className={`${styles.message} ${messageIsError ? "" : styles.success}`} role={messageIsError ? "alert" : "status"}>{message}</p> : null}
       </form>
 
       <h3 className={styles.sectionTitle}>등록된 메뉴</h3>

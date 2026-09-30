@@ -8,7 +8,6 @@ export type ReviewSavePayload = {
   valueScore: number | null;
   portionScore: number | null;
   comment: string | null;
-  nonEventConsent: true;
 };
 
 export type ReviewRow = {
@@ -20,7 +19,6 @@ export type ReviewRow = {
   value_score: number | null;
   portion_score: number | null;
   comment: string | null;
-  non_event_review_consent: boolean | null;
   created_at: string;
   updated_at: string;
 };
@@ -41,7 +39,7 @@ export async function fetchMenuReviews(
   const { data, error } = await supabase
     .from("reviews")
     .select(
-      "id, user_id, menu_id, overall_score, taste_score, value_score, portion_score, comment, non_event_review_consent, created_at, updated_at",
+      "id, user_id, menu_id, overall_score, taste_score, value_score, portion_score, comment, created_at, updated_at",
     )
     .eq("menu_id", menuId)
     .order("created_at", { ascending: false })
@@ -99,10 +97,6 @@ export async function saveReview(
   ) {
     throw new Error("전체 별점을 0.5점 단위로 선택해 주세요.");
   }
-  if (payload.nonEventConsent !== true) {
-    throw new Error("이벤트 참여 없이 작성한 리뷰인지 확인해 주세요.");
-  }
-
   const comment = payload.comment?.trim() || null;
   if (comment && [...comment].length > 1000) {
     throw new Error("코멘트는 1,000자까지 입력할 수 있어요.");
@@ -114,7 +108,6 @@ export async function saveReview(
     value_score: payload.valueScore,
     portion_score: payload.portionScore,
     comment,
-    non_event_review_consent: true,
   };
 
   const result = existingReviewId
@@ -124,14 +117,14 @@ export async function saveReview(
         .eq("id", existingReviewId)
         .eq("user_id", userId)
         .select(
-          "id, user_id, menu_id, overall_score, taste_score, value_score, portion_score, comment, non_event_review_consent, created_at, updated_at",
+          "id, user_id, menu_id, overall_score, taste_score, value_score, portion_score, comment, created_at, updated_at",
         )
         .single()
     : await supabase
         .from("reviews")
         .insert({ ...values, user_id: userId, menu_id: payload.menuId })
         .select(
-          "id, user_id, menu_id, overall_score, taste_score, value_score, portion_score, comment, non_event_review_consent, created_at, updated_at",
+          "id, user_id, menu_id, overall_score, taste_score, value_score, portion_score, comment, created_at, updated_at",
         )
         .single();
 

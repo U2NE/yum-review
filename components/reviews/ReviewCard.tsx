@@ -9,6 +9,7 @@ import { getReviewPhotoPreviews, type MediaPreview } from "@/lib/data/media";
 import { ImageUpload } from "@/components/media/ImageUpload";
 import { RefreshableImage } from "@/components/media/RefreshableImage";
 import { ReviewForm } from "@/components/reviews/ReviewForm";
+import styles from "@/components/catalog/discovery/discovery.module.css";
 
 type ReviewCardProps = {
   review: ReviewCardData;
@@ -103,11 +104,11 @@ function ReadOnlyScore({ score }: { score: number }) {
         return (
           <span key={index} style={{ position: "relative", width: "1.1rem", height: "1.1rem", display: "inline-block" }}>
             <svg viewBox="0 0 24 24" aria-hidden="true" style={{ width: "1.1rem", height: "1.1rem", position: "absolute" }}>
-              <path d={starPath} fill="#e4ddd2" stroke="#a99f91" strokeWidth="0.5" />
+              <path d={starPath} fill="#e5ece2" stroke="#829083" strokeWidth="0.5" />
             </svg>
             <span aria-hidden="true" style={{ position: "absolute", inset: "0 auto auto 0", width: `${fill * 1.1}rem`, height: "1.1rem", overflow: "hidden" }}>
               <svg viewBox="0 0 24 24" style={{ width: "1.1rem", height: "1.1rem", maxWidth: "none" }}>
-                <path d={starPath} fill="#a7472c" stroke="#7e321f" strokeWidth="0.5" />
+                <path d={starPath} fill="#155e4b" stroke="#104f40" strokeWidth="0.5" />
               </svg>
             </span>
           </span>
@@ -253,7 +254,7 @@ export function ReviewCard({ review, menuName, currentUserId, isServerAdmin = fa
   if (removed) return null;
 
   return (
-    <article style={{ border: "1px solid var(--line)", borderRadius: "0.8rem", padding: "1rem", background: "var(--surface)", display: "grid", gap: "0.8rem" }}>
+    <article className={styles.reviewCard} style={{ padding: "1rem", display: "grid", gap: "0.8rem" }}>
       <header style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem", flexWrap: "wrap" }}>
         <div style={{ display: "grid", gap: "0.25rem" }}>
           {menuName ? <Link href={`/menus/${current.menu_id}`} style={{ fontWeight: 700 }}>{menuName}</Link> : null}
@@ -324,6 +325,7 @@ const smallButton = {
   border: "1px solid var(--line)",
   borderRadius: "999px",
   background: "var(--surface)",
-  padding: "0.35rem 0.75rem",
+  minHeight: "44px",
+  padding: "0.5rem 0.9rem",
   cursor: "pointer",
 } as const;

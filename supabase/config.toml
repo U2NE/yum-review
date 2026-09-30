@@ -17,15 +17,26 @@ api_url = "http://127.0.0.1"
 
 [auth]
 enabled = true
-site_url = "http://localhost:3000"
-additional_redirect_urls = ["http://localhost:3000/**", "http://127.0.0.1:3000/**"]
+site_url = "https://yum-review.vercel.app"
+additional_redirect_urls = ["https://yum-review.vercel.app/**", "http://localhost:3000/**", "http://127.0.0.1:3000/**"]
 enable_signup = true
+minimum_password_length = 8
+password_requirements = "letters_digits"
+
+[auth.rate_limit]
+# Keep direct Auth sign-up/sign-in calls rate-limited per IP as well as the
+# app's separate ten-lookups-per-minute email-status quota.
+sign_in_sign_ups = 10
 
 [auth.email]
 enable_signup = true
 double_confirm_changes = true
 enable_confirmations = true
 secure_password_change = true
+
+[auth.email.template.confirmation]
+subject = "한입기록 가입 확인 메일"
+content_path = "./supabase/templates/confirmation.html"
 
 [storage]
 enabled = true

@@ -7,6 +7,7 @@ import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 import { fetchMenuReviews, saveReview, type ReviewCardData, type ReviewSavePayload } from "@/lib/data/reviews";
 import { ReviewCard } from "@/components/reviews/ReviewCard";
 import { ReviewForm } from "@/components/reviews/ReviewForm";
+import styles from "@/components/catalog/discovery/discovery.module.css";
 
 export function ReviewFeed({ menuId }: { menuId: number }) {
   const router = useRouter();
@@ -65,7 +66,7 @@ export function ReviewFeed({ menuId }: { menuId: number }) {
   const loginHref = "/login?next=" + encodeURIComponent(`/menus/${menuId}`);
 
   return (
-    <section aria-labelledby={`reviews-${menuId}`} style={{ display: "grid", gap: "1rem", marginTop: "2rem" }}>
+    <section className={styles.reviewSection} aria-labelledby={`reviews-${menuId}`} style={{ display: "grid", gap: "1rem", marginTop: "2rem" }}>
       <header style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "0.7rem" }}>
         <div>
           <h2 id={`reviews-${menuId}`} style={{ margin: 0, fontSize: "1.3rem" }}>이 메뉴의 리뷰</h2>
@@ -118,6 +119,7 @@ export function ReviewFeed({ menuId }: { menuId: number }) {
 
 const primaryButton = {
   display: "inline-flex",
+  minHeight: "44px",
   alignItems: "center",
   justifyContent: "center",
   border: "1px solid var(--accent)",
@@ -131,6 +133,7 @@ const primaryButton = {
 } as const;
 
 const secondaryButton = {
+  minHeight: "44px",
   border: "1px solid var(--line)",
   borderRadius: "999px",
   background: "var(--surface)",
@@ -140,7 +143,7 @@ const secondaryButton = {
 
 const formPanel = {
   border: "1px solid var(--line)",
-  borderRadius: "0.8rem",
+  borderRadius: "1rem",
   padding: "1rem",
   background: "var(--surface)",
 } as const;

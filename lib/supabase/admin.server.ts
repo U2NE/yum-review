@@ -35,7 +35,26 @@ export async function listAuthUserIds() {
   return userIds;
 }
 
-/** Only the verification route calls these server-only, service-role RPCs. */
+/** Server-only privileged RPC for a location already authorized by the owner route. */
+export async function setRestaurantLocationServer(input: {
+  restaurantId: number;
+  ownerId: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+  consentVersion: string;
+}) {
+  return createSupabaseAdminClient().rpc("server_set_restaurant_location", {
+    p_restaurant_id: input.restaurantId,
+    p_owner_id: input.ownerId,
+    p_address: input.address,
+    p_latitude: input.latitude,
+    p_longitude: input.longitude,
+    p_consent_version: input.consentVersion,
+  });
+}
+
+/** Only server routes call these other server-only, service-role RPCs. */
 export async function claimMediaVerificationSlot(mediaId: string, userId: string) {
   return createSupabaseAdminClient().rpc("claim_media_verification_slot_server", {
     p_media_id: mediaId,

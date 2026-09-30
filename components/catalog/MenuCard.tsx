@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 import { toggleMenuWishlist } from "@/lib/data/wishlists";
 import { RefreshableImage } from "@/components/media/RefreshableImage";
+import styles from "@/components/catalog/discovery/discovery.module.css";
 
 export type MenuCardProps = {
   menuId: number;
@@ -73,9 +74,9 @@ export function MenuCard({
   }
 
   return (
-    <article style={{ minWidth: 0, border: "1px solid var(--line)", borderRadius: "0.9rem", overflow: "hidden", background: "var(--surface)", display: "grid" }}>
-      <Link href={`/menus/${menuId}`} aria-label={`${restaurantName} ${name} 메뉴 상세`} style={{ color: "inherit", textDecoration: "none" }}>
-        <div style={{ aspectRatio: "16 / 10", background: "var(--accent-soft)", overflow: "hidden" }}>
+    <article className={styles.menuCard}>
+      <Link className={styles.menuCardLink} href={`/menus/${menuId}`} aria-label={`${restaurantName} ${name} 메뉴 상세`}>
+        <div className={styles.menuCardImage}>
           {imageUrl ? (
             <RefreshableImage
               src={imageUrl}
@@ -90,23 +91,23 @@ export function MenuCard({
             </div>
           )}
         </div>
-        <div style={{ padding: "0.9rem 1rem 0.45rem", display: "grid", gap: "0.15rem" }}>
-          <span style={{ color: "var(--muted)", fontSize: "0.88rem" }}>{restaurantName}</span>
-          <strong style={{ fontSize: "1.08rem", overflowWrap: "anywhere" }}>{name}</strong>
+        <div className={styles.menuCardName}>
+          <span>{restaurantName}</span>
+          <strong>{name}</strong>
         </div>
       </Link>
-      <div style={{ padding: "0.2rem 1rem 1rem", display: "grid", gap: "0.65rem" }}>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem", color: "var(--muted)", fontSize: "0.86rem" }}>
+      <div className={styles.menuCardDetails}>
+        <div className={styles.menuCardMetadata}>
           <span>{categoryNames[cuisineCategory] ?? categoryNames.OTHER}</span>
           <span aria-hidden="true">·</span>
           <span>{priceKrw === null ? "가격 확인 중" : `${priceKrw.toLocaleString("ko-KR")}원`}</span>
         </div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
-          <div role="group" aria-label={score === null ? "아직 평균 별점이 없습니다" : `평균 ${score.toFixed(1)}점, 리뷰 ${reviewCount}개`} style={{ display: "grid", gap: "0.05rem" }}>
-            <strong style={{ fontSize: "1.2rem" }}>{score === null ? "—" : score.toFixed(1)} <span style={{ color: "var(--accent)" }}>★</span></strong>
-            <span style={{ color: "var(--muted)", fontSize: "0.8rem" }}>리뷰 {reviewCount}개</span>
+          <div className={styles.menuCardRating} role="group" aria-label={score === null ? "아직 평균 별점이 없습니다" : `평균 ${score.toFixed(1)}점, 리뷰 ${reviewCount}개`}>
+            <strong>{score === null ? "—" : score.toFixed(1)} <span style={{ color: "var(--accent)" }}>★</span></strong>
+            <small>리뷰 {reviewCount}개</small>
           </div>
-          <button type="button" onClick={handleWishlist} disabled={pending} aria-pressed={wishlisted} aria-label={wishlisted ? `${name} 찜 해제` : `${name} 찜하기`} style={wishButton}>
+          <button className={styles.wishButton} type="button" onClick={handleWishlist} disabled={pending} aria-pressed={wishlisted} aria-label={wishlisted ? `${name} 찜 해제` : `${name} 찜하기`}>
             {pending ? "처리 중…" : wishlisted ? "♥ 찜한 메뉴" : "♡ 찜하기"}
           </button>
         </div>
@@ -116,12 +117,3 @@ export function MenuCard({
     </article>
   );
 }
-
-const wishButton = {
-  border: "1px solid var(--line)",
-  borderRadius: "999px",
-  background: "var(--surface)",
-  padding: "0.4rem 0.7rem",
-  cursor: "pointer",
-  whiteSpace: "nowrap",
-} as const;

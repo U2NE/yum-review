@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
+import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -61,7 +62,7 @@ public class SecurityConfig {
                         .csrfTokenRequestHandler(new XorCsrfTokenRequestAttributeHandler()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/api/auth/csrf", "/api/menus/*/reviews", "/api/menus/**", "/api/restaurants/**", "/api/images/**", "/api/location/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/login", "/api/menus/search").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/signup", "/api/auth/login", "/api/menus/search", "/api/location/reverse").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginProcessingUrl("/api/auth/login")
@@ -85,8 +86,47 @@ public class SecurityConfig {
                                 writeJson(response, HttpServletResponse.SC_FORBIDDEN,
                                         "{\"message\":\"요청 권한 또는 CSRF 토큰을 확인해 주세요.\"}")))
                 .userDetailsService(userDetailsService);
+        http.addFilterBefore(new LocationReverseBodyLimitFilter(), CsrfFilter.class);
         http.addFilterBefore(new ForcedPasswordChangeFilter(), AuthorizationFilter.class);
         return http.build();
+    }
+
+    public static final class LocationReverseBodyLimitFilter extends OncePerRequestFilter {
+        private static final String REVERSE_PATH = "/api/location/reverse";
+        private static final long MAX_BODY_LENGTH = 512;
+        private static final int LENGTH_REQUIRED = 411;
+        private static final int PAYLOAD_TOO_LARGE = 413;
+
+        @Override
+        protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                                        FilterChain chain) throws ServletException, IOException {
+            if (!"POST".equals(request.getMethod()) || !REVERSE_PATH.equals(request.getServletPath())) {
+                chain.doFilter(request, response);
+                return;
+            }
+
+            long contentLength = request.getContentLengthLong();
+            if (contentLength < 0) {
+                writeRejection(response, LENGTH_REQUIRED, "요청 본문 길이를 확인할 수 없어요.");
+                return;
+            }
+            if (contentLength > MAX_BODY_LENGTH) {
+                writeRejection(response, PAYLOAD_TOO_LARGE, "요청 본문은 512바이트 이하여야 해요.");
+                return;
+            }
+
+            chain.doFilter(request, response);
+        }
+
+        private static void writeRejection(HttpServletResponse response, int status, String message)
+                throws IOException {
+            response.setStatus(status);
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/json");
+            response.setHeader("Cache-Control", "no-store");
+            response.setHeader("Pragma", "no-cache");
+            response.getWriter().write("{\"message\":\"" + message + "\"}");
+        }
     }
 
     private static final class ForcedPasswordChangeFilter extends OncePerRequestFilter {
