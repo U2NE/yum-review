@@ -40,3 +40,20 @@ Target: [https://yum-review.vercel.app/](https://yum-review.vercel.app/), produc
 ### Scope and limits
 
 This was a guest-only, read-only production pass. No sign-in, review, like, favorite, upload, form submission, hosted setting change, or database write occurred. Search, cuisine, region, sorting, radius, apply/reset, menu detail, and back navigation were exercised. Authenticated member/owner/server-admin paths, write flows, media upload/removal behavior, ranking with non-empty data, successful place lookup, full viewport coverage, and the remaining Task 09 acceptance gates were not verified. Task 09 remains PARTIAL.
+
+## 2026-10-01 G8 hosted schema release attempt — BLOCKED
+
+### Read-only preflight
+
+- Connected through the approved regional pooler using the supplied CA and process-only DPAPI credentials. The keyed in-memory snapshot read every restaurant/menu row and all 40 MENU objects in the approved Storage bucket; `storage.objects` path set exactly matched the 40 MENU metadata paths.
+- Counts were 3 restaurants, 72 menus, and 40 MENU objects (11,576,811 bytes total). Gompocha associations were 1 restaurant, 40 menus, and 40 MENU objects. No key, raw object path, image byte, email, or account UUID was persisted.
+- Supabase CLI 2.118.0 dry-run listed exactly the four expected additive migrations: 20260928115000, 20260928120000, 20260928130000, and 20260928140000. No seed or role work was listed.
+- Targeted catalog-manifest and migration-gate tests passed (11 tests).
+
+### Tracked apply result
+
+- The fourth bounded apply was invoked through the official tracked Supabase CLI with `--skip-vault`, process-only credentials, `lock_timeout=5s`, and `statement_timeout=120s`. It failed with sanitized CLI error code `DbPushApplyError` and SQLSTATE `P0001`. Migration history remained at 20260927120000 (14 versions total); none of the four target versions is recorded as applied. The retained CLI evidence does not identify a precise migration statement.
+- The same-process keyed post-operation check completed and matched the complete catalog and Storage-byte baseline. The 3/72/40 counts, 11,576,811 bytes, and Gompocha 1/40/40 association counts were unchanged.
+- Read-only precondition diagnosis found PostgreSQL major version 17, a non-superuser CREATEROLE connection, neither purge role present after rollback, and zero current role-attribute, role-membership, MENU path, or MENU association violations. The first migration creates the restricted purge roles and then rejects any membership edge involving them in the same transaction. PostgreSQL 16+ automatically grants the creating CREATEROLE role ADMIN OPTION membership in a newly created role; this is the likely cause of the migration's own P0001 role-membership guard. Exact CLI message text was not retained, so treat this as a diagnosed likely cause rather than an exact server-message record.
+
+No Auth password-policy change, hosted Site URL change, main push, Vercel deployment, consent-column drop, legacy migration, or account/review purge was performed. No zero-downtime or hosted Auth/Storage/TUS readiness claim is made. The release remains **BLOCKED** until the migration's PostgreSQL 17 role-creation guard is repaired through its authorized migration scope and a fresh keyed baseline/apply verification succeeds.

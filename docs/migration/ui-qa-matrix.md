@@ -302,3 +302,7 @@ An authenticated browser pass used the synthetic owner and only the disposable l
 | Viewport | PARTIAL | Browser screenshot showed a desktop layout; exact dimensions were unavailable. No responsive-size claim is made. |
 
 This was a bounded interaction check, not proof of upload or refresh-race correctness. No hosted endpoint, production account/data, Gompocha menu, or non-synthetic local row was changed. Overall QA and the role/viewport matrix remain PARTIAL.
+
+### 2026-10-01 G8 hosted release gate
+
+The hosted schema apply stopped with SQLSTATE `P0001`; no production deployment followed. The 394 planned role/viewport QA executions were not run against this release. Existing rows above retain their historical status and do not establish G8 release acceptance. See [hosted-runtime-verification.md](hosted-runtime-verification.md) for the bounded database and Storage-byte evidence.
