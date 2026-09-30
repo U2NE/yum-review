@@ -7,7 +7,11 @@ CREATE SCHEMA IF NOT EXISTS private;
 DO $roles$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_catalog.pg_roles WHERE rolname = 'purge_guard_owner') THEN
+        -- PostgreSQL 17 can give the CREATEROLE operator a self-membership.
+        -- Enable it only for this owner role; purge_identity must not inherit it.
+        SET LOCAL createrole_self_grant = 'set';
         EXECUTE 'CREATE ROLE purge_guard_owner NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS';
+        SET LOCAL createrole_self_grant = '';
     END IF;
     IF NOT EXISTS (SELECT 1 FROM pg_catalog.pg_roles WHERE rolname = 'purge_identity') THEN
         EXECUTE 'CREATE ROLE purge_identity LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS';
@@ -15,22 +19,59 @@ BEGIN
     IF EXISTS (
         SELECT 1 FROM pg_catalog.pg_roles
         WHERE rolname = 'purge_guard_owner'
-          AND (rolsuper OR rolcreatedb OR rolcreaterole OR rolbypassrls OR rolcanlogin)
+          AND (rolsuper OR rolcreatedb OR rolcreaterole OR rolreplication OR rolinherit OR rolbypassrls OR rolcanlogin)
     ) OR EXISTS (
         SELECT 1 FROM pg_catalog.pg_roles
         WHERE rolname = 'purge_identity'
-          AND (rolsuper OR rolcreatedb OR rolcreaterole OR rolbypassrls OR NOT rolcanlogin)
+          AND (rolsuper OR rolcreatedb OR rolcreaterole OR rolreplication OR rolinherit OR rolbypassrls OR NOT rolcanlogin)
     ) THEN
         RAISE EXCEPTION 'procedure owner must be NOLOGIN and purge_identity must be a restricted LOGIN';
     END IF;
-    IF EXISTS (
-        SELECT 1 FROM pg_catalog.pg_auth_members m
+    IF NOT pg_catalog.pg_has_role('postgres', 'purge_guard_owner', 'SET') THEN
+        RAISE EXCEPTION 'postgres must be able to SET ROLE to purge_guard_owner';
+    END IF;
+    -- PG17's immutable CREATEROLE bootstrap edge and the deliberately enabled
+    -- guard-owner SET self-grant are the only accepted memberships.
+    IF (SELECT count(*) FROM pg_catalog.pg_auth_members m
         JOIN pg_catalog.pg_roles r ON r.oid = m.roleid
         JOIN pg_catalog.pg_roles u ON u.oid = m.member
         WHERE r.rolname IN ('purge_guard_owner', 'purge_identity')
-           OR u.rolname IN ('purge_guard_owner', 'purge_identity')
+           OR u.rolname IN ('purge_guard_owner', 'purge_identity')) <> 3
+       OR (SELECT count(*) FROM pg_catalog.pg_auth_members m
+           JOIN pg_catalog.pg_roles r ON r.oid = m.roleid
+           JOIN pg_catalog.pg_roles u ON u.oid = m.member
+           WHERE r.rolname = 'purge_guard_owner' AND u.rolname = 'postgres'
+             AND m.admin_option AND NOT m.inherit_option AND NOT m.set_option) <> 1
+       OR (SELECT count(*) FROM pg_catalog.pg_auth_members m
+           JOIN pg_catalog.pg_roles r ON r.oid = m.roleid
+           JOIN pg_catalog.pg_roles u ON u.oid = m.member
+           WHERE r.rolname = 'purge_guard_owner' AND u.rolname = 'postgres'
+             AND NOT m.admin_option AND NOT m.inherit_option AND m.set_option) <> 1
+       OR (SELECT count(*) FROM pg_catalog.pg_auth_members m
+           JOIN pg_catalog.pg_roles r ON r.oid = m.roleid
+           JOIN pg_catalog.pg_roles u ON u.oid = m.member
+           WHERE r.rolname = 'purge_identity' AND u.rolname = 'postgres'
+             AND m.admin_option AND NOT m.inherit_option AND NOT m.set_option) <> 1
+       OR EXISTS (
+        SELECT 1 FROM (
+            SELECT r.rolname AS granted_role, u.rolname AS member_role,
+                   m.admin_option, m.inherit_option, m.set_option
+            FROM pg_catalog.pg_auth_members m
+            JOIN pg_catalog.pg_roles r ON r.oid = m.roleid
+            JOIN pg_catalog.pg_roles u ON u.oid = m.member
+            WHERE r.rolname IN ('purge_guard_owner', 'purge_identity')
+               OR u.rolname IN ('purge_guard_owner', 'purge_identity')
+        ) actual
+        WHERE NOT (
+            (actual.granted_role = 'purge_guard_owner' AND actual.member_role = 'postgres'
+             AND actual.admin_option AND NOT actual.inherit_option AND NOT actual.set_option)
+         OR (actual.granted_role = 'purge_guard_owner' AND actual.member_role = 'postgres'
+             AND NOT actual.admin_option AND NOT actual.inherit_option AND actual.set_option)
+         OR (actual.granted_role = 'purge_identity' AND actual.member_role = 'postgres'
+             AND actual.admin_option AND NOT actual.inherit_option AND NOT actual.set_option)
+        )
     ) THEN
-        RAISE EXCEPTION 'purge roles must not be granted to any login role';
+        RAISE EXCEPTION 'purge roles have unexpected PostgreSQL membership edges or options';
     END IF;
 END;
 $roles$;
@@ -459,6 +500,9 @@ BEGIN
 END;
 $$;
 
+-- PostgreSQL requires schema CREATE for SET ROLE ownership transfers. Keep the
+-- temporary privilege only around those transfers and prove it is removed.
+GRANT CREATE ON SCHEMA private, public TO purge_guard_owner;
 ALTER FUNCTION private.personal_data_write_is_frozen() OWNER TO purge_guard_owner;
 ALTER FUNCTION public.personal_data_write_is_frozen() OWNER TO purge_guard_owner;
 ALTER FUNCTION private.purge_key_hmac(text, text, text) OWNER TO purge_guard_owner;
@@ -1294,6 +1338,15 @@ $$;
 
 ALTER FUNCTION private.purge_guard_run_is_active() OWNER TO purge_guard_owner;
 ALTER FUNCTION private.purge_guard_row_is_allowlisted(text, text, text[]) OWNER TO purge_guard_owner;
+REVOKE CREATE ON SCHEMA private, public FROM purge_guard_owner;
+DO $schema_create_check$
+BEGIN
+    IF has_schema_privilege('purge_guard_owner', 'private', 'CREATE')
+       OR has_schema_privilege('purge_guard_owner', 'public', 'CREATE') THEN
+        RAISE EXCEPTION 'purge_guard_owner retained temporary schema CREATE';
+    END IF;
+END;
+$schema_create_check$;
 REVOKE ALL ON FUNCTION private.purge_guard_run_is_active() FROM PUBLIC, anon, authenticated, service_role, purge_identity;
 REVOKE ALL ON FUNCTION private.purge_guard_row_is_allowlisted(text, text, text[]) FROM PUBLIC, anon, authenticated, service_role, purge_identity;
 GRANT EXECUTE ON FUNCTION private.purge_guard_run_is_active() TO purge_guard_owner;
