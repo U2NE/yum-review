@@ -45,3 +45,18 @@ The hosted schema is applied, but release readiness remains **BLOCKED**. G10 rec
 | Legacy release, role/viewport QA, and purge | BLOCKED / NOT RUN | G10 does not release legacy, change consent columns, create accounts, or delete personal data. Separate proof gates remain. |
 
 The prospective root gate does not imply overall service readiness and must not be reused as evidence for the missing G9 historical comparison or as purge authorization.
+
+## G10 postdeploy update — 2026-10-01
+
+| Area | Status | Evidence / remaining gate |
+|---|---|---|
+| Root production deployment | PASS for bounded guest checks | Deployed Next commit `81c573a`; root and `/menus/2` returned HTTP 200. The menu page showed the review heading and guest prompt. No authenticated review-create smoke ran; this is not the full role/viewport matrix. |
+| Hosted Auth settings | PASS for post-PATCH readback | The authorized settings update was read back successfully: production Site URL and callback, minimum password length 8, and letters-plus-digits requirement. The older G10 preflight row above is historical pre-update evidence. |
+| G10 catalog/MENU apply-window preservation | NOT PROVEN | The fresh complete baseline had 40 objects and 11,576,811 bytes, with Gompocha at 1/40/40, but same-process BEFORE/AFTER APPLY keyed output was lost. Current inventory is not historical equality proof. |
+| G9 historical catalog/MENU-byte preservation | NOT PROVEN; permanent evidence gap | G9's process-only key and snapshot are unavailable. G10 cannot replace that proof or authorize purge. |
+| Hosted consent-column drop | APPLIED ONCE | The initial no-linked-ref dry-run failed; the official CLI passwordless `--db-url` dry-run then passed with `20260928150000` as the exact sole pending migration. It was applied once; remote history has 19 versions, `20260928150000` latest, and `public.reviews.non_event_review_consent` absent. |
+| Legacy Flyway V9 consent drop | NOT APPLIED | Legacy deployment health and exact live Flyway baseline remain unverified. |
+| Full-chain pgTAP consent test | FOLLOW-UP REQUIRED | A stale test still expects the dropped consent column. Update the test in a follow-up; it was not changed here. |
+| Role/viewport QA and purge | BLOCKED / NOT COMPLETE | Full matrix, hosted Auth/Storage/TUS purge proofs, and separate legacy reconciliation remain required. No account or review data was deleted. |
+
+The hosted migration removed the retired review-consent column. G10's same-process apply-window catalog equality remains unproven, and G9 retains its permanent historical evidence gap. Role/viewport QA, legacy migration verification, and purge gates remain incomplete; no account or review data was deleted.
