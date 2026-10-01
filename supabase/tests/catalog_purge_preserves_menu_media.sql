@@ -1,6 +1,6 @@
 BEGIN;
 
-SELECT plan(10);
+SELECT plan(7);
 
 SELECT has_table('private', 'personal_data_purge_journal', 'purge checkpoints use a private table');
 SELECT ok(
@@ -10,20 +10,7 @@ SELECT ok(
     'purge checkpoint table is not available through client or service roles'
 );
 SELECT col_is_null('public', 'media_assets', 'uploaded_by', 'menu uploader attribution can be nulled after freeze');
-SELECT has_column('public', 'reviews', 'non_event_review_consent', 'consent column stays through coordinated rollout');
-SELECT ok(
-    NOT has_column_privilege('anon', 'public.reviews', 'non_event_review_consent', 'SELECT')
-    AND NOT has_column_privilege('authenticated', 'public.reviews', 'non_event_review_consent', 'SELECT'),
-    'client roles cannot read the legacy review consent column'
-);
-SELECT ok(
-    NOT has_column_privilege('authenticated', 'public.reviews', 'non_event_review_consent', 'INSERT'),
-    'client role cannot insert the legacy review consent column'
-);
-SELECT ok(
-    NOT has_column_privilege('authenticated', 'public.reviews', 'non_event_review_consent', 'UPDATE'),
-    'client role cannot update the legacy review consent column'
-);
+SELECT hasnt_column('public', 'reviews', 'non_event_review_consent', 'retired review consent column has been dropped');
 SELECT ok(
     NOT EXISTS (
         SELECT 1 FROM pg_policies

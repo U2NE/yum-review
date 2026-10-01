@@ -60,3 +60,19 @@ The prospective root gate does not imply overall service readiness and must not 
 | Role/viewport QA and purge | BLOCKED / NOT COMPLETE | Full matrix, hosted Auth/Storage/TUS purge proofs, and separate legacy reconciliation remain required. No account or review data was deleted. |
 
 The hosted migration removed the retired review-consent column. G10's same-process apply-window catalog equality remains unproven, and G9 retains its permanent historical evidence gap. Role/viewport QA, legacy migration verification, and purge gates remain incomplete; no account or review data was deleted.
+
+## G11 postdeploy follow-up — 2026-10-01
+
+| Area | Status | Evidence / remaining gate |
+|---|---|---|
+| Hosted consent-column migration | APPLIED ONCE | `20260928150000_review_consent_drop.sql` is applied once; history has 19 versions and `20260928150000` is latest. `public.reviews.non_event_review_consent` is absent. |
+| Full-chain pgTAP catalog guard | UPDATED | Asserts the retired column is absent and retains the purge-journal privilege, uploader nullability, policy-dependency, MENU path, and menu-photo association guards. Plan count is seven. |
+| Catalog/MENU baseline | PASS for fresh baseline only | Read 40 MENU objects / 11,576,811 bytes; Gompocha 1/40/40; path set matched metadata. G10 apply-window keyed proof was lost; this is not historical equality proof. G9 remains a permanent evidence gap. |
+| Vercel production smoke | PASS for bounded guest route | Deployment `9968180` reported READY and `/menus/2` returned HTTP 200. No authenticated create QA was run. |
+| Location search | BLOCKED | Production endpoint returned 503 because required Upstash production variables are missing. |
+| Email | NOT VERIFIED | Generic built-in mail status only; no production sender/delivery proof. |
+| Hosted/legacy data | PARTIAL / UNAVAILABLE | Read-only inventory is four users, one wishlist, zero reviews, and zero review-media. Legacy V9 and legacy database state are unavailable/unverified. |
+| 394-case role/viewport matrix | BLOCKED | The complete matrix has not run. |
+| Account/review purge | BLOCKED; NOT RUN — required Auth/DB/Storage/TUS and zero-row gates incomplete | No purge was performed. |
+
+Release readiness remains **BLOCKED**. The fresh baseline, bounded guest smoke, and applied hosted migration do not close the G9/G10 historical preservation gaps, full QA, legacy verification, or purge prerequisites.
