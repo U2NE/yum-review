@@ -310,3 +310,7 @@ The hosted schema apply stopped with SQLSTATE `P0001`; no production deployment 
 ### 2026-10-01 G9 hosted schema release gate
 
 G9 recorded the four approved hosted schema migrations, but did not push or deploy the app. No role/viewport browser cases were run for G9. Existing results remain historical and do not establish release acceptance; the keyed catalog reconciliation is blocked after the post-apply row-manifest comparison failed. See [hosted-runtime-verification.md](hosted-runtime-verification.md) for the current bounded evidence and limits.
+
+### 2026-10-01 G10 hosted release gate
+
+G10 prepared a prospective same-process keyed catalog/MENU-byte gate for a future root-app main push and deployed HTTP health check. No push, deployment, or browser role/viewport execution occurred in this task. The missing G9 historical preservation comparison remains permanently unproven; existing matrix results do not establish release acceptance.

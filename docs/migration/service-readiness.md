@@ -31,4 +31,17 @@ This document records release readiness, not completion of the broader G8 plan. 
 | Role/viewport QA | NOT RUN for G9 | No new browser QA was performed. The matrix remains partial. |
 | Account/review purge | NOT STARTED | No account or review data was deleted; Auth, Storage-principal, TUS, and legacy proofs remain required. |
 
-The hosted schema is applied, but release readiness remains **BLOCKED** until the historical preservation comparison gap is resolved and the remaining authorized gates are completed. The updated manifest wrapper excludes only the two consent columns newly introduced by G9 for future comparisons; that code correction is prospective and is not proof of the earlier before/after state.
+The hosted schema is applied, but release readiness remains **BLOCKED**. G10 records the G9 historical keyed preservation comparison as permanently unavailable; prospective comparisons cannot replace that evidence or authorize purge. The updated manifest wrapper excludes only the two consent columns introduced by G9 for future cross-schema comparisons.
+
+## G10 update — 2026-10-01
+
+| Area | Status | Evidence / remaining gate |
+|---|---|---|
+| G9 historical catalog/MENU-byte preservation | NOT PROVEN; permanent evidence gap | The pre-apply key and snapshot were process-only and discarded. G10's narrower evidence cannot prove byte identity across the G9 schema apply and cannot authorize purge. |
+| Applied migration DML review | PASS for static migration-time scope review | The four applied files contain no executed migration-time DML against restaurants, menus, MENU media metadata, or MENU Storage. Matching updates are enclosed in callable purge/location routines rather than run during migration installation. |
+| Current catalog inventory | Reconciled, not historical proof | 3 restaurants, 72 menus, 40 MENU objects, 11,576,811 bytes; Gompocha 1/40/40. A fresh baseline and complete reads are still required around a future release. |
+| Prospective root release gate | IMPLEMENTED; NOT RUN | One-process keyed wrapper performs read-only DB preconditions, awaits caller release work, verifies Vercel production SHA/HTTP, then compares the full catalog/MENU-byte baseline. No main push occurred. |
+| Hosted Auth URL and password configuration | BLOCKED | Read-only Management API result: production Site URL; no explicit production callback entry and no localhost redirect entry; minimum length 6; `password_required_characters` is null. No settings changed. Apply the documented narrow PATCH to add the production callback and enforce length 8 plus English letters/digits, then read back. |
+| Legacy release, role/viewport QA, and purge | BLOCKED / NOT RUN | G10 does not release legacy, change consent columns, create accounts, or delete personal data. Separate proof gates remain. |
+
+The prospective root gate does not imply overall service readiness and must not be reused as evidence for the missing G9 historical comparison or as purge authorization.
