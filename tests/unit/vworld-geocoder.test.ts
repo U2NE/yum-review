@@ -1,10 +1,15 @@
 import assert from "node:assert/strict";
+import { createRequire } from "node:module";
 import test from "node:test";
-import {
-  forwardGeocodeAddress,
-  parseVWorldPoint,
-  reverseGeocodeCoordinates,
-} from "@/lib/data/vworld-geocoder.server";
+
+const require = createRequire(import.meta.url);
+const moduleLoader = require("node:module") as { _load: (...args: any[]) => any };
+const nativeLoad = moduleLoader._load;
+moduleLoader._load = function (request, parent, isMain) {
+  if (request === "server-only") return {};
+  return nativeLoad.call(this, request, parent, isMain);
+};
+const { forwardGeocodeAddress, parseVWorldPoint, reverseGeocodeCoordinates } = require("../../lib/data/vworld-geocoder.server.ts");
 
 test("VWorld point parser reads longitude as x and latitude as y", () => {
   assert.deepEqual(parseVWorldPoint({
@@ -29,12 +34,14 @@ test("VWorld point parser supports result arrays and rejects invalid coordinates
 
 test("forward and reverse conversion send server-only no-store requests and parse mock results", async () => {
   const originalKey = process.env.VWORLD_API_KEY;
+  const originalSiteUrl = process.env.NEXT_PUBLIC_SITE_URL;
   const originalFetch = globalThis.fetch;
   process.env.VWORLD_API_KEY = "local-test-key";
-  const seen: Array<{ url: URL; cache: RequestCache | undefined }> = [];
+  process.env.NEXT_PUBLIC_SITE_URL = "https://yum-review.vercel.app";
+  const seen: Array<{ url: URL; cache: RequestCache | undefined; headers: Headers }> = [];
   globalThis.fetch = async (input, init) => {
     const url = new URL(typeof input === "string" || input instanceof URL ? String(input) : input.url);
-    seen.push({ url, cache: init?.cache });
+    seen.push({ url, cache: init?.cache, headers: new Headers(init?.headers) });
     const body = url.searchParams.get("request") === "getCoord"
       ? { response: { status: "OK", result: { text: "서울 중구 세종대로 110", point: { x: "126.978", y: "37.5665" } } } }
       : { response: { status: "OK", result: [{ type: "road", text: "서울 중구 세종대로 110" }] } };
@@ -51,19 +58,51 @@ test("forward and reverse conversion send server-only no-store requests and pars
     assert.equal(seen.length, 2);
     assert.ok(seen.every((request) => request.cache === "no-store"));
     assert.ok(seen.every((request) => request.url.hostname === "api.vworld.kr"));
+    assert.ok(seen.every((request) => request.headers.get("referer") === "https://yum-review.vercel.app/"));
     assert.equal(seen[0]?.url.searchParams.get("key"), "local-test-key");
     assert.equal(seen[1]?.url.searchParams.get("point"), "126.978,37.5665");
   } finally {
     globalThis.fetch = originalFetch;
     if (originalKey === undefined) delete process.env.VWORLD_API_KEY;
     else process.env.VWORLD_API_KEY = originalKey;
+    if (originalSiteUrl === undefined) delete process.env.NEXT_PUBLIC_SITE_URL;
+    else process.env.NEXT_PUBLIC_SITE_URL = originalSiteUrl;
+  }
+});
+
+test("VWorld Referer rejects non-canonical site URLs", async () => {
+  const originalKey = process.env.VWORLD_API_KEY;
+  const originalSiteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  const originalFetch = globalThis.fetch;
+  process.env.VWORLD_API_KEY = "local-test-key";
+  const seen: Headers[] = [];
+  globalThis.fetch = async (_input, init) => {
+    seen.push(new Headers(init?.headers));
+    return new Response(JSON.stringify({ response: { status: "OK", result: [] } }), { status: 200 });
+  };
+  try {
+    process.env.NEXT_PUBLIC_SITE_URL = "https://yum-review.vercel.app/path";
+    await forwardGeocodeAddress("서울 중구 세종대로 110");
+    process.env.NEXT_PUBLIC_SITE_URL = "http://yum-review.vercel.app";
+    await reverseGeocodeCoordinates(37.5665, 126.978);
+    assert.equal(seen.length, 3);
+    assert.ok(seen.every((headers) => headers.get("referer") === null));
+  } finally {
+    globalThis.fetch = originalFetch;
+    if (originalKey === undefined) delete process.env.VWORLD_API_KEY;
+    else process.env.VWORLD_API_KEY = originalKey;
+    if (originalSiteUrl === undefined) delete process.env.NEXT_PUBLIC_SITE_URL;
+    else process.env.NEXT_PUBLIC_SITE_URL = originalSiteUrl;
   }
 });
 
 test("provider failures return generic forward and reverse errors without leaking coordinates or keys", async () => {
   const originalKey = process.env.VWORLD_API_KEY;
   const originalFetch = globalThis.fetch;
+  const originalWarn = console.warn;
+  const diagnostics: unknown[][] = [];
   process.env.VWORLD_API_KEY = "local-test-key";
+  console.warn = (...values: unknown[]) => { diagnostics.push(values); };
   globalThis.fetch = async () => new Response("upstream details", { status: 503 });
   try {
     const forward = await forwardGeocodeAddress("서울 중구 세종대로 110");
@@ -72,8 +111,52 @@ test("provider failures return generic forward and reverse errors without leakin
     assert.equal(reverse.success, false);
     assert.doesNotMatch(JSON.stringify(forward), /local-test-key|37\.5665|126\.978|upstream details/);
     assert.doesNotMatch(JSON.stringify(reverse), /local-test-key|37\.5665|126\.978|upstream details/);
+    assert.equal(diagnostics.length, 2);
+    assert.ok(diagnostics.every(([label, detail]) => label === "VWorld geocoder request failed"
+      && JSON.stringify(detail) === JSON.stringify({ category: "http", status: 503 })));
+    assert.doesNotMatch(JSON.stringify(diagnostics), /local-test-key|37\.5665|126\.978|upstream details|api\.vworld\.kr/);
   } finally {
     globalThis.fetch = originalFetch;
+    console.warn = originalWarn;
+    if (originalKey === undefined) delete process.env.VWORLD_API_KEY;
+    else process.env.VWORLD_API_KEY = originalKey;
+  }
+});
+
+test("JSON parse and body-read failures use sanitized diagnostics", async () => {
+  const originalKey = process.env.VWORLD_API_KEY;
+  const originalFetch = globalThis.fetch;
+  const originalWarn = console.warn;
+  const diagnostics: unknown[][] = [];
+  const sentinel = "secret-key address coordinate https://api.vworld.kr/full?key=secret";
+  process.env.VWORLD_API_KEY = "local-test-key";
+  console.warn = (...values: unknown[]) => { diagnostics.push(values); };
+  let calls = 0;
+  globalThis.fetch = async () => {
+    calls += 1;
+    return {
+      ok: true,
+      status: 200,
+      json: async () => {
+        if (calls === 1) throw new SyntaxError("invalid upstream JSON");
+        throw new Error(sentinel);
+      },
+    } as Response;
+  };
+  try {
+    const forward = await forwardGeocodeAddress("서울 중구 세종대로 110");
+    const reverse = await reverseGeocodeCoordinates(37.5665, 126.978);
+    assert.equal(forward.success, false);
+    assert.equal(reverse.success, false);
+    assert.doesNotMatch(JSON.stringify([forward, reverse]), /local-test-key|37\.5665|126\.978|secret-key|api\.vworld\.kr/);
+    assert.deepEqual(diagnostics, [
+      ["VWorld geocoder request failed", { category: "invalid_json", status: 200 }],
+      ["VWorld geocoder request failed", { category: "transport", status: 200 }],
+    ]);
+    assert.doesNotMatch(JSON.stringify(diagnostics), /secret-key|coordinate|api\.vworld\.kr|full\?/);
+  } finally {
+    globalThis.fetch = originalFetch;
+    console.warn = originalWarn;
     if (originalKey === undefined) delete process.env.VWORLD_API_KEY;
     else process.env.VWORLD_API_KEY = originalKey;
   }

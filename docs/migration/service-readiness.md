@@ -85,3 +85,11 @@ The hosted migration removed the retired review-consent column. G10's same-proce
 | Production VWorld lookup | NOT VERIFIED | Deploy only through the approved release flow, then verify address search and reverse lookup on production. No migration apply, live-service call, or deployment was performed for this implementation. |
 
 Release readiness remains **BLOCKED**. The fresh baseline, bounded guest smoke, and applied hosted migration do not close the G9/G10 historical preservation gaps, full QA, legacy verification, or purge prerequisites.
+
+## G12 VWorld Referer repair — 2026-10-02
+
+| Area | Status | Evidence / remaining gate |
+|---|---|---|
+| VWorld request Referer | IMPLEMENTED; NOT HOSTED | Forward and reverse calls derive the Referer exclusively from a validated HTTPS `NEXT_PUBLIC_SITE_URL` origin. Invalid values omit the header; request-controlled Origin/Referer and deployment hostnames are not used. |
+| Provider diagnostics | IMPLEMENTED; NOT LIVE-VERIFIED | Server diagnostics contain only a fixed failure category and, for HTTP/JSON responses, a numeric status. Public messages remain generic. No key, provider URL, address, coordinates, provider body, or exception message is logged. |
+| Production VWorld lookup | BLOCKED pending live verification | The user-confirmed canonical URL is `https://yum-review.vercel.app`; the Production secret was updated, but the READY deployment still failed. Recheck hosted forward and reverse calls after deploying this repair. If either still fails, retain sanitized category/status evidence and keep location QA BLOCKED. No provider or deployment-region change is justified by current evidence. |

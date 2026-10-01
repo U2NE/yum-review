@@ -5,6 +5,14 @@ import { hasValidCoordinates } from "@/lib/location/distance";
 const ENDPOINT = "https://api.vworld.kr/req/address";
 const REQUEST_TIMEOUT_MS = 6_500;
 const MAX_ADDRESS_LENGTH = 160;
+const VWorldFailureCategory = ["transport", "http", "invalid_json", "provider_response"] as const;
+type VWorldFailureCategory = typeof VWorldFailureCategory[number];
+
+class VWorldRequestError extends Error {
+  constructor(readonly category: VWorldFailureCategory, readonly status?: number) {
+    super("VWorld request failed");
+  }
+}
 
 export type PlaceSuggestion = {
   name: string;
@@ -96,6 +104,27 @@ function vworldMessage() {
   return "주소 변환을 완료하지 못했어요. 주소를 확인한 뒤 다시 시도해 주세요.";
 }
 
+function canonicalReferer(): string | null {
+  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (!configured) return null;
+  try {
+    const url = new URL(configured);
+    if (url.protocol !== "https:" || !url.hostname || url.username || url.password
+      || (url.pathname !== "/" && url.pathname !== "") || url.search || url.hash) return null;
+    return `${url.origin}/`;
+  } catch {
+    return null;
+  }
+}
+
+function logProviderFailure(error: unknown) {
+  const category = error instanceof VWorldRequestError ? error.category : "provider_response";
+  const status = error instanceof VWorldRequestError && Number.isInteger(error.status)
+    ? error.status
+    : undefined;
+  console.warn("VWorld geocoder request failed", status === undefined ? { category } : { category, status });
+}
+
 async function requestVWorld(parameters: Record<string, string>, key: string): Promise<unknown> {
   const url = new URL(ENDPOINT);
   url.searchParams.set("service", "address");
@@ -105,14 +134,24 @@ async function requestVWorld(parameters: Record<string, string>, key: string): P
   url.searchParams.set("key", key);
   for (const [name, value] of Object.entries(parameters)) url.searchParams.set(name, value);
 
-  const response = await fetch(url, {
-    method: "GET",
-    cache: "no-store",
-    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
-    headers: { Accept: "application/json" },
-  });
-  if (!response.ok) throw new Error("VWorld request failed");
-  return response.json() as Promise<unknown>;
+  const referer = canonicalReferer();
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      method: "GET",
+      cache: "no-store",
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+      headers: { Accept: "application/json", ...(referer ? { Referer: referer } : {}) },
+    });
+  } catch {
+    throw new VWorldRequestError("transport");
+  }
+  if (!response.ok) throw new VWorldRequestError("http", response.status);
+  try {
+    return await response.json() as unknown;
+  } catch (error) {
+    throw new VWorldRequestError(error instanceof SyntaxError ? "invalid_json" : "transport", response.status);
+  }
 }
 
 export function isVWorldGeocoderConfigured() {
@@ -155,7 +194,8 @@ export async function forwardGeocodeAddress(rawAddress: string): Promise<PlaceSe
       ...point,
     };
     return { configured: true, success: true, message: null, results: [result] };
-  } catch {
+  } catch (error) {
+    logProviderFailure(error);
     return { configured: true, success: false, message: vworldMessage(), results: [] };
   }
 }
@@ -183,7 +223,8 @@ export async function reverseGeocodeCoordinates(
     const address = cleanAddress(selected?.text);
     if (!address) return { configured: true, success: false, message: "현재 위치의 주소를 찾지 못했어요.", address: null };
     return { configured: true, success: true, message: null, address };
-  } catch {
+  } catch (error) {
+    logProviderFailure(error);
     return { configured: true, success: false, message: vworldMessage(), address: null };
   }
 }
