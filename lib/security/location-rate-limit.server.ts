@@ -2,80 +2,53 @@ import "server-only";
 
 import { createHash } from "node:crypto";
 import { isIP } from "node:net";
+import { createClient } from "@supabase/supabase-js";
 
-const WINDOW_SECONDS = 60;
 const REQUESTS_PER_WINDOW = 20;
-
-const FIXED_WINDOW_SCRIPT = [
-  "local current = redis.call('INCR', KEYS[1])",
-  "if current == 1 then redis.call('EXPIRE', KEYS[1], ARGV[1]) end",
-  "return { current, redis.call('TTL', KEYS[1]) }",
-].join("\n");
+const WINDOW_SECONDS = 60;
 
 export type LocationRateLimitResult =
   | { status: "allowed"; remaining: number }
   | { status: "limited"; retryAfterSeconds: number }
   | { status: "unavailable" };
 
-function getLimiterEndpoint() {
-  const rawUrl = process.env.UPSTASH_REDIS_REST_URL?.trim();
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN?.trim();
-  if (!rawUrl || !token) return null;
-
-  try {
-    const url = new URL(rawUrl);
-    if (
-      url.protocol !== "https:"
-      || !url.hostname.toLowerCase().endsWith(".upstash.io")
-      || url.username
-      || url.password
-    ) return null;
-    return { url: url.toString().replace(/\/$/, ""), token };
-  } catch {
-    return null;
-  }
+function resolveClientAddress(header: string | null): string | null {
+  const address = header?.trim();
+  if (address && isIP(address) !== 0) return address;
+  return process.env.NODE_ENV === "production" ? null : "::1";
 }
 
-/**
- * Uses shared Redis state so serverless instances cannot each keep their own
- * independent quota. Missing or unavailable configuration fails closed.
- */
-export async function consumeLocationSearchQuota(ip: string | null): Promise<LocationRateLimitResult> {
-  const endpoint = getLimiterEndpoint();
-  if (!endpoint || !ip || isIP(ip) === 0) return { status: "unavailable" };
+/** Uses one shared Postgres bucket for both public location endpoints. */
+export async function consumeLocationSearchQuota(header: string | null): Promise<LocationRateLimitResult> {
+  const address = resolveClientAddress(header);
+  if (!address) return { status: "unavailable" };
 
-  const identifier = createHash("sha256").update(ip).digest("hex");
-  const key = `yum:location-search:v1:${identifier}`;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SECRET_KEY ?? process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !serviceKey) return { status: "unavailable" };
 
+  const ipHash = createHash("sha256").update(address).digest("hex");
   try {
-    const response = await fetch(endpoint.url, {
-      method: "POST",
-      cache: "no-store",
-      signal: AbortSignal.timeout(3_000),
-      headers: {
-        Authorization: `Bearer ${endpoint.token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify([
-        "EVAL",
-        FIXED_WINDOW_SCRIPT,
-        1,
-        key,
-        WINDOW_SECONDS,
-      ]),
+    const service = createClient(url, serviceKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
     });
-    if (!response.ok) return { status: "unavailable" };
+    const { data, error } = await service.rpc("consume_location_search_quota", { p_ip_hash: ipHash });
+    if (error || !Array.isArray(data) || data.length !== 1) return { status: "unavailable" };
 
-    const payload = await response.json() as { result?: unknown; error?: unknown };
-    if (payload.error || !Array.isArray(payload.result)) return { status: "unavailable" };
-    const [count, ttl] = payload.result.map(Number);
-    if (!Number.isFinite(count) || !Number.isFinite(ttl) || ttl < 0) {
-      return { status: "unavailable" };
+    const row = data[0] as { allowed?: unknown; remaining?: unknown; retry_after_seconds?: unknown };
+    if (row.allowed === true) {
+      const remaining = Number(row.remaining);
+      if (!Number.isInteger(remaining) || remaining < 0 || remaining >= REQUESTS_PER_WINDOW) {
+        return { status: "unavailable" };
+      }
+      return { status: "allowed", remaining };
     }
-    if (count > REQUESTS_PER_WINDOW) {
-      return { status: "limited", retryAfterSeconds: Math.max(1, Math.min(WINDOW_SECONDS, Math.ceil(ttl))) };
+    if (row.allowed === false) {
+      const retryAfterSeconds = Number(row.retry_after_seconds);
+      if (!Number.isFinite(retryAfterSeconds) || retryAfterSeconds < 1) return { status: "unavailable" };
+      return { status: "limited", retryAfterSeconds: Math.min(WINDOW_SECONDS, Math.ceil(retryAfterSeconds)) };
     }
-    return { status: "allowed", remaining: Math.max(0, REQUESTS_PER_WINDOW - count) };
+    return { status: "unavailable" };
   } catch {
     return { status: "unavailable" };
   }

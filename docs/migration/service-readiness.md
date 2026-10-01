@@ -75,4 +75,13 @@ The hosted migration removed the retired review-consent column. G10's same-proce
 | 394-case role/viewport matrix | BLOCKED | The complete matrix has not run. |
 | Account/review purge | BLOCKED; NOT RUN — required Auth/DB/Storage/TUS and zero-row gates incomplete | No purge was performed. |
 
+## G11 location quota implementation — 2026-10-01
+
+| Area | Status | Evidence / remaining gate |
+|---|---|---|
+| Shared location quota code | IMPLEMENTED; NOT HOSTED | Both root address lookup and reverse-geocoding routes use the same server-only Supabase RPC. It enforces an atomic limit of 20 requests per validated Vercel `x-real-ip` hash per minute. Missing/invalid production IP and Supabase/RPC failure fail closed; localhost is used only outside production. |
+| Location quota migration | WRITTEN; NOT APPLIED | `20260928155000_location_search_quota.sql` creates a private hash-only bucket table and service-role-only `SECURITY DEFINER` RPC. Table access is revoked including `service_role`; execution is revoked from public, anon, authenticated, and service_role before granting only to service_role. Apply through the approved tracked migration process, then verify remote history and SQL privileges. |
+| Focused quota tests | PASS | `npx tsx --test tests/integration/location-rate-limit.test.ts` passed all five tests for IP validation, hashing/no raw IP transfer, success, limited, unavailable, and non-production localhost handling. `npx tsc --noEmit` and `git diff --check` also passed. |
+| Production VWorld lookup | NOT VERIFIED | Deploy only through the approved release flow, then verify address search and reverse lookup on production. No migration apply, live-service call, or deployment was performed for this implementation. |
+
 Release readiness remains **BLOCKED**. The fresh baseline, bounded guest smoke, and applied hosted migration do not close the G9/G10 historical preservation gaps, full QA, legacy verification, or purge prerequisites.
